@@ -1,0 +1,15 @@
+{
+    "auth/too-many-requests": "Temporarily disabled. Try again later or reset password",
+    "auth/user-not-found": "Invalid Credentials",
+    "auth/user-disabled": "Account disabled",
+    "auth/wrong-password": "Invalid Credentials",
+    "unverified-email": "Email not verified. Please check your email.",
+    "auth/weak-password": "Password is weak",
+    "auth/email-already-in-use": "Email already in use",
+    "auth/invalid-email": "Invalid email format",
+    "auth/timeout": "Operation Timed out. check your internet connection",
+    "error-signup": "Error creating account. Try again",
+    "error-signin": "Error signing in. Try again",
+    "error-reset-password": "Error sending mail or user not found",
+    "title-error": "Error"
+}
