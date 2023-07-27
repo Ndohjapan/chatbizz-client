@@ -1,9 +1,11 @@
-import SectionHeader from "../components/home/SectionHeader";
+import StoresHeader from "../components/home/StoresHeader";
+import StoresView from "../components/home/StoresView";
 
 function Home() {
   return (
     <>
-      <SectionHeader />
+      <StoresHeader />
+      <StoresView/>
     </>
   );
 }
