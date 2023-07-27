@@ -1,5 +1,4 @@
 import { useState } from "react";
-import GoogleIcon from "../../assets/GoogleIcon";
 import { ImSpinner8 } from "react-icons/im";
 import { Link } from "react-router-dom";
 // eslint-disable-next-line react/prop-types
