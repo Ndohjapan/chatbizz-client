@@ -3,7 +3,7 @@ import info from "../../../assets/information.json"
 
 function StoreInformation() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 mt-4">
           <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
             <div className="md:grid md:grid-cols-3 md:gap-6">
               <div className="md:col-span-1">
