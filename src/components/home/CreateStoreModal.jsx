@@ -4,6 +4,7 @@ import { CheckIcon } from "@heroicons/react/solid";
 import images from "../../assets/images.json";
 import StoreTypes from "./store-create/StoreTypes";
 import StoreInformation from "./store-create/StoreInformation";
+import QRCodeView from "./store-create/QRCodeView";
 
 const types = [
   {
@@ -175,7 +176,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                   case 2:
                     return <StoreInformation/>;
                   case 3:
-                    return <StoreInformation/>;
+                    return <QRCodeView/>;
                   default:
                     return null;
                 }
@@ -187,7 +188,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={handleNext}
                 >
-                  Next
+                  {stepNum === 3? "Submit" : "Next"}
                 </button>
                 <button
                   type="button"

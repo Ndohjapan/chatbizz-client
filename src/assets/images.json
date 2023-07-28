@@ -19,5 +19,10 @@
             "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_130100_eloymi.png",
             "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_130309_giewze.png"
         ]
-    }
+    },
+
+    "qr-code": [
+        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577220/chatbizz/qr-code_1_dukwx0.png",
+        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577252/chatbizz/qr-code_z4corw.png"
+    ]
 }
