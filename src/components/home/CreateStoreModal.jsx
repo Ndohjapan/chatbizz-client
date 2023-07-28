@@ -1,7 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Dialog, RadioGroup, Transition } from "@headlessui/react";
-import { CheckCircleIcon } from "@heroicons/react/solid";
+import { Dialog, Transition } from "@headlessui/react";
+import { CheckIcon } from "@heroicons/react/solid";
 import images from "../../assets/images.json";
+import StoreTypes from "./store-create/StoreTypes";
+import StoreInformation from "./store-create/StoreInformation";
 
 const types = [
   {
@@ -19,26 +21,40 @@ const types = [
   },
 ];
 
+const steps = [
+  { name: "Step 1", href: "#", status: "complete", num: 1 },
+  { name: "Step 2", href: "#", status: "current", num: 2 },
+  { name: "Step 3", href: "#", status: "upcoming", num: 3 },
+];
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 // eslint-disable-next-line react/prop-types
-function CreateStoreModal({isModalOpen, toggleModal}) {
+function CreateStoreModal({ isModalOpen, toggleModal }) {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
   const [selectedStoreType, setSelectStoreType] = useState(types[0]);
+  const [stepNum, setStepNum] = useState(1);
 
   useEffect(() => {
     setOpen(isModalOpen);
-  }, [isModalOpen])
+    setStepNum(1);
+  }, [isModalOpen]);
 
   const handleClose = () => {
     setOpen(false);
-    setTimeout(()=>{
+    setTimeout(() => {
+      setStepNum(1);
       toggleModal(false);
     }, 300);
   };
+
+  const handleNext = () => {
+    const nextNum = stepNum + 1
+    setStepNum(nextNum);
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -78,87 +94,98 @@ function CreateStoreModal({isModalOpen, toggleModal}) {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div className="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-80 sm:p-6 md:w-full md:max-w-3xl">
-              <RadioGroup
-                value={selectedStoreType}
-                onChange={setSelectStoreType}
-              >
-                <RadioGroup.Label className="text-base font-medium text-gray-900">
-                  Select store type
-                </RadioGroup.Label>
-
-                <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                  {types.map((type) => (
-                    <RadioGroup.Option
-                      key={type.id}
-                      value={type}
-                      className={({ active }) =>
-                        classNames(
-                          "border",
-                          active
-                            ? "border-indigo-500 ring-2 ring-indigo-500"
-                            : "",
-                          "relative bg-white border rounded-lg shadow-sm flex flex-col cursor-pointer focus:outline-none"
-                        )
-                      }
+              <nav aria-label="Progress">
+                <ol role="list" className="flex items-center justify-center">
+                  {steps.map((step, stepIdx) => (
+                    <li
+                      key={step.name}
+                      className={classNames(
+                        stepIdx !== steps.length - 1 ? "pr-8 sm:pr-20" : "",
+                        "relative"
+                      )}
+                      onClick={() => {
+                        setStepNum(step.num)
+                      }}
                     >
-                      {({ checked, active }) => (
+                      {step.num < stepNum ? (
                         <>
                           <div
-                            className="flex-1 flex"
-                            onMouseDown={(e) => {
-                              e.preventDefault(); // Prevent the default behavior to avoid closing the modal
-                              setSelectStoreType(type); // Handle the selection of the radio element
-                            }}
+                            className="absolute inset-0 flex items-center"
+                            aria-hidden="true"
                           >
-                            <div className="bg-white overflow-hidden shadow rounded-lg cursor-pointer">
-                              <div className="px-4 py-5 sm:p-6">
-                                {/* Content goes here */}
-                                <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
-                                  <img
-                                    src={type.image}
-                                    alt=""
-                                    className="object-cover pointer-events-none group-hover:opacity-75"
-                                  />
-                                </div>
-                              </div>
-                              <div className="bg-gray-50 px-4 py-4 sm:px-6">
-                                <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                                  {type.title}
-                                </p>
-                                <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                                  {type.description}
-                                </p>
-                              </div>
-                            </div>
+                            <div className="h-0.5 w-full bg-indigo-600" />
                           </div>
-                          <CheckCircleIcon
-                            className={classNames(
-                              checked ? "h-5 w-5 text-indigo-600" : "invisible",
-                              "absolute right-2 top-2"
-                            )}
-                            aria-hidden="true"
-                          />
+                          <a
+                            className="relative w-8 h-8 flex items-center justify-center bg-indigo-600 rounded-full hover:bg-indigo-900"
+                          >
+                            <CheckIcon
+                              className="w-5 h-5 text-white"
+                              aria-hidden="true"
+                            />
+                            <span className="sr-only">{step.name}</span>
+                          </a>
+                        </>
+                      ) : step.num === stepNum ? (
+                        <>
                           <div
-                            className={classNames(
-                              active ? "border" : "border-2",
-                              checked
-                                ? "border-indigo-500"
-                                : "border-transparent",
-                              "absolute -inset-px rounded-lg pointer-events-none"
-                            )}
+                            className="absolute inset-0 flex items-center"
                             aria-hidden="true"
-                          />
+                          >
+                            <div className="h-0.5 w-full bg-gray-200" />
+                          </div>
+                          <a
+                            className="relative w-8 h-8 flex items-center justify-center bg-white border-2 border-indigo-600 rounded-full"
+                            aria-current="step"
+                          >
+                            <span
+                              className="h-2.5 w-2.5 bg-indigo-600 rounded-full"
+                              aria-hidden="true"
+                            />
+                            <span className="sr-only">{step.name}</span>
+                          </a>
+                        </>
+                      ) : (
+                        <>
+                          <div
+                            className="absolute inset-0 flex items-center"
+                            aria-hidden="true"
+                          >
+                            <div className="h-0.5 w-full bg-gray-200" />
+                          </div>
+                          <a
+                            className="group relative w-8 h-8 flex items-center justify-center bg-white border-2 border-gray-300 rounded-full hover:border-gray-400"
+                          >
+                            <span
+                              className="h-2.5 w-2.5 bg-transparent rounded-full group-hover:bg-gray-300"
+                              aria-hidden="true"
+                            />
+                            <span className="sr-only">{step.name}</span>
+                          </a>
                         </>
                       )}
-                    </RadioGroup.Option>
+                    </li>
                   ))}
-                </div>
-              </RadioGroup>
+                </ol>
+              </nav>
+              {(() => {
+                switch (stepNum) {
+                  case 1:
+                    return <StoreTypes selectedStoreType={selectedStoreType} 
+                    setSelectStoreType={setSelectStoreType} types={types} classNames={classNames} />;
+                  case 2:
+                    return <StoreInformation/>;
+                  case 3:
+                    return <StoreInformation/>;
+                  default:
+                    return null;
+                }
+              })()}
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                 <button
+                  disabled={stepNum === 3 ? true : false}
                   type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={handleClose}
+                  onClick={handleNext}
                 >
                   Next
                 </button>
