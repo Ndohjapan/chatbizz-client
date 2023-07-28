@@ -7,7 +7,7 @@ import {
 import app from "../config/firebase-config";
 import { useEffect} from "react";
 import LoginForm from "../components/auth/LoginForm";
-import locale from "../assets/locale.json";
+import errors from "../assets/error.json";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials, showToast } from "../slices/authSlice";
@@ -48,7 +48,7 @@ function Login() {
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        dispatch(showToast({title: locale["title-error"], message: locale["error-signin"]}));
+        dispatch(showToast({title: errors["title-error"], message: errors["error-signin"]}));
       });
   };
 
@@ -65,12 +65,12 @@ function Login() {
           dispatch(setCredentials({ ...userInfo }));
           navigate("/");
         } else {
-          dispatch(showToast({ title: locale["title-error"], message: locale["unverified-email"]}));
+          dispatch(showToast({ title: errors["title-error"], message: errors["unverified-email"]}));
         }
       })
       .catch((error) => {
-        const message = locale[error.code] || locale["error-signin"];
-        dispatch(showToast({ title: locale["title-error"], message}));
+        const message = errors[error.code] || errors["error-signin"];
+        dispatch(showToast({ title: errors["title-error"], message}));
       });
   };
 

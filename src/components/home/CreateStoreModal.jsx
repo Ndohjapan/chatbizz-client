@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
 import images from "../../assets/images.json";
 import StoreTypes from "./store-create/StoreTypes";
+import StoreInformation from "./store-create/StoreInformation";
 
 const types = [
   {
@@ -172,9 +173,9 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                     return <StoreTypes selectedStoreType={selectedStoreType} 
                     setSelectStoreType={setSelectStoreType} types={types} classNames={classNames} />;
                   case 2:
-                    return <h1>Hello world 2</h1>;
+                    return <StoreInformation/>;
                   case 3:
-                    return <h1>Hello world 3</h1>;
+                    return <StoreInformation/>;
                   default:
                     return null;
                 }

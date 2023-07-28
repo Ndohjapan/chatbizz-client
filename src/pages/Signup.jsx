@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import images from "../assets/images.json"
 import app from "../config/firebase-config";
-import locale from "../assets/locale.json";
+import errors from "../assets/error.json";
 import { useNavigate } from "react-router-dom";
 import { useDispatch} from "react-redux";
 import { setCredentials, showToast } from "../slices/authSlice";
@@ -52,7 +52,7 @@ function Signup() {
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        dispatch(showToast({title: locale["title-error"], message: locale["error-signup"]}));
+        dispatch(showToast({title: errors["title-error"], message: errors["error-signup"]}));
 
       });
   };
@@ -70,8 +70,8 @@ function Signup() {
         navigate("/login");
       })
       .catch((error) => {
-        const message = locale[error.code] || locale["error-signup"];
-        dispatch(showToast({ title: locale["title-error"], message}));
+        const message = errors[error.code] || errors["error-signup"];
+        dispatch(showToast({ title: errors["title-error"], message}));
       });
     
   };
