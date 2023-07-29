@@ -11,7 +11,7 @@ function ListStoresView({files}) {
             >
               {files.map((file) => (
                 <div
-                  key={file.source}
+                  key={file.id}
                   className="bg-white overflow-hidden shadow rounded-lg cursor-pointer"
                 >
                   <div className="px-4 py-5 sm:p-6">

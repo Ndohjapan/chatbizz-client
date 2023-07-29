@@ -1,7 +1,7 @@
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import ForgotPasswordForm from "../components/auth/ForgotPasswordForm";
 import app from "../config/firebase-config";
-import locale from "../assets/locale.json"
+import errors from "../assets/error.json"
 import { useDispatch } from "react-redux";
 import { showToast } from "../slices/authSlice";
 
@@ -20,8 +20,8 @@ function ForgotPassword() {
         dispatch(showToast({ message }));
       })
       .catch((error) => {
-        const message = locale[error.code] || locale["error-signin"];
-        dispatch(showToast({ title: locale["title-error"], message }));
+        const message = errors[error.code] || errors["error-signin"];
+        dispatch(showToast({ title: errors["title-error"], message }));
       });
   };
 

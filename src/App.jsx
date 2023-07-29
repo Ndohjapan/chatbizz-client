@@ -8,6 +8,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Toast from "./components/layout/Toast";
 import { hideToast } from "./slices/authSlice";
 
+
+
 // eslint-disable-next-line react/prop-types
 const AuthWrapper = ({ children }) => {
   const { twk } = useSelector((state) => state.auth);
@@ -28,7 +30,14 @@ export default function App() {
       <BrowserRouter>
         {twk && <Header />}
         <Routes>
-          <Route path="/" element={<AuthWrapper><Home /></AuthWrapper>} />
+          <Route
+            path="/"
+            element={
+              <AuthWrapper>
+                <Home />
+              </AuthWrapper>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
