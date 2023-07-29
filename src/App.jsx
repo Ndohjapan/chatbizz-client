@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Toast from "./components/layout/Toast";
 import { hideToast } from "./slices/authSlice";
+import NotFound from "./pages/NotFound";
 
 
 
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="*" element={<NotFound/>}/>
         </Routes>
       </BrowserRouter>
       {toast.show && (

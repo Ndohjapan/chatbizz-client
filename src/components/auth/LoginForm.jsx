@@ -2,6 +2,8 @@ import { useState } from "react";
 import GoogleIcon from "../../assets/GoogleIcon";
 import { ImSpinner8 } from "react-icons/im";
 import { Link } from "react-router-dom";
+import images from "../../assets/images.json"
+
 // eslint-disable-next-line react/prop-types
 function LoginForm({ loginWithGoogle, loginWithEmailPassword }) {
   const [formData, setFormData] = useState({
@@ -195,7 +197,7 @@ function LoginForm({ loginWithGoogle, loginWithEmailPassword }) {
         <div className="hidden md:block">
           <img
             className="h-full w-full object-cover"
-            src="https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+            src={images.background[0]}
             alt="sign up image"
           />
         </div>
