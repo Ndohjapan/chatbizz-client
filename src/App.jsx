@@ -7,7 +7,6 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Toast from "./components/layout/Toast";
 import { hideToast } from "./slices/authSlice";
-import Checkmark from "./pages/sample";
 
 
 
@@ -36,14 +35,6 @@ export default function App() {
             element={
               <AuthWrapper>
                 <Home />
-              </AuthWrapper>
-            }
-          />
-          <Route
-            path="/sample"
-            element={
-              <AuthWrapper>
-                <Checkmark />
               </AuthWrapper>
             }
           />
