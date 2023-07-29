@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 // eslint-disable-next-line react/prop-types
 function ListStoresView({files}) {
   return (
@@ -14,6 +16,7 @@ function ListStoresView({files}) {
                   key={file.id}
                   className="bg-white overflow-hidden shadow rounded-lg cursor-pointer"
                 >
+                  <Link to="/store/1234">
                   <div className="px-4 py-5 sm:p-6">
                     {/* Content goes here */}
                     <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
@@ -29,6 +32,7 @@ function ListStoresView({files}) {
                   <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">{file.title}</p>
           <p className="block text-sm font-medium text-gray-500 pointer-events-none">{file.size}</p>
                   </div>
+                  </Link>
                 </div>
               ))}
             </ul>
