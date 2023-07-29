@@ -8,16 +8,21 @@
     ],
     "illustration":{
         "ecommerce": [
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690491349/chatbizz/Screenshot_2023-07-27_215317_x2qubf.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690491349/chatbizz/Screenshot_2023-07-27_214947_erlkkp.png",
             "https://res.cloudinary.com/lcu-feeding/image/upload/v1690489671/chatbizz/Screenshot_2023-07-27_211938_a9jgqm.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690497946/chatbizz/Screenshot_2023-07-27_234437_st0huj.png"
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/Screenshot_2023-07-28_122612_sxvgh3.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/Screenshot_2023-07-28_123018_tjtapl.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/Screenshot_2023-07-28_121758_hzjmmf.png"
         ],
         "digital-product":[
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690497579/chatbizz/Screenshot_2023-07-27_233826_bakxri.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690497579/chatbizz/Screenshot_2023-07-27_233132_1_fo5cak.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690494638/chatbizz/New_Project_1_g32wev.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690493045/chatbizz/Screenshot_2023-07-27_220554_hi2ji0.png"
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_124038_i5hslv.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_123909_rgauow.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_130100_eloymi.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_130309_giewze.png"
         ]
-    }
+    },
+
+    "qr-code": [
+        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577220/chatbizz/qr-code_1_dukwx0.png",
+        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577252/chatbizz/qr-code_z4corw.png"
+    ]
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import { XIcon } from "@heroicons/react/solid";
-import locale from "../../assets/locale.json";
+import errors from "../../assets/error.json";
 
 // eslint-disable-next-line react/prop-types
 export default function Toast({ message, title, onClose }) {
@@ -9,7 +9,7 @@ export default function Toast({ message, title, onClose }) {
   const [isCircleCheck, setCircleCheck] = useState(true);
 
   useEffect(() => {
-    setCircleCheck(title !== locale["title-error"]);
+    setCircleCheck(title !== errors["title-error"]);
   }, [title]);
 
   return (
