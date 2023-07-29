@@ -7,7 +7,9 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Toast from "./components/layout/Toast";
 import { hideToast } from "./slices/authSlice";
-import Sample from "./components/home/CreateStoreModal.jsx";
+import Checkmark from "./pages/sample";
+
+
 
 // eslint-disable-next-line react/prop-types
 const AuthWrapper = ({ children }) => {
@@ -41,7 +43,7 @@ export default function App() {
             path="/sample"
             element={
               <AuthWrapper>
-                <Sample />
+                <Checkmark />
               </AuthWrapper>
             }
           />

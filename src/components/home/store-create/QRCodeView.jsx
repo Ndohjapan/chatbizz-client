@@ -1,5 +1,18 @@
-import images from "../../../assets/images.json"
+import { useState } from "react";
+import images from "../../../assets/images.json";
+import CheckMark from "./CheckMark";
 function QRCodeView() {
+  const [hideCode, setHideCode] = useState(false);
+  const [displayCheckMark, setDisplayCheckMark] = useState(false);
+
+  const toggleQR = () => {
+    setHideCode(!hideCode);
+  };
+
+  const toggleCheckMark = () => {
+    setDisplayCheckMark(!displayCheckMark);
+  };
+
   return (
     <div className="space-y-6 mt-4">
       <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
@@ -9,12 +22,23 @@ function QRCodeView() {
               Whatsapp Code
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              Scan code to setup bot for your store. Enable bot from your store menu once successful.
+              Scan code to setup bot for your store. Enable bot from your store
+              menu once successful.
             </p>
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
-          <img className="w-full h-full" src={images["qr-code"][0]} alt=""/>
+            <img
+              hidden={hideCode}
+              className="w-full h-full mx-auto md:max-w-xs"
+              src={images["qr-code"][0]}
+              alt="qr code"
+            />
+            {displayCheckMark && (<CheckMark/>)}
 
+            {setTimeout(() => {
+                toggleQR();
+                toggleCheckMark();
+            }, 5000)}
           </div>
         </div>
       </div>
