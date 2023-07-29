@@ -1,7 +1,7 @@
 import app from "../../config/firebase-config";
 import { getAuth, signOut } from "firebase/auth";
 import { logout } from "../../slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
@@ -44,13 +44,13 @@ export default function Header() {
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0">
+                    <Link className="flex-shrink-0" to="/">
                       <img
                         className="h-8 w-8"
                         src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                        alt="Workflow"
+                        alt="icon"
                       />
-                    </div>
+                    </Link>
                   </div>
                   <div className="hidden md:block">
                     <div className="ml-4 flex items-center md:ml-6">
