@@ -1,8 +1,34 @@
 import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/solid";
+import images from "../../../assets/images.json"
+import { useState } from "react";
+
+const types = [
+  {
+    id: 1,
+    title: "Ecommerce",
+    description: "Physical products",
+    image: images.illustration.ecommerce[new Date().getMilliseconds() % 4],
+  },
+  {
+    id: 2,
+    title: "Digital",
+    description: "Digital products / services",
+    image:
+      images.illustration["digital-product"][new Date().getMilliseconds() % 4],
+  },
+];
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 // eslint-disable-next-line react/prop-types
-function StoreTypes({selectedStoreType, setSelectStoreType, types, classNames}) {
+function StoreTypes() {
+
+  const [selectedStoreType, setSelectStoreType] = useState(types[0]);
+
+
   return (
     <>
       <RadioGroup

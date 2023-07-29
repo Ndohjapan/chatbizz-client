@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import images from "../../../assets/images.json";
 import CheckMark from "./CheckMark";
+import XMark from "./XMark";
+
 function QRCodeView() {
   const [hideCode, setHideCode] = useState(false);
-  const [displayCheckMark, setDisplayCheckMark] = useState(false);
+  const [displayComponent, setDisplayComponent] = useState("");
 
-  const toggleQR = () => {
-    setHideCode(!hideCode);
-  };
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (hideCode) {
+        setHideCode(false);
+        setDisplayComponent("");
+      } else {
+        const randomComponent = Math.random() >= 0.5 ? "checkmark" : "xmark";
+        setHideCode(true);
 
-  const toggleCheckMark = () => {
-    setDisplayCheckMark(!displayCheckMark);
-  };
+        setDisplayComponent(randomComponent);
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [hideCode]);
 
   return (
     <div className="space-y-6 mt-4">
@@ -22,7 +32,7 @@ function QRCodeView() {
               Whatsapp Code
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              Scan code to setup bot for your store. Enable bot from your store
+              Scan code to set up the bot for your store. Enable the bot from your store
               menu once successful.
             </p>
           </div>
@@ -33,12 +43,8 @@ function QRCodeView() {
               src={images["qr-code"][0]}
               alt="qr code"
             />
-            {displayCheckMark && (<CheckMark/>)}
-
-            {setTimeout(() => {
-                toggleQR();
-                toggleCheckMark();
-            }, 5000)}
+            {displayComponent === "checkmark" && <CheckMark />}
+            {displayComponent === "xmark" && <XMark />}
           </div>
         </div>
       </div>

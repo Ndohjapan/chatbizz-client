@@ -1,5 +1,3 @@
-import React from 'react';
-
 function XMark() {
   return (
     <>
@@ -23,8 +21,8 @@ function XMark() {
           </svg>
         </div>
         <div>
-          <h1 className="text-center text-gray-700 font-medium">Scan Failed! {" "}           <a
-            className="text-center mt-2 text-red-600 hover:underline cursor-pointer"
+        <h1 className="text-center text-gray-700 font-medium">Scan Failed! {" "}           <a
+            className="text-center mt-2 text-indigo-600 hover:underline cursor-pointer"
           >try again</a></h1>
         </div>
       </div>

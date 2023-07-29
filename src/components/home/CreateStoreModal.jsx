@@ -1,26 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
-import images from "../../assets/images.json";
 import StoreTypes from "./store-create/StoreTypes";
 import StoreInformation from "./store-create/StoreInformation";
 import QRCodeView from "./store-create/QRCodeView";
-
-const types = [
-  {
-    id: 1,
-    title: "Ecommerce",
-    description: "Physical products",
-    image: images.illustration.ecommerce[new Date().getMilliseconds() % 4],
-  },
-  {
-    id: 2,
-    title: "Digital",
-    description: "Digital products / services",
-    image:
-      images.illustration["digital-product"][new Date().getMilliseconds() % 4],
-  },
-];
 
 const steps = [
   { name: "Step 1", href: "#", status: "complete", num: 1 },
@@ -36,7 +19,6 @@ function classNames(...classes) {
 function CreateStoreModal({ isModalOpen, toggleModal }) {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
-  const [selectedStoreType, setSelectStoreType] = useState(types[0]);
   const [stepNum, setStepNum] = useState(1);
 
   useEffect(() => {
@@ -171,8 +153,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
               {(() => {
                 switch (stepNum) {
                   case 1:
-                    return <StoreTypes selectedStoreType={selectedStoreType} 
-                    setSelectStoreType={setSelectStoreType} types={types} classNames={classNames} />;
+                    return <StoreTypes />;
                   case 2:
                     return <StoreInformation/>;
                   case 3:
