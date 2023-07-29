@@ -5,8 +5,8 @@ import images from "../assets/images.json"
 export default function NotFound() {
     return (
       <>
-      <div className="bg-white min-h-screen flex flex-col lg:relative">
-        <div className="flex-grow flex flex-col">
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="min-h-screen flex-grow flex flex-col">
           <main className="flex-grow flex flex-col bg-white">
             <div className="flex-grow mx-auto max-w-7xl w-full flex flex-col px-4 sm:px-6 lg:px-8">
               <div className="flex-shrink-0 my-auto py-16 sm:py-32">
@@ -41,11 +41,11 @@ export default function NotFound() {
             </div>
           </footer>
         </div>
-        <div className="hidden lg:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+        <div className="hidden md:block">
           <img
-            className="absolute inset-0 h-full w-full object-cover"
+            className="h-full w-full object-cover"
             src={images.background[0]}
-            alt=""
+            alt="sign up image"
           />
         </div>
       </div>
