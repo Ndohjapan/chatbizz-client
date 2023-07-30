@@ -1,20 +1,25 @@
+import { useEffect, useState } from "react";
+import EmptyProductTable from "../components/store/EmptyProductTable";
+import ProductsHeader from "../components/store/ProductsHeaders";
+import ProductsTable from "../components/store/ProductsTable";
+
 function Store() {
+
+  const [viewProducts, setViewProducts] = useState(0);
+  useEffect(() => {
+    setViewProducts(new Date().getMilliseconds() % 2);
+  }, []);
+
   return (
-    <main className="flex-1">
-    <div className="py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <h1 className="text-2xl font-semibold text-gray-900">Products</h1>
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        {/* Replace with your content */}
-        <div className="py-4">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
-        </div>
-        {/* /End replace */}
-      </div>
-    </div>
-  </main>
-  )
+    <>
+      <ProductsHeader />
+      {viewProducts ? (
+        <EmptyProductTable/>
+      ) : (
+        <ProductsTable/>
+      )}
+    </>
+  );
 }
 
-export default Store
+export default Store;
