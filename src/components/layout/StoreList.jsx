@@ -26,10 +26,10 @@ export default function StoreList() {
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
         <>
-          <Listbox.Label className="block text-base font-medium text-gray-300 mt-4 px-2">
+          <Listbox.Label className="block text-base font-medium text-gray-300 mt-10 px-2 md:mt-7">
             Store
           </Listbox.Label>
-          <div className="relative px-2 space-y-1 mt-3 mb-4">
+          <div className="relative px-2 space-y-1 mt-3 mb-8 md:mb-0">
             <Listbox.Button className="relativebg-white border border-gray-300 rounded-md shadow-sm px-3 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
               <div className="flex items-center">
                 <span

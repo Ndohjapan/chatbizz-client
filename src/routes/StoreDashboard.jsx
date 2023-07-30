@@ -10,27 +10,27 @@ const StoreDashboard = () => {
 
   return (
     <>
-    
-    <div>
-      <StoreSideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      <div className="md:pl-64 flex flex-col">
-        <StoreHeader setSidebarOpen={setSidebarOpen} />
-        <Routes>
-          <Route path="/" element={<StoreOverview />} />
-          <Route
-            path="*"
-            element={
-              <>
-                <StoreNotFound />
-              </>
-            }
-          />
-        </Routes>
+      <div>
+        <StoreSideBar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+        <div className="md:pl-64 flex flex-col flex-1">
+          <StoreHeader setSidebarOpen={setSidebarOpen} />
+          <Routes>
+            <Route path="/" element={<StoreOverview />} />
+            <Route
+              path="*"
+              element={
+                <>
+                  <StoreNotFound />
+                </>
+              }
+            />
+          </Routes>
+        </div>
       </div>
-    </div>
-    
     </>
-
   );
 };
 
