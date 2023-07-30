@@ -1,24 +1,16 @@
 import { Fragment } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
-  InboxIcon,
-  UsersIcon,
   XIcon,
+  ShoppingCartIcon,
+  ChatAltIcon
 } from "@heroicons/react/outline";
 import StoreList from "./StoreList";
 import { Link } from "react-router-dom";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: InboxIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartBarIcon, current: false },
+  { name: "Products", href: "#", icon: ShoppingCartIcon, current: true },
+  { name: "Bot/Coversation", href: "#", icon: ChatAltIcon, current: false },
 ];
 
 const userNavigation = [
