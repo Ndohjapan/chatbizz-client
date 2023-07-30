@@ -47,8 +47,14 @@ function LoginForm({ loginWithGoogle, loginWithEmailPassword }) {
     const isEmpty = Object.keys(errors).length === 0;
     if (isEmpty) {
       setButtonLoading(true);
-      await loginWithEmailPassword(formData);
-      setButtonLoading(false);
+
+      try {
+        await loginWithEmailPassword(formData);
+        setButtonLoading(false);
+      } catch (error) {
+        setButtonLoading(false);
+      }
+
     }
   };
 

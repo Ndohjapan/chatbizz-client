@@ -1,11 +1,15 @@
+import app from "../../config/firebase-config";
+import { getAuth, signOut } from "firebase/auth";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { MenuIcon } from "@heroicons/react/outline";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../slices/authSlice";
 
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Your Profile", href: "#", signout: false },
+  { name: "Sign out", href: "#", signout: true },
 ];
 
 function classNames(...classes) {
@@ -14,6 +18,25 @@ function classNames(...classes) {
 
 // eslint-disable-next-line react/prop-types
 function StoreHeader({ setSidebarOpen }) {
+
+  const auth = getAuth(app);
+
+  const {userInfo} = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logoutHandler = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch(logout());
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
       <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 justify-between md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-800">
@@ -36,8 +59,8 @@ function StoreHeader({ setSidebarOpen }) {
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
+                    src={userInfo.photoURL}
+                    alt={userInfo.displayName}
                   />
                 </Menu.Button>
               </div>
@@ -54,15 +77,27 @@ function StoreHeader({ setSidebarOpen }) {
                   {userNavigation.map((item) => (
                     <Menu.Item key={item.name}>
                       {({ active }) => (
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            active ? "bg-gray-100" : "",
-                            "block px-4 py-2 text-sm text-gray-700"
-                          )}
-                        >
-                          {item.name}
-                        </a>
+                        item.signout ? (
+                          <div
+                            onClick={logoutHandler}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            {item.name}
+                          </div>
+                        ) : (
+                          <a
+                            href={item.href}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            {item.name}
+                          </a>
+                        )
                       )}
                     </Menu.Item>
                   ))}

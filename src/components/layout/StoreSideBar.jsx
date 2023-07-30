@@ -1,12 +1,12 @@
+import app from "../../config/firebase-config";
+import { getAuth, signOut } from "firebase/auth";
+import { logout } from "../../slices/authSlice";
 import { Fragment } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
-import {
-  XIcon,
-  ShoppingCartIcon,
-  ChatAltIcon
-} from "@heroicons/react/outline";
+import { XIcon, ShoppingCartIcon, ChatAltIcon } from "@heroicons/react/outline";
 import StoreList from "./StoreList";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const navigation = [
   { name: "Products", href: "#", icon: ShoppingCartIcon, current: true },
@@ -14,9 +14,8 @@ const navigation = [
 ];
 
 const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Your Profile", href: "#", signout: false },
+  { name: "Sign out", href: "#", signout: true },
 ];
 
 function classNames(...classes) {
@@ -25,6 +24,24 @@ function classNames(...classes) {
 
 // eslint-disable-next-line react/prop-types
 function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
+  const auth = getAuth(app);
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logoutHandler = () => {
+    signOut(auth)
+      .then(() => {
+        dispatch(logout());
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
       <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -171,13 +188,13 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
                         <div>
                           <img
                             className="inline-block h-9 w-9 rounded-full"
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                            alt=""
+                            src={userInfo.photoURL}
+                            alt={userInfo.displayName}
                           />
                         </div>
                         <div className="ml-3">
                           <p className="text-sm font-medium text-white">
-                            Tom Cook
+                            {userInfo.displayName}
                           </p>
                           <p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">
                             View profile
@@ -197,20 +214,32 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="origin-top-right absolute right-4 -top-32 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="origin-top-right absolute right-4 -top-24 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                   {userNavigation.map((item) => (
                     <Menu.Item key={item.name}>
-                      {({ active }) => (
-                        <a
-                          href={item.href}
-                          className={classNames(
-                            active ? "bg-gray-100" : "",
-                            "block px-4 py-2 text-sm text-gray-700"
-                          )}
-                        >
-                          {item.name}
-                        </a>
-                      )}
+                      {({ active }) =>
+                        item.signout ? (
+                          <div
+                            onClick={logoutHandler}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            {item.name}
+                          </div>
+                        ) : (
+                          <a
+                            href={item.href}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            {item.name}
+                          </a>
+                        )
+                      }
                     </Menu.Item>
                   ))}
                 </Menu.Items>

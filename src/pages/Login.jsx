@@ -52,26 +52,32 @@ function Login() {
       });
   };
 
-  const loginWithEmailPassword = async (formData) => {
+  const loginWithEmailPassword = (formData) => {
     const { email, password } = formData;
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const { email, photoURL, uid, displayName, accessToken } = user;
-        const userInfo = { email, photoURL, uid, displayName, accessToken };
-
-        if (user.emailVerified) {
-          dispatch(setCredentials({ ...userInfo }));
-          navigate("/");
-        } else {
-          dispatch(showToast({ title: errors["title-error"], message: errors["unverified-email"]}));
-        }
-      })
-      .catch((error) => {
-        const message = errors[error.code] || errors["error-signin"];
-        dispatch(showToast({ title: errors["title-error"], message}));
-      });
+    return new Promise((resolve, reject) => {
+      
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          const { email, photoURL, uid, displayName, accessToken } = user;
+          const userInfo = { email, photoURL, uid, displayName, accessToken };
+  
+          if (user.emailVerified) {
+            dispatch(setCredentials({ ...userInfo }));
+            navigate("/");
+            resolve(true);
+          } else {
+            dispatch(showToast({ title: errors["title-error"], message: errors["unverified-email"]}));
+            reject(false);
+          }
+        })
+        .catch((error) => {
+          const message = errors[error.code] || errors["error-signin"];
+          dispatch(showToast({ title: errors["title-error"], message}));
+          reject(false);
+        });
+    })
   };
 
   return (
