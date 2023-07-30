@@ -9,7 +9,6 @@ import Toast from "./components/layout/Toast";
 import { hideToast } from "./slices/authSlice";
 import NotFound from "./pages/NotFound";
 import StoreDashboard from "./routes/StoreDashboard";
-import Example from "./pages/Example";
 
 // eslint-disable-next-line react/prop-types
 const AuthWrapper = ({ children }) => {
@@ -46,7 +45,6 @@ export default function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/example" element={<Example />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/store/:id/*"
