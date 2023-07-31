@@ -8,22 +8,22 @@
     ],
     "illustration":{
         "ecommerce": [
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690489671/chatbizz/Screenshot_2023-07-27_211938_a9jgqm.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/Screenshot_2023-07-28_122612_sxvgh3.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/Screenshot_2023-07-28_123018_tjtapl.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/Screenshot_2023-07-28_121758_hzjmmf.png"
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690489671/chatbizz/resources/Screenshot_2023-07-27_211938_a9jgqm.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/resources/Screenshot_2023-07-28_122612_sxvgh3.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/resources/Screenshot_2023-07-28_123018_tjtapl.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690544099/chatbizz/resources/Screenshot_2023-07-28_121758_hzjmmf.png"
         ],
         "digital-product":[
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_124038_i5hslv.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_123909_rgauow.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_130100_eloymi.png",
-            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/Screenshot_2023-07-28_130309_giewze.png"
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/resources/Screenshot_2023-07-28_124038_i5hslv.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/resources/Screenshot_2023-07-28_123909_rgauow.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/resources/Screenshot_2023-07-28_130100_eloymi.png",
+            "https://res.cloudinary.com/lcu-feeding/image/upload/v1690545919/chatbizz/resources/Screenshot_2023-07-28_130309_giewze.png"
         ]
     },
 
     "qr-code": [
-        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577220/chatbizz/qr-code_1_dukwx0.png",
-        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577252/chatbizz/qr-code_z4corw.png"
+        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577220/chatbizz/resources/qr-code_1_dukwx0.png",
+        "https://res.cloudinary.com/lcu-feeding/image/upload/v1690577252/chatbizz/resources/qr-code_z4corw.png"
     ],
 
     "background": [

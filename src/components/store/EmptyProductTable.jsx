@@ -2,9 +2,14 @@ import { PlusIcon } from "@heroicons/react/solid";
 import BoxIcon from "../../assets/BoxIcon";
 import DigitalProductIcon from "../../assets/DigitalProduct";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
 function EmptyProductTable() {
   const [oddNum, setOddNum] = useState(true);
+  const uniqueId = uuidv4();
+  const location = useLocation();
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -29,6 +34,7 @@ function EmptyProductTable() {
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">Create a product.</p>
                 <div className="mt-6">
+                <Link to={location.pathname+"/product/draft/"+uniqueId}>
                   <button
                     type="button"
                     className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -39,6 +45,7 @@ function EmptyProductTable() {
                     />
                     New Product
                   </button>
+                </Link>
                 </div>
               </div>
             </div>
