@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.11.2",
+    "@cloudinary/url-gen": "^1.11.0",
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^1.0.6",
     "@reduxjs/toolkit": "^1.9.5",
+    "cloudinary-react": "^1.8.1",
     "firebase": "^10.1.0",
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",
