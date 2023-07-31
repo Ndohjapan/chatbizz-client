@@ -1,9 +1,12 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import FileUpload from "./FileUpload";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProgressBar from "./ProgressBar";
 import ImageSelector from "./ImageSelector";
+import { showToast } from "../slices/authSlice";
+import errors from "../assets/error.json";
+import axios from "axios";
 
 const tabs = [
   { id: "Upload", name: "Upload", href: "#", current: true },
@@ -26,6 +29,8 @@ function Exanple() {
   const [percentages, setPercentages] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
+  const dispatch = useDispatch();
+
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -34,13 +39,13 @@ function Exanple() {
   }, []);
 
   const uploadImages = async () => {
-    if(selectedFiles.length < 1){
+    if (selectedFiles.length < 1) {
       return;
     }
-    
+  
     setLoading(true);
     setUploadStarted(true);
-
+  
     try {
       const uploadPromises = selectedFiles.map((file, index) => {
         const data = new FormData();
@@ -50,57 +55,58 @@ function Exanple() {
           import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
         );
         data.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
-        data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+        data.append(
+          "cloud_name",
+          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+        );
         data.append("folder", `chatbizz/users/${userInfo.uid}`);
-
+  
         return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open(
-            "POST",
-            `https://api.cloudinary.com/v1_1/${
-              import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-            }/image/upload`,
-            true
-          );
-
-          xhr.upload.onprogress = (event) => {
-            if (event.lengthComputable) {
-              const progress = (event.loaded / event.total) * 100;
-              updateArrayValue(index, progress)
-              updateProgress()
-            }
+          const config = {
+            onUploadProgress: (progressEvent) => {
+              const progress = (progressEvent.loaded / progressEvent.total) * 100;
+              updateArrayValue(index, progress);
+              updateProgress();
+            },
           };
-
-          xhr.onload = () => {
-            if (xhr.status === 200) {
-              const response = JSON.parse(xhr.response);
-              resolve(response);
-              console.log(response);
-            } else {
-              reject(xhr.statusText);
-            }
-          };
-
-          xhr.onerror = () => {
-            reject(xhr.statusText);
-          };
-
-          xhr.send(data);
+  
+          axios
+            .post(
+              `https://api.cloudinary.com/v1_1/${
+                import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+              }/image/upload`,
+              data,
+              config
+            )
+            .then((response) => {
+              resolve(response.data);
+              console.log(response.data);
+            })
+            .catch((error) => {
+              reject(error);
+            });
         });
       });
-
+  
       await Promise.all(uploadPromises);
-
+  
       setLoading(false);
       setTimeout(() => {
         setUploadStarted(false);
-      }, 1000)
+      }, 1000);
     } catch (error) {
       console.log(error);
+      dispatch(
+        showToast({
+          title: errors["title-error"],
+          message: "File Upload Error. Try again later",
+        })
+      );
       setLoading(false);
       setUploadStarted(false);
     }
   };
+  
 
   const handleClose = () => {
     setOpen(false);

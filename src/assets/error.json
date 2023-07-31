@@ -11,5 +11,7 @@
     "error-signup": "Error creating account. Try again",
     "error-signin": "Error signing in. Try again",
     "error-reset-password": "Error sending mail or user not found",
+    "error-max-file": "You can only upload up to 5 files.",
+    "error-file-size": "The following files exceed the maximum allowed size 5MB: ",
     "title-error": "Error"
 }

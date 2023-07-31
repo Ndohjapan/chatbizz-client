@@ -43,6 +43,8 @@ function ProgressBar({ percentage }) {
     </div>
   );
 
+  console.log(percentage);
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
       <div className="flex flex-col items-center justify-center">

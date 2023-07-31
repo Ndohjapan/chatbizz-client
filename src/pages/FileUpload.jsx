@@ -2,6 +2,9 @@
 import { useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/outline";
 import ImageUploadIcon from "../assets/ImageUploadIcon";
+import { useDispatch } from "react-redux";
+import { showToast } from "../slices/authSlice";
+import errors from "../assets/error.json"
 const maxFilesLimit = 10;
 const maxFileSize = 5242880;
 
@@ -18,6 +21,8 @@ function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFi
       }
     }
   }, [selectedFiles]);
+
+  const dispatch = useDispatch();
 
   const handleDragEnter = (event) => {
     event.preventDefault();
@@ -47,13 +52,13 @@ function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFi
     const fileArray = Array.from(files);
 
     if (fileArray.length > maxFilesLimit) {
-      alert(`You can only upload up to ${maxFilesLimit} files.`);
+      dispatch(showToast({title: errors["title-error"], message: errors["error-max-file"]}));
       return;
     }
-
+    
     const invalidFiles = fileArray.filter((file) => file.size > maxFileSize);
     if (invalidFiles.length > 0) {
-      alert(`The following files exceed the maximum allowed size (${(maxFileSize / 1024)/1024} MB): ${invalidFiles.map(file => file.name).join(", ")}`);
+      dispatch(showToast({title: errors["title-error"], message: errors["error-file-size"]+invalidFiles.map(file => file.name).join(", ")}));
       return;
     }
 
