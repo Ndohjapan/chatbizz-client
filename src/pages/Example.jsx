@@ -42,10 +42,10 @@ function Exanple() {
     if (selectedFiles.length < 1) {
       return;
     }
-  
+
     setLoading(true);
     setUploadStarted(true);
-  
+
     try {
       const uploadPromises = selectedFiles.map((file, index) => {
         const data = new FormData();
@@ -55,21 +55,19 @@ function Exanple() {
           import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
         );
         data.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
-        data.append(
-          "cloud_name",
-          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-        );
+        data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
         data.append("folder", `chatbizz/users/${userInfo.uid}`);
-  
+
         return new Promise((resolve, reject) => {
           const config = {
             onUploadProgress: (progressEvent) => {
-              const progress = (progressEvent.loaded / progressEvent.total) * 100;
+              const progress =
+                (progressEvent.loaded / progressEvent.total) * 100;
               updateArrayValue(index, progress);
               updateProgress();
             },
           };
-  
+
           axios
             .post(
               `https://api.cloudinary.com/v1_1/${
@@ -87,9 +85,9 @@ function Exanple() {
             });
         });
       });
-  
+
       await Promise.all(uploadPromises);
-  
+
       setLoading(false);
       setTimeout(() => {
         setUploadStarted(false);
@@ -106,7 +104,6 @@ function Exanple() {
       setUploadStarted(false);
     }
   };
-  
 
   const handleClose = () => {
     setOpen(false);
@@ -127,8 +124,7 @@ function Exanple() {
     const average = sum / percentages.length;
 
     setProgress(average);
-
-  }
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -179,7 +175,9 @@ function Exanple() {
                         <a
                           key={tab.name}
                           href={tab.href}
-                          onClick={() => {setTabVal(tab.id)}}
+                          onClick={() => {
+                            setTabVal(tab.id);
+                          }}
                           className={classNames(
                             tabVal === tab.id
                               ? "border-indigo-500 text-indigo-600"
@@ -218,7 +216,7 @@ function Exanple() {
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  disabled={loading? true : false}
+                  disabled={loading ? true : false}
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={uploadImages}
                 >

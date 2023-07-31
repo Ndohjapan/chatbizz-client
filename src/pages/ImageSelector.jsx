@@ -38,6 +38,34 @@ const files = [
     users: "2740 users",
     source: images.profile[4],
   },
+  {
+    id: 6,
+    title: "Trial Users",
+    description: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.profile[4],
+  },
+  {
+    id: 7,
+    title: "Trial Users",
+    description: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.profile[4],
+  },
+  {
+    id: 8,
+    title: "Trial Users",
+    description: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.profile[4],
+  },
+  {
+    id: 9,
+    title: "Trial Users",
+    description: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.profile[4],
+  },
 ];
 
 function classNames(...classes) {
@@ -59,7 +87,7 @@ export default function ImageSelector() {
 
   return (
     <>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-4 max-h-96 overflow-y-scroll">
         <div>
           <h1 className="text-base font-medium text-gray-900">
             Select Image(s)
