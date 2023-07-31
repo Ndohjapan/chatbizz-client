@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { TrashIcon } from "@heroicons/react/outline";
 import ImageUploadIcon from "../assets/ImageUploadIcon";
 const maxFilesLimit = 10;

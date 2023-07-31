@@ -1,16 +1,13 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import StoreInformation from "../components/home/store-create/StoreInformation";
-import QRCodeView from "../components/home/store-create/QRCodeView";
 import FileUpload from "./FileUpload";
-import { getAuth } from "firebase/auth";
-import app from "../config/firebase-config";
 import { useSelector } from "react-redux";
 import ProgressBar from "./ProgressBar";
+import ImageSelector from "./ImageSelector";
 
 const tabs = [
-  { name: "Upload", href: "#", current: true },
-  { name: "All Files", href: "#", current: false },
+  { id: "Upload", name: "Upload", href: "#", current: true },
+  { id: "All", name: "All Files", href: "#", current: false },
 ];
 
 function classNames(...classes) {
@@ -24,7 +21,6 @@ function Exanple() {
   const [tabVal, setTabVal] = useState("Upload");
   const [loading, setLoading] = useState(false);
   const [uploadStarted, setUploadStarted] = useState(false);
-  const [urls, setUrls] = useState([]);
   const [isDragActive, setIsDragActive] = useState(false);
   const [progress, setProgress] = useState(0);
   const [percentages, setPercentages] = useState([]);
@@ -93,9 +89,8 @@ function Exanple() {
         });
       });
 
-      const responses = await Promise.all(uploadPromises);
+      await Promise.all(uploadPromises);
 
-      setUrls(responses.map((res) => res.public_id));
       setLoading(false);
       setTimeout(() => {
         setUploadStarted(false);
@@ -178,8 +173,9 @@ function Exanple() {
                         <a
                           key={tab.name}
                           href={tab.href}
+                          onClick={() => {setTabVal(tab.id)}}
                           className={classNames(
-                            tab.current
+                            tabVal === tab.id
                               ? "border-indigo-500 text-indigo-600"
                               : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300",
                             "whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm"
@@ -208,9 +204,7 @@ function Exanple() {
                       />
                     );
                   case "All":
-                    return <StoreInformation />;
-                  case 3:
-                    return <QRCodeView />;
+                    return <ImageSelector />;
                   default:
                     return null;
                 }
