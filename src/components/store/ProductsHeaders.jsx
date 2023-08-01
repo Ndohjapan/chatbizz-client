@@ -1,13 +1,16 @@
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/solid";
+import { Link, useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 function ProductsHeader() {
-
+  const uniqueId = uuidv4();
+  const location = useLocation();
   return (
     <>
       <header className="bg-white shadow">
@@ -18,12 +21,14 @@ function ProductsHeader() {
             </h1>
           </div>
           <div className="hidden sm:mt-0 sm:ml-4 md:block">
-            <button
-              type="button"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Create
-            </button>
+            <Link to={location.pathname + "/product/draft/" + uniqueId}>
+              <button
+                type="button"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Create
+              </button>
+            </Link>
           </div>
           <div className="flex items-center justify-between sm:mt-0 sm:ml-6 sm:flex-shrink-0 sm:justify-start md:hidden">
             <Menu as="div" className="ml-3 relative inline-block text-left">
@@ -47,7 +52,8 @@ function ProductsHeader() {
                   <div className="py-1">
                     <Menu.Item>
                       {({ active }) => (
-                        <a
+                        <Link
+                          to={location.pathname + "/product/draft/" + uniqueId}
                           className={classNames(
                             active
                               ? "bg-gray-100 text-gray-900"
@@ -56,7 +62,7 @@ function ProductsHeader() {
                           )}
                         >
                           <span>Create</span>
-                        </a>
+                        </Link>
                       )}
                     </Menu.Item>
                   </div>

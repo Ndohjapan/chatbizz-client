@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.11.2",
+    "@cloudinary/url-gen": "^1.11.0",
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^1.0.6",
     "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.4.0",
+    "cloudinary-react": "^1.8.1",
     "firebase": "^10.1.0",
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",
@@ -20,7 +24,8 @@
     "react-icons": "^4.10.1",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.14.2",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
