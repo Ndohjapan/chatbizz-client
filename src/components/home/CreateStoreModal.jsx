@@ -1,9 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
-import StoreTypes from "./store-create/StoreTypes";
-import StoreInformation from "./store-create/StoreInformation";
-import QRCodeView from "./store-create/QRCodeView";
+import StoreTypes from "./sub-menu/StoreTypes";
+import StoreInformation from "./sub-menu/StoreInformation";
+import QRCodeView from "./sub-menu/QRCodeView";
 
 const steps = [
   { name: "Step 1", href: "#", status: "complete", num: 1 },
