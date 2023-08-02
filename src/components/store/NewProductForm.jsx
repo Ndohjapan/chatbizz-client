@@ -4,13 +4,67 @@ import CreateVariantDrawer from "./CreateVariantDrawer";
 import { TrashIcon } from "@heroicons/react/outline";
 import StatusMoreIcon from "../../assets/StatusMoreIcon";
 import ImageUploadIcon from "../../assets/ImageUploadIcon";
+import info from "../../assets/information.json";
 import { PiYoutubeLogoThin } from "react-icons/pi";
+import images from "../../assets/images.json";
+import { v4 as uuidv4 } from 'uuid';
+import BoxIcon from "../../assets/BoxIcon";
+
+const variants = []
+
+const variants2 = [
+  {
+    id: 1,
+    name: "Hello world",
+    description: "From the world above",
+    feature: "1. Can help the world. 2. Can cure hunger",
+    images: [images.profile[0], images.profile[1], images.profile[2]],
+    price: {
+      amount: 200,
+      currency: "NGN",
+    },
+    weight: {
+      amount: 10,
+      unit: "Kg",
+    },
+    stock: 22,
+    color: "orange",
+    size: 22,
+    dimension: "22 x 15.47 x 0.79 inches",
+    users: "Children",
+    sex: "Female",
+  },
+  {
+    id: 2,
+    name: "Hello world",
+    description: "From the world above",
+    feature: "1. Can help the world. 2. Can cure hunger",
+    images: [images.profile[1], images.profile[2], images.profile[3]],
+    price: {
+      amount: 200,
+      currency: "NGN",
+    },
+    weight: {
+      amount: 10,
+      unit: "Kg",
+    },
+    stock: 22,
+    color: "orange",
+    size: 22,
+    dimension: "22 x 15.47 x 0.79 inches",
+    users: "Children",
+    sex: "Female",
+  },
+];
 
 function NewProductForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [IsDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [stateVariants, setStateVariants] = useState([]);
+  const [selectedVariant, setSelectVariant] = useState({});
   const [displayImages, setDisplayImages] = useState([]);
   const [links, setLinks] = useState([""]);
+
 
   const addLink = (e) => {
     e.preventDefault();
@@ -39,6 +93,28 @@ function NewProductForm() {
 
   const updateDisplayImages = (images) => {
     setDisplayImages(images);
+  };
+
+  const createVariant = (newVariant) => {
+    newVariant.id = uuidv4();
+    setStateVariants([...stateVariants, newVariant]);
+  }
+
+  const updateVariant = (updatedVariant) => {
+    const update =  stateVariants.map((variant) => {
+        console.log(variant.id, updateVariant.id);
+      if (variant.id === updatedVariant.id) {
+        return {
+          ...variant,
+          ...updatedVariant,
+        };
+      }
+      return variant;
+    });
+
+
+
+    setStateVariants(update);
   };
 
   return (
@@ -72,7 +148,7 @@ function NewProductForm() {
                       rows={3}
                       required
                       className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                      placeholder="Cleverfy Shower Steamers Aromatherapy - Variety Pack of 6 Shower Bombs with Essential Oils. Personal Care and Relaxation Birthday Gifts for Women and Men. Purple Set"
+                      placeholder={info.products[0].name}
                     />
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
@@ -93,11 +169,7 @@ function NewProductForm() {
                       name="description"
                       rows={3}
                       className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                      placeholder="Ingredients
-                  Sodium Bicarbonate, Citric Acid, Zea Mays (corn) Starch, Essential Oil & Fragrance, DL-Menthol, Sodium Chloride, Dried flower, Sodium Coco-Sulfate, PEG400. Pigment contains: D&C Red 33 (CI 17200), FD&C Yellow 5 (CI 19140), FD&C Blue No.1 (CI 42090), FD&C Red 40 (CI 16035), D&C Red 27 (CI 45410)
-                  
-                  Legal Disclaimer
-                  Statements regarding dietary supplements have not been evaluated by the FDA and are not intended to diagnose, treat, cure, or prevent any disease or health condition"
+                      placeholder={info.products[0].description}
                     />
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
@@ -119,13 +191,11 @@ function NewProductForm() {
                       name="features"
                       rows={3}
                       className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                      placeholder="- Dual-Sided Design: Start with 9 teeth side for stubborn mats and tangles and finish with 17 teeth side for thinning and deshedding. Achieve faster and more professional dematting and grooming results
-                  - Multiple uses with a single comb: The pet grooming tool not only works great as a dematting brush or detangling comb, but also as an undercoat comb or deshedding rake. The dematting tool for dogs and cats can comb to cut a matt or tangle then be used as a deshedding brush or deshedding comb"
+                      placeholder={info.products[0].feature}
                     />
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
-                    With more benefits and features, the bot can maximize its
-                    sales and convincing power.
+                    {info.explainer.product.feature}
                   </p>
                 </div>
               </form>
@@ -227,7 +297,7 @@ function NewProductForm() {
                       <div className="mt-1 relative rounded-md shadow-sm border">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <span className="text-gray-500 sm:text-sm">
-                            <PiYoutubeLogoThin className="text-3xl"/>
+                            <PiYoutubeLogoThin className="text-3xl" />
                           </span>
                         </div>
                         <input
@@ -239,16 +309,20 @@ function NewProductForm() {
                           value={link}
                           onChange={(e) => handleChange(index, e.target.value)}
                         />
-                        <button
-                          type="button"
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                          onClick={() => removeLink(index)}
-                        >
-                          <TrashIcon
-                            className="h-5 w-5 text-red-400"
-                            aria-hidden="true"
-                          />
-                        </button>
+                        {index === 0 ? (
+                          <></>
+                        ) : (
+                          <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                            onClick={() => removeLink(index)}
+                          >
+                            <TrashIcon
+                              className="h-5 w-5 text-red-400"
+                              aria-hidden="true"
+                            />
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -322,7 +396,7 @@ function NewProductForm() {
                     </label>
                     <div className="mt-1 relative rounded-md shadow-sm border">
                       <input
-                        type="text"
+                        type="number"
                         name="weight"
                         id="weight"
                         className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
@@ -353,7 +427,7 @@ function NewProductForm() {
                     </label>
                     <div className="mt-1 relative rounded-md shadow-sm border">
                       <input
-                        type="text"
+                        type="number"
                         name="stock"
                         id="stock"
                         className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
@@ -422,7 +496,7 @@ function NewProductForm() {
                       name="size"
                       id="size"
                       autoComplete="41"
-                      placeholder="41"
+                      placeholder="41, XL, XXL, L, S, 22"
                       className="mt-1 border p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
@@ -487,7 +561,7 @@ function NewProductForm() {
                     Variants
                   </label>
                   <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                    {displayImages.length === 0 ? (
+                    {stateVariants.length === 0 ? (
                       <>
                         <div
                           className="space-y-1 text-center cursor-pointer"
@@ -507,33 +581,39 @@ function NewProductForm() {
                     ) : (
                       <ul
                         role="list"
-                        className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
+                        className="grid grid-cols-5 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-6 xl:gap-x-8"
                       >
-                        {displayImages.map((image) => (
-                          <li key={image.source} className="relative">
-                            <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                        {stateVariants.map((variant) => (
+                          <li key={variant.id} className="relative">
+                            <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg  focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                               <img
-                                src={image.source}
+                                src={variant.images[0] ? variant.images[0].source : images.icons.box}
                                 alt=""
-                                className="object-cover pointer-events-none group-hover:opacity-75"
+                                onClick={() => {setSelectVariant(variant); setIsDrawerOpen(true)}}
+                                className="object-cover object-center group-hover:opacity-75 w-full h-full cursor-pointer"
+                                style={{
+                                  maxHeight: "50px",
+                                  maxWidth: "50px",
+                                  minHeight: "50px",
+                                  minWidth: "50px"
+                                }}
                               />
-                              <button
-                                type="button"
-                                className="absolute inset-0 focus:outline-none"
-                              >
-                                <span className="sr-only">
-                                  View details for {image.title}
-                                </span>
-                              </button>
                             </div>
                             <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                              {image.title}
+                              {variant.color}
                             </p>
                             <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                              {image.size}
+                              {variant.size}
                             </p>
                           </li>
                         ))}
+
+                        <li
+                          className="space-y-1 text-center cursor-pointer"
+                          onClick={() => {setSelectVariant({}); setIsDrawerOpen(true)}}
+                        >
+                          <StatusMoreIcon />
+                        </li>
                       </ul>
                     )}
                   </div>
@@ -572,6 +652,9 @@ function NewProductForm() {
         <CreateVariantDrawer
           IsDrawerOpen={IsDrawerOpen}
           toggleDrawer={toggleDrawer}
+        variant={selectedVariant}
+        createVariant={createVariant}
+        updateVariant={updateVariant}
         />
       ) : (
         <></>
