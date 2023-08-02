@@ -1,10 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
+import info from "../../assets/information.json";
 import VariantsImageUpload from "./VariantsImageUpload";
+import ImageUploadIcon from "../../assets/ImageUploadIcon";
 
 // eslint-disable-next-line react/prop-types
-export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
+export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, variant, createVariant, updateVariant }) {
   const [open, setOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [variantDisplayImages, setVariantDisplayImages] = useState([]);
@@ -18,16 +20,49 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
 
   useEffect(() => {
     setOpen(IsDrawerOpen);
-  }, [IsDrawerOpen]);
+    if(variant.images){
+        setVariantDisplayImages(variant.images)
+    }
+  }, [IsDrawerOpen, variant]);
 
   const handleClose = () => {
-    if(!isModalOpen){
-        setOpen(false);
-        setTimeout(() => {
-          toggleDrawer(false);
-        }, 300);
+    if (!isModalOpen) {
+      setOpen(false);
+      setTimeout(() => {
+        toggleDrawer(false);
+      }, 300);
     }
   };
+
+  const submitForm = () => {
+    const name = document.getElementById("variantName").value; 
+    const description = document.getElementById("variantDescription").value;
+    const feature = document.getElementById("variantFeatures").value;
+    const images = variantDisplayImages
+    const price = document.getElementById("variantPrice").value;
+    const currency = document.getElementById("variantCurrency").value;
+    const weight = document.getElementById("variantWeight").value;
+    const unit = document.getElementById("variantUnit").value;
+    const stock = document.getElementById("variantStock").value;
+    const group = document.getElementById("variantGroup").value;
+    const color = document.getElementById("variantColor").value;
+    const dimension = document.getElementById("variantDimension").value;
+    const size = document.getElementById("variantSize").value;
+    const users = document.getElementById("variantUsers").value;
+    const sex = document.getElementById("variantSex").value;
+
+    const form = {name, description, feature, images, price, weight, currency, group, stock, unit, color, dimension, size, users, sex};
+
+    if(variant.id){
+        form.id = variant.id;
+        updateVariant(form);
+        handleClose()
+    }else{
+        createVariant(form);
+        handleClose();
+    }
+
+  }
 
   return (
     <>
@@ -97,7 +132,7 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
                                   >
                                     <div>
                                       <label
-                                        htmlFor="name"
+                                        htmlFor="variantName"
                                         className="block text-sm font-medium text-gray-700"
                                       >
                                         Variant Name{" "}
@@ -107,12 +142,13 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
                                       </label>
                                       <div className="mt-1">
                                         <textarea
-                                          id="name"
-                                          name="name"
+                                          id="variantName"
+                                          name="variantName"
                                           rows={3}
                                           required
                                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                                          placeholder="Purple Gift Box Set "
+                                          placeholder={info.variants[0].name}
+                                          defaultValue={variant.name ? variant.name : " "}
                                         />
                                       </div>
                                       <p className="mt-2 text-sm text-gray-500">
@@ -123,18 +159,19 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
 
                                     <div>
                                       <label
-                                        htmlFor="description"
+                                        htmlFor="variantDescription"
                                         className="block text-sm font-medium text-gray-700"
                                       >
                                         Variant Description
                                       </label>
                                       <div className="mt-1">
                                         <textarea
-                                          id="description"
-                                          name="description"
+                                          id="variantDescription"
+                                          name="variantDescription"
                                           rows={3}
                                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                                          placeholder="Decorated and colorful tablet"
+                                          placeholder={info.variants[0].description}
+                                          defaultValue={variant.description ? variant.description : ""}
                                         />
                                       </div>
                                       <p className="mt-2 text-sm text-gray-500">
@@ -144,7 +181,7 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
 
                                     <div>
                                       <label
-                                        htmlFor="features"
+                                        htmlFor="variantFeatures"
                                         className="block text-sm font-medium text-gray-700"
                                       >
                                         Features / Benefits{" "}
@@ -154,18 +191,16 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
                                       </label>
                                       <div className="mt-1">
                                         <textarea
-                                          id="features"
-                                          name="features"
+                                          id="variantFeatures"
+                                          name="variantFeatures"
                                           rows={3}
                                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                                          placeholder="- Mood boost 
-                                        - Uplifting - Invigorating"
+                                          placeholder={info.variants[0].features}
+                                          defaultValue={variant.feature ? variant.feature : ""}
                                         />
                                       </div>
                                       <p className="mt-2 text-sm text-gray-500">
-                                        With more benefits and features, the bot
-                                        can maximize its sales and convincing
-                                        power.
+                                        {info.explainer.product.feature}
                                       </p>
                                     </div>
                                   </form>
@@ -197,20 +232,7 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
                                         {variantDisplayImages.length === 0 ? (
                                           <>
                                             <div className="space-y-1 text-center">
-                                              <svg
-                                                className="mx-auto h-12 w-12 text-gray-400"
-                                                stroke="currentColor"
-                                                fill="none"
-                                                viewBox="0 0 48 48"
-                                                aria-hidden="true"
-                                              >
-                                                <path
-                                                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                  strokeWidth={2}
-                                                  strokeLinecap="round"
-                                                  strokeLinejoin="round"
-                                                />
-                                              </svg>
+                                              <ImageUploadIcon />
                                               <div className="flex text-sm text-gray-600">
                                                 <p className="pl-1">
                                                   Upload images or select from
@@ -227,35 +249,37 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
                                             role="list"
                                             className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
                                           >
-                                            {variantDisplayImages.map((image) => (
-                                              <li
-                                                key={image.source}
-                                                className="relative"
-                                              >
-                                                <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
-                                                  <img
-                                                    src={image.source}
-                                                    alt=""
-                                                    className="object-cover pointer-events-none group-hover:opacity-75"
-                                                  />
-                                                  <button
-                                                    type="button"
-                                                    className="absolute inset-0 focus:outline-none"
-                                                  >
-                                                    <span className="sr-only">
-                                                      View details for{" "}
-                                                      {image.title}
-                                                    </span>
-                                                  </button>
-                                                </div>
-                                                <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                                                  {image.title}
-                                                </p>
-                                                <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                                                  {image.size}
-                                                </p>
-                                              </li>
-                                            ))}
+                                            {variantDisplayImages.map(
+                                              (image) => (
+                                                <li
+                                                  key={image.source}
+                                                  className="relative"
+                                                >
+                                                  <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                                                    <img
+                                                      src={image.source}
+                                                      alt=""
+                                                      className="object-cover pointer-events-none group-hover:opacity-75"
+                                                    />
+                                                    <button
+                                                      type="button"
+                                                      className="absolute inset-0 focus:outline-none"
+                                                    >
+                                                      <span className="sr-only">
+                                                        View details for{" "}
+                                                        {image.title}
+                                                      </span>
+                                                    </button>
+                                                  </div>
+                                                  <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
+                                                    {image.title}
+                                                  </p>
+                                                  <p className="block text-sm font-medium text-gray-500 pointer-events-none">
+                                                    {image.size}
+                                                  </p>
+                                                </li>
+                                              )
+                                            )}
                                           </ul>
                                         )}
                                       </div>
@@ -280,29 +304,34 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
                                     <div className="grid grid-cols-6 gap-6">
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="price"
+                                          htmlFor="variantPrice"
                                           className="block text-sm font-medium text-gray-700"
                                         >
-                                          Price
+                                          Price {" "}
+                                        <span className="text-red-400 font-bold">
+                                          *
+                                        </span>
                                         </label>
                                         <div className="mt-1 relative rounded-md shadow-sm border">
                                           <input
                                             type="number"
-                                            name="price"
-                                            id="price"
+                                            name="variantPrice"
+                                            id="variantPrice"
+                                            required
                                             className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
-                                            placeholder="0.00"
+                                            placeholder={info.variants[0].price}
+                                            defaultValue={variant.price ? variant.price : ""}
                                           />
                                           <div className="absolute inset-y-0 right-0 flex items-center">
                                             <label
-                                              htmlFor="price"
+                                              htmlFor="variantCurrency"
                                               className="sr-only"
                                             >
                                               Price
                                             </label>
                                             <select
-                                              id="price"
-                                              name="price"
+                                              id="variantCurrency"
+                                              name="variantCurrency"
                                               className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                                             >
                                               <option>NGN</option>
@@ -317,29 +346,30 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="weight"
+                                          htmlFor="variantWeight"
                                           className="block text-sm font-medium text-gray-700"
                                         >
                                           Weight
                                         </label>
                                         <div className="mt-1 relative rounded-md shadow-sm border">
                                           <input
-                                            type="text"
-                                            name="weight"
-                                            id="weight"
+                                            type="number"
+                                            name="variantWeight"
+                                            id="variantWeight"
                                             className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
-                                            placeholder="0.00"
+                                            placeholder={info.variants[0].weight}
+                                            defaultValue={variant.weight ? variant.weight : ""}
                                           />
                                           <div className="absolute inset-y-0 right-0 flex items-center">
                                             <label
-                                              htmlFor="unit"
+                                              htmlFor="variantUnit"
                                               className="sr-only"
                                             >
                                               Unit
                                             </label>
                                             <select
-                                              id="unit"
-                                              name="unit"
+                                              id="variantUnit"
+                                              name="variantUnit"
                                               className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                                             >
                                               <option>Kg</option>
@@ -351,29 +381,30 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="stock"
+                                          htmlFor="variantStock"
                                           className="block text-sm font-medium text-gray-700"
                                         >
                                           In Stock
                                         </label>
                                         <div className="mt-1 relative rounded-md shadow-sm border">
                                           <input
-                                            type="text"
-                                            name="stock"
-                                            id="stock"
+                                            type="number"
+                                            name="variantStock"
+                                            id="variantStock"
                                             className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
-                                            placeholder="0"
+                                            placeholder={info.variants[0].stock}
+                                            defaultValue={variant.stock ? variant.stock : ""}
                                           />
                                           <div className="absolute inset-y-0 right-0 flex items-center">
                                             <label
-                                              htmlFor="unit"
+                                              htmlFor="variantGroup"
                                               className="sr-only"
                                             >
                                               Unit
                                             </label>
                                             <select
-                                              id="unit"
-                                              name="unit"
+                                              id="variantGroup"
+                                              name="variantGroup"
                                               className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                                             >
                                               <option>Cartons</option>
@@ -386,66 +417,69 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="first-name"
+                                          htmlFor="variantColor"
                                           className="block text-sm font-medium text-gray-700"
                                         >
                                           Color
                                         </label>
                                         <input
                                           type="text"
-                                          name="first-name"
-                                          id="first-name"
+                                          name="variantColor"
+                                          id="variantColor"
                                           autoComplete="given-name"
-                                          placeholder="yellow, orange, red"
+                                          placeholder={info.variants[0].color}
+                                          defaultValue={variant.color ? variant.color : ""}
                                           className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
                                         />
                                       </div>
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="dimension"
+                                          htmlFor="variantDimension"
                                           className="block text-sm font-medium text-gray-700"
                                         >
                                           Dimension
                                         </label>
                                         <input
-                                          type="dimension"
-                                          name="dimension"
-                                          id="dimension"
+                                          type="variantDimension"
+                                          name="variantDimension"
+                                          id="variantDimension"
                                           autoComplete="7.87 x 5.31 x 0.79 inches"
-                                          placeholder="7.87 x 5.31 x 0.79 inches"
+                                          placeholder={info.variants[0].dimension}
+                                          defaultValue={variant.dimension ? variant.dimension : ""}
                                           className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
                                         />
                                       </div>
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="size"
+                                          htmlFor="variantSize"
                                           className="block text-sm font-medium text-gray-700"
                                         >
                                           Size
                                         </label>
                                         <input
                                           type="text"
-                                          name="size"
-                                          id="size"
+                                          name="variantSize"
+                                          id="variantSize"
                                           autoComplete="41"
-                                          placeholder="41"
+                                          placeholder={info.variants[0].size}
+                                          defaultValue={variant.size ? variant.size : ""}
                                           className="mt-1 border p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                         />
                                       </div>
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="users"
+                                          htmlFor="variantUsers"
                                           className="block text-sm font-medium text-gray-700"
                                         >
                                           Users
                                         </label>
                                         <select
-                                          id="users"
-                                          name="users"
-                                          autoComplete="users"
+                                          id="variantUsers"
+                                          name="variantUsers"
+                                          autoComplete="variantUsers"
                                           className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         >
                                           <option>All</option>
@@ -456,15 +490,15 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="sex"
+                                          htmlFor="variantSex"
                                           className="block text-sm font-medium text-gray-700"
                                         >
                                           Sex
                                         </label>
                                         <select
-                                          id="sex"
-                                          name="sex"
-                                          autoComplete="sex"
+                                          id="variantSex"
+                                          name="variantSex"
+                                          autoComplete="variantSex"
                                           className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         >
                                           <option>Unisex</option>
@@ -491,10 +525,10 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer }) {
                         Cancel
                       </button>
                       <button
-                        type="submit"
+                        onClick={() => {submitForm()}}
                         className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       >
-                        Save
+                        {variant.id ? "Update" : "Save"}
                       </button>
                     </div>
                   </div>

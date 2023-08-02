@@ -29,5 +29,8 @@
     "background": [
         "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
         "https://images.unsplash.com/photo-1470847355775-e0e3c35a9a2c?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1825&q=80"
-    ]
+    ],
+    "icons": {
+        "box": "https://res.cloudinary.com/lcu-feeding/image/upload/v1690989522/chatbizz/resources/box_sfr4kh.png"
+    }
 }
