@@ -53,8 +53,6 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
 
     const form = {name, description, feature, images, price, weight, currency, group, stock, unit, color, dimension, size, users, sex};
 
-    console.log(form);
-
     if(variant.id){
         form.id = variant.id;
         updateVariant(form);

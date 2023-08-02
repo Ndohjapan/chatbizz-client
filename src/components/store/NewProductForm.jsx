@@ -7,10 +7,10 @@ import ImageUploadIcon from "../../assets/ImageUploadIcon";
 import info from "../../assets/information.json";
 import { PiYoutubeLogoThin } from "react-icons/pi";
 import images from "../../assets/images.json";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import BoxIcon from "../../assets/BoxIcon";
 
-const variants = []
+const variants = [];
 
 const variants2 = [
   {
@@ -65,7 +65,6 @@ function NewProductForm() {
   const [displayImages, setDisplayImages] = useState([]);
   const [links, setLinks] = useState([""]);
 
-
   const addLink = (e) => {
     e.preventDefault();
     setLinks([...links, ""]);
@@ -98,11 +97,10 @@ function NewProductForm() {
   const createVariant = (newVariant) => {
     newVariant.id = uuidv4();
     setStateVariants([...stateVariants, newVariant]);
-  }
+  };
 
   const updateVariant = (updatedVariant) => {
-    const update =  stateVariants.map((variant) => {
-        console.log(variant.id, updateVariant.id);
+    const update = stateVariants.map((variant) => {
       if (variant.id === updatedVariant.id) {
         return {
           ...variant,
@@ -112,8 +110,11 @@ function NewProductForm() {
       return variant;
     });
 
+    setStateVariants(update);
+};
 
-
+const deleteVariant = (idToDelete) => {
+    const update =  stateVariants.filter((variant) => variant.id !== idToDelete);
     setStateVariants(update);
   };
 
@@ -585,17 +586,27 @@ function NewProductForm() {
                       >
                         {stateVariants.map((variant) => (
                           <li key={variant.id} className="relative">
+                            <div className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer" onClick={() => {deleteVariant(variant.id)}}>
+                              <TrashIcon className="text-red-400" />
+                            </div>
                             <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg  focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                               <img
-                                src={variant.images[0] ? variant.images[0].source : images.icons.box}
+                                src={
+                                  variant.images[0]
+                                    ? variant.images[0].source
+                                    : images.icons.box
+                                }
                                 alt=""
-                                onClick={() => {setSelectVariant(variant); setIsDrawerOpen(true)}}
+                                onClick={() => {
+                                  setSelectVariant(variant);
+                                  setIsDrawerOpen(true);
+                                }}
                                 className="object-cover object-center group-hover:opacity-75 w-full h-full cursor-pointer"
                                 style={{
                                   maxHeight: "50px",
                                   maxWidth: "50px",
                                   minHeight: "50px",
-                                  minWidth: "50px"
+                                  minWidth: "50px",
                                 }}
                               />
                             </div>
@@ -610,7 +621,10 @@ function NewProductForm() {
 
                         <li
                           className="space-y-1 text-center cursor-pointer"
-                          onClick={() => {setSelectVariant({}); setIsDrawerOpen(true)}}
+                          onClick={() => {
+                            setSelectVariant({});
+                            setIsDrawerOpen(true);
+                          }}
                         >
                           <StatusMoreIcon />
                         </li>
@@ -652,9 +666,9 @@ function NewProductForm() {
         <CreateVariantDrawer
           IsDrawerOpen={IsDrawerOpen}
           toggleDrawer={toggleDrawer}
-        variant={selectedVariant}
-        createVariant={createVariant}
-        updateVariant={updateVariant}
+          variant={selectedVariant}
+          createVariant={createVariant}
+          updateVariant={updateVariant}
         />
       ) : (
         <></>
