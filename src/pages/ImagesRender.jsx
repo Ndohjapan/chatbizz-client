@@ -86,7 +86,7 @@ function ImagesRender() {
   const handleAccordionToggle = (isOpen) => {
     setIsAccordionOpen(isOpen);
     if (!isOpen) {
-      setIsLoading(true); // Set isLoading back to true when accordion is closed
+      setIsLoading(true);
     }
   };
 
@@ -158,7 +158,7 @@ function ImagesRender() {
                     "font-medium text-2xl"
                   )}
                 >
-                                    <h3 className="text-2xl leading-6 font-medium text-gray-900">
+                  <h3 className="text-2xl leading-6 font-medium text-gray-900">
                     Videos
                   </h3>
                   <p className="mt-1 max-w-2xl text-sm text-gray-500">
@@ -170,13 +170,17 @@ function ImagesRender() {
                     <MinusSmIcon
                       className="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
                       aria-hidden="true"
-                      onClick={() => {handleAccordionToggle(false)}}
+                      onClick={() => {
+                        handleAccordionToggle(false);
+                      }}
                     />
                   ) : (
                     <PlusSmIcon
                       className="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
                       aria-hidden="true"
-                      onClick={() => {handleAccordionToggle(true)}}
+                      onClick={() => {
+                        handleAccordionToggle(true);
+                      }}
                     />
                   )}
                 </span>

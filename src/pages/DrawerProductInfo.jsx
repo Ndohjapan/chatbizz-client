@@ -1,102 +1,15 @@
-import { useState } from "react";
-import images from "../assets/images.json";
 import info from "../assets/information.json";
-import { MinusSmIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
+import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
-import Drawer from "./Drawer";
-import StatusMoreIcon from "../assets/StatusMoreIcon";
-import { v4 as uuidv4 } from "uuid";
-import CreateVariantDrawer from "../components/store/CreateVariantDrawer";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const variants2 = [
-    {
-      id: 1,
-      name: "Hello world",
-      description: "From the world above",
-      feature: "1. Can help the world. 2. Can cure hunger",
-      images: [images.profile[2], images.profile[1], images.profile[2]],
-      price: {
-        amount: 200,
-        currency: "NGN",
-      },
-      weight: {
-        amount: 10,
-        unit: "Kg",
-      },
-      stock: 22,
-      color: ["orange"],
-      size: [22],
-      dimension: "22 x 15.47 x 0.79 inches",
-      users: "Children",
-      sex: "Female",
-    },
-    {
-      id: 2,
-      name: "Hello world",
-      description: "From the world above",
-      feature: "1. Can help the world. 2. Can cure hunger",
-      images: [images.profile[1], images.profile[2], images.profile[3]],
-      price: {
-        amount: 200,
-        currency: "NGN",
-      },
-      weight: {
-        amount: 10,
-        unit: "Kg",
-      },
-      stock: 22,
-      color: "orange",
-      size: 22,
-      dimension: "22 x 15.47 x 0.79 inches",
-      users: "Children",
-      sex: "Female",
-    },
-  ];
-
-export default function BasicInfo() {
-  const [drawerProductOpen, setDrawerProductOpen] = useState(false);
-  const [drawerNewVariantOpen, setDrawerNewVariantOpen] = useState(false);
-  const [stateVariants, setStateVariants] = useState(variants2);
-
-  const toggleProductDrawer = (toggle) => {
-    setDrawerProductOpen(toggle);
-  };
-
-  const toggleNewVariantDrawer = (toggle) => {
-    setDrawerNewVariantOpen(toggle);
-  };
-
-  const createVariant = (newVariant) => {
-    newVariant.id = uuidv4();
-    setStateVariants([...stateVariants, newVariant]);
-  };
-
-  const updateVariant = (updatedVariant) => {
-    const update = stateVariants.map((variant) => {
-      if (variant.id === updatedVariant.id) {
-        return {
-          ...variant,
-          ...updatedVariant,
-        };
-      }
-      return variant;
-    });
-
-    setStateVariants(update);
-};
-
-const deleteVariant = (idToDelete) => {
-    const update =  stateVariants.filter((variant) => variant.id !== idToDelete);
-    setStateVariants(update);
-  };
-
+export default function DrawerProductInfo() {
   return (
     <>
-      <Disclosure as="div" key={"yt-videos"} defaultOpen={true}>
+          <Disclosure as="div" key={"yt-videos"} defaultOpen={true}>
         {({ open }) => (
           <>
             <h3>
@@ -354,91 +267,10 @@ const deleteVariant = (idToDelete) => {
                 </>
               }
             </Disclosure.Panel>
-            
-            <div className="mt-5 md:mt-0 md:col-span-2">
-              <form className="space-y-6" action="#" method="POST">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Variants
-                  </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                    {stateVariants.length === 0 ? (
-                      <>
-                        <div
-                          className="space-y-1 text-center cursor-pointer"
-                          onClick={() => setDrawerNewVariantOpen(true)}
-                        >
-                          <StatusMoreIcon />
-                          <div className="flex text-sm text-gray-600">
-                            <p className="pl-1">
-                              Crates variants of the same product.
-                            </p>
-                          </div>
-                          <p className="text-xs text-gray-500">
-                            Shoes, Clothes, Electronics, Kitchenwares
-                          </p>
-                        </div>
-                      </>
-                    ) : (
-                      <ul
-                        role="list"
-                        className="grid grid-cols-5 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-6 xl:gap-x-8"
-                      >
-                        {stateVariants.map((variant) => (
-                          <li key={variant.id} className="relative">
-                            <div className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer" onClick={() => {deleteVariant(variant.id)}}>
-                              <TrashIcon className="text-red-400" />
-                            </div>
-                            <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg  focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
-                              <img
-                                src={
-                                  variant.images[0]
-                                    ? variant.images[0]
-                                    : images.icons.box
-                                }
-                                alt=""
-                                onClick={() => {
-                                  setDrawerProductOpen(true);
-                                }}
-                                className="object-cover object-center group-hover:opacity-75 w-full h-full cursor-pointer"
-                                style={{
-                                  maxHeight: "50px",
-                                  maxWidth: "50px",
-                                  minHeight: "50px",
-                                  minWidth: "50px",
-                                }}
-                              />
-                            </div>
-                            <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                              {variant.color}
-                            </p>
-                            <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                              {variant.size}
-                            </p>
-                          </li>
-                        ))}
-
-                        <li
-                          className="space-y-1 text-center cursor-pointer"
-                          onClick={() => {
-                            setDrawerNewVariantOpen(true);
-                          }}
-                        >
-                          <StatusMoreIcon />
-                        </li>
-                      </ul>
-                    )}
-                  </div>
-                </div>
-              </form>
-            </div>
 
           </>
         )}
       </Disclosure>
-
-      {drawerProductOpen ? <Drawer toggleDrawer={toggleProductDrawer}/> : <></>}
-      {drawerNewVariantOpen ? <CreateVariantDrawer IsDrawerOpen={drawerNewVariantOpen} toggleDrawer={toggleNewVariantDrawer} createVariant={createVariant} updateVariant={updateVariant} variant={variants2} /> : <></>}
     </>
-  );
+  )
 }
