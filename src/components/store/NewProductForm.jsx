@@ -158,6 +158,9 @@ const deleteVariant = (idToDelete) => {
   return (
     <>
       <div className="space-y-6">
+
+        {/* Basic information */}
+
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
@@ -241,6 +244,8 @@ const deleteVariant = (idToDelete) => {
           </div>
         </div>
 
+        {/* Image selction */}
+
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
@@ -311,6 +316,8 @@ const deleteVariant = (idToDelete) => {
           </div>
         </div>
 
+        {/* Video links */}
+
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
@@ -380,6 +387,8 @@ const deleteVariant = (idToDelete) => {
           </div>
         </div>
 
+        {/* Color input */}
+
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
@@ -446,6 +455,8 @@ const deleteVariant = (idToDelete) => {
           </div>
         </div>
 
+        {/* Size input */}
+
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
@@ -511,6 +522,8 @@ const deleteVariant = (idToDelete) => {
             </div>
           </div>
         </div>
+
+        {/* More information */}
 
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
@@ -681,6 +694,8 @@ const deleteVariant = (idToDelete) => {
             </div>
           </div>
         </div>
+
+        {/* Variants */}
 
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
