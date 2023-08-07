@@ -5,6 +5,7 @@ import StoreSideBar from "../components/layout/StoreSideBar";
 import StoreHeader from "../components/layout/StoreHeader";
 import StoreNotFound from "../pages/StoreNotFound";
 import NewProduct from "../pages/NewProduct";
+import ProductDetail from "../pages/ProductDetail";
 
 const StoreDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,6 +22,7 @@ const StoreDashboard = () => {
           <Routes>
             <Route path="/" element={<StoreOverview />} />
             <Route path="/product/draft/:draftId" element={<NewProduct />} />
+            <Route path="/product/:productId" element={<ProductDetail />} />
             <Route
               path="*"
               element={
