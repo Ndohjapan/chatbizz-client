@@ -4,12 +4,57 @@ import { XIcon } from "@heroicons/react/outline";
 import info from "../../assets/information.json";
 import VariantsImageUpload from "./VariantsImageUpload";
 import ImageUploadIcon from "../../assets/ImageUploadIcon";
+import { TrashIcon } from "@heroicons/react/outline";
+import TShirtSizeIcon from "../../assets/TShirtSizeIcon";
+import { VscSymbolColor } from "react-icons/vsc";
 
 // eslint-disable-next-line react/prop-types
-export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, variant, createVariant, updateVariant }) {
+export default function CreateVariantDrawer({
+  IsDrawerOpen,
+  toggleDrawer,
+  variant,
+  createVariant,
+  updateVariant,
+}) {
   const [open, setOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [variantDisplayImages, setVariantDisplayImages] = useState([]);
+  const [variantColors, setVariantColors] = useState([""]);
+  const [varientSizes, setVarientSizes] = useState([""]);
+
+  const addColor = (e) => {
+    e.preventDefault();
+    setVariantColors([...variantColors, ""]);
+  };
+
+  const removeColor = (index) => {
+    const updatedColors = [...variantColors];
+    updatedColors.splice(index, 1);
+    setVariantColors(updatedColors);
+  };
+
+  const addSize = (e) => {
+    e.preventDefault();
+    setVarientSizes([...varientSizes, ""]);
+  };
+
+  const removeSize = (index) => {
+    const updatedSizes = [...varientSizes];
+    updatedSizes.splice(index, 1);
+    setVarientSizes(updatedSizes);
+  };
+
+  const handleColorChange = (index, value) => {
+    const updatedColors = [...variantColors];
+    updatedColors[index] = value;
+    setVariantColors(updatedColors);
+  };
+
+  const handleSizeChange = (index, value) => {
+    const updatedSizes = [...varientSizes];
+    updatedSizes[index] = value;
+    setVarientSizes(updatedSizes);
+  };
 
   const toggleModal = (toggle) => {
     setIsModalOpen(toggle);
@@ -20,8 +65,14 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
 
   useEffect(() => {
     setOpen(IsDrawerOpen);
-    if(variant.images){
-        setVariantDisplayImages(variant.images)
+    if (variant.images) {
+      setVariantDisplayImages(variant.images);
+    }
+    if(variant.color){
+      setVariantColors(variant.color);
+    }
+    if(variant.size){
+      setVarientSizes(variant.size);
     }
   }, [IsDrawerOpen, variant]);
 
@@ -35,34 +86,49 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
   };
 
   const submitForm = () => {
-    const name = document.getElementById("variantName").value; 
+    const name = document.getElementById("variantName").value;
     const description = document.getElementById("variantDescription").value;
     const feature = document.getElementById("variantFeatures").value;
-    const images = variantDisplayImages
+    const images = variantDisplayImages;
     const price = document.getElementById("variantPrice").value;
     const currency = document.getElementById("variantCurrency").value;
     const weight = document.getElementById("variantWeight").value;
     const unit = document.getElementById("variantUnit").value;
     const stock = document.getElementById("variantStock").value;
     const group = document.getElementById("variantGroup").value;
-    const color = document.getElementById("variantColor").value;
+    const color = variantColors;
+    const size = varientSizes;
     const dimension = document.getElementById("variantDimension").value;
-    const size = document.getElementById("variantSize").value;
     const users = document.getElementById("variantUsers").value;
     const sex = document.getElementById("variantSex").value;
 
-    const form = {name, description, feature, images, price, weight, currency, group, stock, unit, color, dimension, size, users, sex};
+    const form = {
+      name,
+      description,
+      feature,
+      images,
+      price,
+      weight,
+      currency,
+      group,
+      stock,
+      unit,
+      color,
+      dimension,
+      size,
+      users,
+      sex,
+    };
 
-    if(variant.id){
-        form.id = variant.id;
-        updateVariant(form);
-        handleClose()
-    }else{
-        createVariant(form);
-        handleClose();
+    if (variant.id) {
+      form.id = variant.id;
+      updateVariant(form);
+      handleClose();
+    } else {
+      createVariant(form);
+      handleClose();
     }
-
-  }
+  };
 
   return (
     <>
@@ -148,7 +214,9 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                           required
                                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
                                           placeholder={info.variants[0].name}
-                                          defaultValue={variant.name ? variant.name : " "}
+                                          defaultValue={
+                                            variant.name ? variant.name : " "
+                                          }
                                         />
                                       </div>
                                       <p className="mt-2 text-sm text-gray-500">
@@ -170,8 +238,14 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                           name="variantDescription"
                                           rows={3}
                                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                                          placeholder={info.variants[0].description}
-                                          defaultValue={variant.description ? variant.description : ""}
+                                          placeholder={
+                                            info.variants[0].description
+                                          }
+                                          defaultValue={
+                                            variant.description
+                                              ? variant.description
+                                              : ""
+                                          }
                                         />
                                       </div>
                                       <p className="mt-2 text-sm text-gray-500">
@@ -195,8 +269,14 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                           name="variantFeatures"
                                           rows={3}
                                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md p-2"
-                                          placeholder={info.variants[0].features}
-                                          defaultValue={variant.feature ? variant.feature : ""}
+                                          placeholder={
+                                            info.variants[0].features
+                                          }
+                                          defaultValue={
+                                            variant.feature
+                                              ? variant.feature
+                                              : ""
+                                          }
                                         />
                                       </div>
                                       <p className="mt-2 text-sm text-gray-500">
@@ -293,6 +373,162 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                               <div className="md:grid md:grid-cols-3 md:gap-6">
                                 <div className="md:col-span-1">
                                   <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                    Colors
+                                  </h3>
+                                  <p className="mt-1 text-sm text-gray-500">
+                                    Insert different colors of your poduct
+                                    available
+                                  </p>
+                                </div>
+                                <div className="mt-5 md:mt-0 md:col-span-2">
+                                  <form action="#" method="POST">
+                                    <div className="grid grid-cols-6 gap-6 mt-3">
+                                      {variantColors.map((link, index) => (
+                                        <div
+                                          className="col-span-6 sm:col-span-5"
+                                          key={index}
+                                        >
+                                          <label
+                                            htmlFor={`link-${index}`}
+                                            className="block text-sm font-medium text-gray-700"
+                                          >
+                                            {"Color " + (index + 1)}
+                                          </label>
+                                          <div className="mt-1 relative rounded-md shadow-sm border">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                              <span className="text-gray-400 sm:text-sm">
+                                                <VscSymbolColor className="text-3xl" />
+                                              </span>
+                                            </div>
+                                            <input
+                                              type="url"
+                                              name={`link-${index}`}
+                                              id={`link-${index}`}
+                                              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
+                                              placeholder="Red, Oraange, Wine red, metallic brown"
+                                              defaultValue={link}
+                                              onChange={(e) => {
+                                                handleColorChange(
+                                                  index,
+                                                  e.target.value
+                                                );
+                                              }}
+                                            />
+                                            {index === 0 ? (
+                                              <></>
+                                            ) : (
+                                              <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                                                onClick={() =>
+                                                  removeColor(index)
+                                                }
+                                              >
+                                                <TrashIcon
+                                                  className="h-5 w-5 text-red-400"
+                                                  aria-hidden="true"
+                                                />
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <div className="mt-3">
+                                      <button
+                                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        onClick={addColor}
+                                      >
+                                        + Color
+                                      </button>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+                              <div className="md:grid md:grid-cols-3 md:gap-6">
+                                <div className="md:col-span-1">
+                                  <h3 className="text-lg font-medium leading-6 text-gray-900">
+                                    Sizes
+                                  </h3>
+                                  <p className="mt-1 text-sm text-gray-500">
+                                    Insert various sizes of your product
+                                    available
+                                  </p>
+                                </div>
+                                <div className="mt-5 md:mt-0 md:col-span-2">
+                                  <form action="#" method="POST">
+                                    <div className="grid grid-cols-6 gap-6 mt-3">
+                                      {varientSizes.map((link, index) => (
+                                        <div
+                                          className="col-span-6 sm:col-span-5"
+                                          key={index}
+                                        >
+                                          <label
+                                            htmlFor={`link-${index}`}
+                                            className="block text-sm font-medium text-gray-700"
+                                          >
+                                            {"Size " + (index + 1)}
+                                          </label>
+                                          <div className="mt-1 relative rounded-md shadow-sm border">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                              <span className="text-gray-500 sm:text-sm">
+                                                <TShirtSizeIcon className="" />
+                                              </span>
+                                            </div>
+                                            <input
+                                              type="url"
+                                              name={`link-${index}`}
+                                              id={`link-${index}`}
+                                              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
+                                              placeholder="S, M, L, XL, XXL, 38, 41"
+                                              defaultValue={link}
+                                              onChange={(e) => {
+                                                handleSizeChange(
+                                                  index,
+                                                  e.target.value
+                                                );
+                                              }}
+                                            />
+                                            {index === 0 ? (
+                                              <></>
+                                            ) : (
+                                              <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                                                onClick={() =>
+                                                  removeSize(index)
+                                                }
+                                              >
+                                                <TrashIcon
+                                                  className="h-5 w-5 text-red-400"
+                                                  aria-hidden="true"
+                                                />
+                                              </button>
+                                            )}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <div className="mt-3">
+                                      <button
+                                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        onClick={addSize}
+                                      >
+                                        + Size
+                                      </button>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+                              <div className="md:grid md:grid-cols-3 md:gap-6">
+                                <div className="md:col-span-1">
+                                  <h3 className="text-lg font-medium leading-6 text-gray-900">
                                     More Information
                                   </h3>
                                   <p className="mt-1 text-sm text-gray-500">
@@ -307,10 +543,10 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                           htmlFor="variantPrice"
                                           className="block text-sm font-medium text-gray-700"
                                         >
-                                          Price {" "}
-                                        <span className="text-red-400 font-bold">
-                                          *
-                                        </span>
+                                          Price{" "}
+                                          <span className="text-red-400 font-bold">
+                                            *
+                                          </span>
                                         </label>
                                         <div className="mt-1 relative rounded-md shadow-sm border">
                                           <input
@@ -320,7 +556,9 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                             required
                                             className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
                                             placeholder={info.variants[0].price}
-                                            defaultValue={variant.price ? variant.price : ""}
+                                            defaultValue={
+                                              variant.price ? variant.price : ""
+                                            }
                                           />
                                           <div className="absolute inset-y-0 right-0 flex items-center">
                                             <label
@@ -357,8 +595,14 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                             name="variantWeight"
                                             id="variantWeight"
                                             className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
-                                            placeholder={info.variants[0].weight}
-                                            defaultValue={variant.weight ? variant.weight : ""}
+                                            placeholder={
+                                              info.variants[0].weight
+                                            }
+                                            defaultValue={
+                                              variant.weight
+                                                ? variant.weight
+                                                : ""
+                                            }
                                           />
                                           <div className="absolute inset-y-0 right-0 flex items-center">
                                             <label
@@ -393,7 +637,9 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                             id="variantStock"
                                             className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
                                             placeholder={info.variants[0].stock}
-                                            defaultValue={variant.stock ? variant.stock : ""}
+                                            defaultValue={
+                                              variant.stock ? variant.stock : ""
+                                            }
                                           />
                                           <div className="absolute inset-y-0 right-0 flex items-center">
                                             <label
@@ -417,24 +663,6 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
-                                          htmlFor="variantColor"
-                                          className="block text-sm font-medium text-gray-700"
-                                        >
-                                          Color
-                                        </label>
-                                        <input
-                                          type="text"
-                                          name="variantColor"
-                                          id="variantColor"
-                                          autoComplete="given-name"
-                                          placeholder={info.variants[0].color}
-                                          defaultValue={variant.color ? variant.color : ""}
-                                          className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
-                                        />
-                                      </div>
-
-                                      <div className="col-span-6 sm:col-span-3">
-                                        <label
                                           htmlFor="variantDimension"
                                           className="block text-sm font-medium text-gray-700"
                                         >
@@ -445,27 +673,15 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                                           name="variantDimension"
                                           id="variantDimension"
                                           autoComplete="7.87 x 5.31 x 0.79 inches"
-                                          placeholder={info.variants[0].dimension}
-                                          defaultValue={variant.dimension ? variant.dimension : ""}
+                                          placeholder={
+                                            info.variants[0].dimension
+                                          }
+                                          defaultValue={
+                                            variant.dimension
+                                              ? variant.dimension
+                                              : ""
+                                          }
                                           className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
-                                        />
-                                      </div>
-
-                                      <div className="col-span-6 sm:col-span-3">
-                                        <label
-                                          htmlFor="variantSize"
-                                          className="block text-sm font-medium text-gray-700"
-                                        >
-                                          Size
-                                        </label>
-                                        <input
-                                          type="text"
-                                          name="variantSize"
-                                          id="variantSize"
-                                          autoComplete="41"
-                                          placeholder={info.variants[0].size}
-                                          defaultValue={variant.size ? variant.size : ""}
-                                          className="mt-1 border p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                         />
                                       </div>
 
@@ -525,7 +741,9 @@ export default function CreateVariantDrawer({ IsDrawerOpen, toggleDrawer, varian
                         Cancel
                       </button>
                       <button
-                        onClick={() => {submitForm()}}
+                        onClick={() => {
+                          submitForm();
+                        }}
                         className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       >
                         {variant.id ? "Update" : "Save"}

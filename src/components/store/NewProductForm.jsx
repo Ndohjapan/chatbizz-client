@@ -6,9 +6,10 @@ import StatusMoreIcon from "../../assets/StatusMoreIcon";
 import ImageUploadIcon from "../../assets/ImageUploadIcon";
 import info from "../../assets/information.json";
 import { PiYoutubeLogoThin } from "react-icons/pi";
+import { VscSymbolColor } from "react-icons/vsc";
 import images from "../../assets/images.json";
 import { v4 as uuidv4 } from "uuid";
-import BoxIcon from "../../assets/BoxIcon";
+import TShirtSizeIcon from "../../assets/TShirtSizeIcon";
 
 const variants = [];
 
@@ -64,6 +65,8 @@ function NewProductForm() {
   const [selectedVariant, setSelectVariant] = useState({});
   const [displayImages, setDisplayImages] = useState([]);
   const [links, setLinks] = useState([""]);
+  const [colors, setColors] = useState([""]);
+  const [sizes, setSizes] = useState([""]);
 
   const addLink = (e) => {
     e.preventDefault();
@@ -76,10 +79,44 @@ function NewProductForm() {
     setLinks(updatedLinks);
   };
 
-  const handleChange = (index, value) => {
+  const addColor = (e) => {
+    e.preventDefault();
+    setColors([...colors, ""]);
+  };
+
+  const removeColor = (index) => {
+    const updatedColors = [...colors];
+    updatedColors.splice(index, 1);
+    setColors(updatedColors);
+  };
+
+  const addSize = (e) => {
+    e.preventDefault();
+    setSizes([...sizes, ""]);
+  };
+
+  const removeSize = (index) => {
+    const updatedSizes = [...sizes];
+    updatedSizes.splice(index, 1);
+    setSizes(updatedSizes);
+  };
+
+  const handleLinkChange = (index, value) => {
     const updatedLinks = [...links];
     updatedLinks[index] = value;
     setLinks(updatedLinks);
+  };
+
+  const handleColorChange = (index, value) => {
+    const updatedColors = [...colors];
+    updatedColors[index] = value;
+    setColors(updatedColors);
+  };
+
+  const handleSizeChange = (index, value) => {
+    const updatedSizes = [...sizes];
+    updatedSizes[index] = value;
+    setSizes(updatedSizes);
   };
 
   const toggleModal = (toggle) => {
@@ -307,8 +344,10 @@ const deleteVariant = (idToDelete) => {
                           id={`link-${index}`}
                           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
                           placeholder="https://youtube.com/"
-                          value={link}
-                          onChange={(e) => handleChange(index, e.target.value)}
+                          defaultValue={link}
+                          onChange={(e) => {
+                            handleLinkChange(index, e.target.value)
+                          }}
                         />
                         {index === 0 ? (
                           <></>
@@ -334,6 +373,138 @@ const deleteVariant = (idToDelete) => {
                     onClick={addLink}
                   >
                     + Link
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+          <div className="md:grid md:grid-cols-3 md:gap-6">
+            <div className="md:col-span-1">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                Colors
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Insert different colors of your poduct available
+              </p>
+            </div>
+            <div className="mt-5 md:mt-0 md:col-span-2">
+              <form action="#" method="POST">
+                <div className="grid grid-cols-6 gap-6 mt-3">
+                  {colors.map((link, index) => (
+                    <div className="col-span-6 sm:col-span-5" key={`color-${index}`}>
+                      <label
+                        htmlFor={`color-${index}`}
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        {"Color " + (index + 1)}
+                      </label>
+                      <div className="mt-1 relative rounded-md shadow-sm border">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-400 sm:text-sm">
+                            <VscSymbolColor className="text-3xl" />
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          name={`color-${index}`}
+                          id={`color-${index}`}
+                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
+                          placeholder="Red, Oraange, Wine red, metallic brown"
+                          defaultValue={link}
+                        />
+                        {index === 0 ? (
+                          <></>
+                        ) : (
+                          <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                            onClick={() => removeColor(index)}
+                          >
+                            <TrashIcon
+                              className="h-5 w-5 text-red-400"
+                              aria-hidden="true"
+                            />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3">
+                  <button
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={addColor}
+                  >
+                    + Color
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+          <div className="md:grid md:grid-cols-3 md:gap-6">
+            <div className="md:col-span-1">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">
+                Sizes
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Insert various sizes of your product available
+              </p>
+            </div>
+            <div className="mt-5 md:mt-0 md:col-span-2">
+              <form action="#" method="POST">
+                <div className="grid grid-cols-6 gap-6 mt-3">
+                  {sizes.map((link, index) => (
+                    <div className="col-span-6 sm:col-span-5" key={`size-${index}`}>
+                      <label
+                        htmlFor={`size-${index}`}
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        {"Size " + (index + 1)}
+                      </label>
+                      <div className="mt-1 relative rounded-md shadow-sm border">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 sm:text-sm">
+                            <TShirtSizeIcon className="" />
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          name={`size-${index}`}
+                          id={`size-${index}`}
+                          className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
+                          placeholder="S, M, L, XL, XXL, 38, 41"
+                          defaultValue={link}
+                        />
+                        {index === 0 ? (
+                          <></>
+                        ) : (
+                          <button
+                            type="button"
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                            onClick={() => removeSize(index)}
+                          >
+                            <TrashIcon
+                              className="h-5 w-5 text-red-400"
+                              aria-hidden="true"
+                            />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3">
+                  <button
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={addSize}
+                  >
+                    + Size
                   </button>
                 </div>
               </form>
@@ -453,23 +624,6 @@ const deleteVariant = (idToDelete) => {
 
                   <div className="col-span-6 sm:col-span-3">
                     <label
-                      htmlFor="first-name"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Color
-                    </label>
-                    <input
-                      type="text"
-                      name="first-name"
-                      id="first-name"
-                      autoComplete="given-name"
-                      placeholder="yellow, orange, red"
-                      className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
                       htmlFor="dimension"
                       className="block text-sm font-medium text-gray-700"
                     >
@@ -482,23 +636,6 @@ const deleteVariant = (idToDelete) => {
                       autoComplete="7.87 x 5.31 x 0.79 inches"
                       placeholder="7.87 x 5.31 x 0.79 inches"
                       className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      htmlFor="size"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Size
-                    </label>
-                    <input
-                      type="text"
-                      name="size"
-                      id="size"
-                      autoComplete="41"
-                      placeholder="41, XL, XXL, L, S, 22"
-                      className="mt-1 border p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
 
