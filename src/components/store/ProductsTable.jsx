@@ -2,6 +2,8 @@ import { SearchIcon } from "@heroicons/react/outline";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { useLayoutEffect, useRef, useState } from "react";
 import Fuse from "fuse.js";
+import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
 
 const products = [
   {
@@ -74,6 +76,7 @@ function classNames(...classes) {
 }
 
 export default function ProductsTable() {
+  const uniqueId = uuidv4();
   const checkbox = useRef();
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
@@ -93,7 +96,6 @@ export default function ProductsTable() {
     variants: false,
     description: false,
   });
-  
 
   function fuzzySearchProducts(input) {
     const options = {
@@ -136,7 +138,8 @@ export default function ProductsTable() {
   function handleSorting(column) {
     setSortOrder((prevSortOrder) => ({
       ...prevSortOrder,
-      [column]: prevSortOrder[column] === "ascending" ? "descending" : "ascending",
+      [column]:
+        prevSortOrder[column] === "ascending" ? "descending" : "ascending",
     }));
 
     setSortOrderIcon(() => ({
@@ -148,8 +151,10 @@ export default function ProductsTable() {
       [column]: true,
     }));
 
-    
-    sortProducts(column, sortOrder[column] === "ascending" ? "ascending" : "descending");
+    sortProducts(
+      column,
+      sortOrder[column] === "ascending" ? "ascending" : "descending"
+    );
   }
 
   useLayoutEffect(() => {
@@ -227,13 +232,30 @@ export default function ProductsTable() {
                       scope="col"
                       className="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900"
                     >
-                      <button href="#" className="group inline-flex" onClick={() => handleSorting("name")}>
+                      <button
+                        href="#"
+                        className="group inline-flex"
+                        onClick={() => handleSorting("name")}
+                      >
                         Name
-                        <span className={classNames("ml-2 flex-none rounded bg-gray-100", sortOrderIcon["name"] ? "text-gray-700" : "text-gray-200")}>
+                        <span
+                          className={classNames(
+                            "ml-2 flex-none rounded bg-gray-100",
+                            sortOrderIcon["name"]
+                              ? "text-gray-700"
+                              : "text-gray-200"
+                          )}
+                        >
                           {sortOrder["name"] === "ascending" ? (
-                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronDownIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           ) : (
-                            <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronUpIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           )}
                         </span>
                       </button>
@@ -242,13 +264,30 @@ export default function ProductsTable() {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <button href="#" className="group inline-flex" onClick={() => handleSorting("price")}>
+                      <button
+                        href="#"
+                        className="group inline-flex"
+                        onClick={() => handleSorting("price")}
+                      >
                         Price
-                        <span className={classNames("ml-2 flex-none rounded bg-gray-100", sortOrderIcon["price"] ? "text-gray-700" : "text-gray-200")}>
+                        <span
+                          className={classNames(
+                            "ml-2 flex-none rounded bg-gray-100",
+                            sortOrderIcon["price"]
+                              ? "text-gray-700"
+                              : "text-gray-200"
+                          )}
+                        >
                           {sortOrder["price"] === "ascending" ? (
-                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronDownIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           ) : (
-                            <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronUpIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           )}
                         </span>
                       </button>
@@ -257,13 +296,30 @@ export default function ProductsTable() {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <button href="#" className="group inline-flex" onClick={() => handleSorting("stock")}>
+                      <button
+                        href="#"
+                        className="group inline-flex"
+                        onClick={() => handleSorting("stock")}
+                      >
                         Stock
-                        <span className={classNames("ml-2 flex-none rounded bg-gray-100", sortOrderIcon["stock"] ? "text-gray-700" : "text-gray-200")}>
+                        <span
+                          className={classNames(
+                            "ml-2 flex-none rounded bg-gray-100",
+                            sortOrderIcon["stock"]
+                              ? "text-gray-700"
+                              : "text-gray-200"
+                          )}
+                        >
                           {sortOrder["stock"] === "ascending" ? (
-                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronDownIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           ) : (
-                            <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronUpIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           )}
                         </span>
                       </button>
@@ -272,13 +328,30 @@ export default function ProductsTable() {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <button href="#" className="group inline-flex" onClick={() => handleSorting("variants")}>
+                      <button
+                        href="#"
+                        className="group inline-flex"
+                        onClick={() => handleSorting("variants")}
+                      >
                         Variants
-                        <span className={classNames("ml-2 flex-none rounded bg-gray-100", sortOrderIcon["variants"] ? "text-gray-700" : "text-gray-200")}>
+                        <span
+                          className={classNames(
+                            "ml-2 flex-none rounded bg-gray-100",
+                            sortOrderIcon["variants"]
+                              ? "text-gray-700"
+                              : "text-gray-200"
+                          )}
+                        >
                           {sortOrder["variants"] === "ascending" ? (
-                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronDownIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           ) : (
-                            <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronUpIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           )}
                         </span>
                       </button>
@@ -287,13 +360,30 @@ export default function ProductsTable() {
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      <button href="#" className="group inline-flex" onClick={() => handleSorting("description")}>
+                      <button
+                        href="#"
+                        className="group inline-flex"
+                        onClick={() => handleSorting("description")}
+                      >
                         Description
-                        <span className={classNames("ml-2 flex-none rounded bg-gray-100", sortOrderIcon["description"] ? "text-gray-700" : "text-gray-200")}>
+                        <span
+                          className={classNames(
+                            "ml-2 flex-none rounded bg-gray-100",
+                            sortOrderIcon["description"]
+                              ? "text-gray-700"
+                              : "text-gray-200"
+                          )}
+                        >
                           {sortOrder["description"] === "ascending" ? (
-                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronDownIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           ) : (
-                            <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
+                            <ChevronUpIcon
+                              className="h-5 w-5"
+                              aria-hidden="true"
+                            />
                           )}
                         </span>
                       </button>
@@ -310,11 +400,10 @@ export default function ProductsTable() {
                   {displayProducts.map((person) => (
                     <tr
                       key={person.id}
-                      className={
-                        selectedPeople.includes(person)
-                          ? "bg-gray-50"
-                          : undefined
-                      }
+                      className={classNames(
+                        selectedPeople.includes(person) ? "bg-gray-50" : "",
+                        ""
+                      )}
                     >
                       <td className="relative w-12 px-6 sm:w-16 sm:px-8">
                         {selectedPeople.includes(person) && (
@@ -342,7 +431,7 @@ export default function ProductsTable() {
                             : "text-gray-900"
                         )}
                       >
-                        {person.name}
+                        <Link to={location.pathname+"/product/"+uniqueId}>{person.name}</Link>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {"$" + person.price}
