@@ -7,63 +7,69 @@ import StatusMoreIcon from "../../assets/StatusMoreIcon";
 import { v4 as uuidv4 } from "uuid";
 import CreateVariantDrawer from "../../components/store/CreateVariantDrawer";
 import VariantDrawer from "./VariantDrawer";
+import DeleteWarning from "../layout/DeleteWarning";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const variants2 = [
-    {
-      id: 1,
-      name: "Hello world",
-      description: "From the world above",
-      feature: "1. Can help the world. 2. Can cure hunger",
-      images: [images.profile[2], images.profile[1], images.profile[2]],
-      price: {
-        amount: 200,
-        currency: "NGN",
-      },
-      weight: {
-        amount: 10,
-        unit: "Kg",
-      },
-      stock: 22,
-      color: ["orange"],
-      size: [22],
-      dimension: "22 x 15.47 x 0.79 inches",
-      users: "Children",
-      sex: "Female",
+  {
+    id: 1,
+    name: "Hello world",
+    description: "From the world above",
+    feature: "1. Can help the world. 2. Can cure hunger",
+    images: [images.products[2], images.products[1], images.products[2]],
+    price: {
+      amount: 200,
+      currency: "NGN",
     },
-    {
-      id: 2,
-      name: "Hello world",
-      description: "From the world above",
-      feature: "1. Can help the world. 2. Can cure hunger",
-      images: [images.profile[1], images.profile[2], images.profile[3]],
-      price: {
-        amount: 200,
-        currency: "NGN",
-      },
-      weight: {
-        amount: 10,
-        unit: "Kg",
-      },
-      stock: 22,
-      color: "orange",
-      size: 22,
-      dimension: "22 x 15.47 x 0.79 inches",
-      users: "Children",
-      sex: "Female",
+    weight: {
+      amount: 10,
+      unit: "Kg",
     },
-  ];
+    stock: 22,
+    color: ["orange"],
+    size: [22],
+    dimension: "22 x 15.47 x 0.79 inches",
+    users: "Children",
+    sex: "Female",
+  },
+  {
+    id: 2,
+    name: "Hello world",
+    description: "From the world above",
+    feature: "1. Can help the world. 2. Can cure hunger",
+    images: [images.products[8], images.products[2], images.products[3]],
+    price: {
+      amount: 200,
+      currency: "NGN",
+    },
+    weight: {
+      amount: 10,
+      unit: "Kg",
+    },
+    stock: 22,
+    color: "orange",
+    size: 22,
+    dimension: "22 x 15.47 x 0.79 inches",
+    users: "Children",
+    sex: "Female",
+  },
+];
 
 export default function ProductInformation() {
   const [drawerProductOpen, setDrawerProductOpen] = useState(false);
   const [drawerNewVariantOpen, setDrawerNewVariantOpen] = useState(false);
   const [stateVariants, setStateVariants] = useState(variants2);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const toggleProductDrawer = (toggle) => {
     setDrawerProductOpen(toggle);
+  };
+
+  const toggleDeleteModal = (toggle) => {
+    setIsDeleteModalOpen(toggle);
   };
 
   const toggleNewVariantDrawer = (toggle) => {
@@ -87,10 +93,10 @@ export default function ProductInformation() {
     });
 
     setStateVariants(update);
-};
+  };
 
-const deleteVariant = (idToDelete) => {
-    const update =  stateVariants.filter((variant) => variant.id !== idToDelete);
+  const deleteVariant = (idToDelete) => {
+    const update = stateVariants.filter((variant) => variant.id !== idToDelete);
     setStateVariants(update);
   };
 
@@ -354,7 +360,7 @@ const deleteVariant = (idToDelete) => {
                 </>
               }
             </Disclosure.Panel>
-            
+
             <div className="mt-5 md:mt-0 md:col-span-2">
               <form className="space-y-6" action="#" method="POST">
                 <div>
@@ -386,7 +392,10 @@ const deleteVariant = (idToDelete) => {
                       >
                         {stateVariants.map((variant) => (
                           <li key={variant.id} className="relative">
-                            <div className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer" onClick={() => {deleteVariant(variant.id)}}>
+                            <div
+                              className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
+                              onClick={() => setIsDeleteModalOpen(true)}
+                            >
                               <TrashIcon className="text-red-400" />
                             </div>
                             <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg  focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
@@ -432,13 +441,36 @@ const deleteVariant = (idToDelete) => {
                 </div>
               </form>
             </div>
-
           </>
         )}
       </Disclosure>
 
-      {drawerProductOpen ? <VariantDrawer toggleDrawer={toggleProductDrawer}/> : <></>}
-      {drawerNewVariantOpen ? <CreateVariantDrawer IsDrawerOpen={drawerNewVariantOpen} toggleDrawer={toggleNewVariantDrawer} createVariant={createVariant} updateVariant={updateVariant} variant={variants2} /> : <></>}
+      {drawerProductOpen ? (
+        <VariantDrawer toggleDrawer={toggleProductDrawer} />
+      ) : (
+        <></>
+      )}
+      {drawerNewVariantOpen ? (
+        <CreateVariantDrawer
+          IsDrawerOpen={drawerNewVariantOpen}
+          toggleDrawer={toggleNewVariantDrawer}
+          createVariant={createVariant}
+          updateVariant={updateVariant}
+          variant={variants2}
+        />
+      ) : (
+        <></>
+      )}
+      {isDeleteModalOpen ? (
+        <DeleteWarning
+          header={info.delete.variant.header}
+          message={info.delete.variant.message}
+          buttonText={info.delete.variant.buttonText}
+          toggleModal={toggleDeleteModal}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 }

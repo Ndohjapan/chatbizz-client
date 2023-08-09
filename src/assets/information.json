@@ -28,6 +28,19 @@
         "product": {
             "feature": "With more benefits and features, the bot can maximize its sales and convincing power."
         }
+    },
+
+    "delete": {
+        "image": {
+            "header": "Delete Image",
+            "message": "Are you sure you want to delete this image? The image will be permanently removed. This action cannot be undone.",
+            "buttonText": "Delete"
+        },
+        "variant": {
+            "header": "Delete Variant",
+            "message": "Are you sure you want to delete this variant? The variant will be permanently removed. This action cannot be undone.",
+            "buttonText": "Delete"
+        }
     }
 
 }

@@ -7,6 +7,8 @@ import StatusMoreIcon from "../../assets/StatusMoreIcon";
 import { TrashIcon } from "@heroicons/react/outline";
 import info from "../../assets/information.json";
 import { ImSpinner8 } from "react-icons/im";
+import ImageUploadModal from "../store/ImageUploadModal";
+import DeleteWarning from "../layout/DeleteWarning";
 
 const product = {
   name: info.products[0].name,
@@ -14,40 +16,46 @@ const product = {
   rating: 4,
   images: [
     {
-      id: 1,
-      name: "Angled view",
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-03-product-01.jpg",
-      alt: "Angled front view with bag zipped and handles upright.",
-    },
-    {
-      id: 2,
-      name: "We are one",
-      src: images.background[1],
-      alt: "Angled front view with bag zipped and handles upright.",
-    },
-    {
       id: 3,
-      name: "Them no dey see me",
-      src: images.background[0],
-      alt: "Angled front view with bag zipped and handles upright.",
+      title: "Trial Users",
+      alt: "Last message sent 4 days ago",
+      users: "2740 users",
+      source: images.products[2],
+    },
+    {
+      id: 4,
+      title: "Trial Users",
+      alt: "Last message sent 4 days ago",
+      users: "2740 users",
+      source: images.products[3],
     },
     {
       id: 5,
-      name: "Them no dey see me",
-      src: images.profile[4],
-      alt: "Angled front view with bag zipped and handles upright.",
+      title: "Trial Users",
+      alt: "Last message sent 4 days ago",
+      users: "2740 users",
+      source: images.products[4],
     },
     {
       id: 6,
-      name: "Them no dey see me",
-      src: images.background[0],
-      alt: "Angled front view with bag zipped and handles upright.",
+      title: "Trial Users",
+      alt: "Last message sent 4 days ago",
+      users: "2740 users",
+      source: images.products[5],
     },
     {
       id: 7,
-      name: "Them no dey see me",
-      src: images.background[0],
-      alt: "Angled front view with bag zipped and handles upright.",
+      title: "Trial Users",
+      alt: "Last message sent 4 days ago",
+      users: "2740 users",
+      source: images.products[6],
+    },
+    {
+      id: 8,
+      title: "Trial Users",
+      alt: "Last message sent 4 days ago",
+      users: "2740 users",
+      source: images.products[7],
     },
   ],
   description: `
@@ -75,29 +83,45 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 export default function ImagesAndVideo() {
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-  
-    const loadComplete = () => {
-      setIsLoading(false);
-    };
-  
-    const handleAccordionToggle = (isOpen) => {
-      setIsAccordionOpen(isOpen);
-      if (!isOpen) {
-        setIsLoading(true);
-      }
-    };
-  
-    return (
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productImages, setProductImages] = useState(product.images);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const toggleModal = (toggle) => {
+    setIsModalOpen(toggle);
+  };
+
+  const toggleDeleteModal = (toggle) => {
+    setIsDeleteModalOpen(toggle);
+  };
+
+  const loadComplete = () => {
+    setIsLoading(false);
+  };
+
+  const handleAccordionToggle = (isOpen) => {
+    setIsAccordionOpen(isOpen);
+    if (!isOpen) {
+      setIsLoading(true);
+    }
+  };
+
+  const updateProductImages = (images) => {
+    setProductImages(images);
+  };
+
+  return (
+    <>
       <div>
         <Tab.Group as="div" className="flex flex-col-reverse">
           {/* Image selector */}
           <div className=" mt-6 w-full max-w-2xl mx-auto sm:block lg:max-w-none">
             <Tab.List className="grid grid-cols-4 gap-6">
-              {product.images.map((image) => (
+              {productImages.map((image, index) => (
                 <Tab
-                  key={image.id}
+                  key={index}
                   className="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50"
                 >
                   {({ selected }) => (
@@ -105,7 +129,7 @@ export default function ImagesAndVideo() {
                       <span className="sr-only">{image.name}</span>
                       <span className="absolute inset-0 rounded-md overflow-hidden">
                         <img
-                          src={image.src}
+                          src={image.source}
                           alt=""
                           className="w-full h-full object-center object-cover"
                         />
@@ -121,7 +145,10 @@ export default function ImagesAndVideo() {
                   )}
                 </Tab>
               ))}
-              <div className="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50">
+              <div
+                onClick={() => setIsModalOpen(true)}
+                className="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50"
+              >
                 <>
                   <span className="sr-only">Add more</span>
                   <StatusMoreIcon />
@@ -129,23 +156,26 @@ export default function ImagesAndVideo() {
               </div>
             </Tab.List>
           </div>
-  
+
           <Tab.Panels className="w-full aspect-w-1 aspect-h-1 relative">
-            {product.images.map((image) => (
+            {productImages.map((image) => (
               <Tab.Panel key={image.id}>
                 <img
-                  src={image.src}
+                  src={image.source}
                   alt={image.alt}
                   className="w-full h-full object-center object-cover sm:rounded-lg"
                 />
-                <div className="absolute top-3 right-2 w-8  h-4 cursor-pointer">
+                <div
+                  className="absolute top-3 right-2 w-8  h-4 cursor-pointer"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
                   <TrashIcon className="text-red-400" />
                 </div>
               </Tab.Panel>
             ))}
           </Tab.Panels>
         </Tab.Group>
-  
+
         <Disclosure as="div" key={"yt-videos"}>
           {({ open }) => (
             <>
@@ -238,5 +268,27 @@ export default function ImagesAndVideo() {
           )}
         </Disclosure>
       </div>
-    );
+
+      {isModalOpen ? (
+        <ImageUploadModal
+          isModalOpen={isModalOpen}
+          toggleModal={toggleModal}
+          updateDisplayImages={updateProductImages}
+          displayImages={productImages}
+        />
+      ) : (
+        <></>
+      )}
+      {isDeleteModalOpen ? (
+        <DeleteWarning
+          header={info.delete.image.header}
+          message={info.delete.image.message}
+          buttonText={info.delete.image.buttonText}
+          toggleModal={toggleDeleteModal}
+        />
+      ) : (
+        <></>
+      )}
+    </>
+  );
 }
