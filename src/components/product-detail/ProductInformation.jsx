@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import CreateVariantDrawer from "../../components/store/CreateVariantDrawer";
 import VariantDrawer from "./VariantDrawer";
 import DeleteWarning from "../layout/DeleteWarning";
+import UpdateModal from "./sub-menus/UpdateModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -63,6 +64,8 @@ export default function ProductInformation() {
   const [drawerNewVariantOpen, setDrawerNewVariantOpen] = useState(false);
   const [stateVariants, setStateVariants] = useState(variants2);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedSection, setSelectedSection] = useState("name");
 
   const toggleProductDrawer = (toggle) => {
     setDrawerProductOpen(toggle);
@@ -75,6 +78,10 @@ export default function ProductInformation() {
   const toggleNewVariantDrawer = (toggle) => {
     setDrawerNewVariantOpen(toggle);
   };
+
+  const toggleUpdateModal = (toggle) => {
+    setIsUpdateModalOpen(toggle);
+  }
 
   const createVariant = (newVariant) => {
     newVariant.id = uuidv4();
@@ -155,6 +162,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("name")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -173,6 +181,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("description")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -189,6 +198,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -210,6 +220,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -230,6 +241,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("features")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -254,6 +266,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("color")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -278,6 +291,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("size")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -295,6 +309,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -315,6 +330,7 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -331,6 +347,8 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true);
+                                setSelectedSection("more")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -347,6 +365,8 @@ export default function ProductInformation() {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {setIsUpdateModalOpen(true);
+                                    setSelectedSection("more")}}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -444,6 +464,12 @@ export default function ProductInformation() {
           </>
         )}
       </Disclosure>
+
+      {isUpdatModalOpen ? (
+        <UpdateModal toggleModal={toggleUpdateModal} section={selectedSection} productInfo={info.products[0]} />
+      ) : (
+        <></>
+      )}
 
       {drawerProductOpen ? (
         <VariantDrawer toggleDrawer={toggleProductDrawer} />

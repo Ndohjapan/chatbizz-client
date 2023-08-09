@@ -9,6 +9,7 @@ import info from "../../assets/information.json";
 import { ImSpinner8 } from "react-icons/im";
 import ImageUploadModal from "../store/ImageUploadModal";
 import DeleteWarning from "../layout/DeleteWarning";
+import UpdateModal from "./sub-menus/UpdateModal";
 
 const product = {
   name: info.products[0].name,
@@ -88,6 +89,9 @@ export default function ImagesAndVideo() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productImages, setProductImages] = useState(product.images);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedSection, setSelectedSection] = useState("video");
+
 
   const toggleModal = (toggle) => {
     setIsModalOpen(toggle);
@@ -96,6 +100,10 @@ export default function ImagesAndVideo() {
   const toggleDeleteModal = (toggle) => {
     setIsDeleteModalOpen(toggle);
   };
+
+  const toggleUpdateModal = (toggle) => {
+    setIsUpdateModalOpen(toggle);
+  }
 
   const loadComplete = () => {
     setIsLoading(false);
@@ -115,6 +123,9 @@ export default function ImagesAndVideo() {
   return (
     <>
       <div>
+
+        {/* Images Display */}
+
         <Tab.Group as="div" className="flex flex-col-reverse">
           {/* Image selector */}
           <div className=" mt-6 w-full max-w-2xl mx-auto sm:block lg:max-w-none">
@@ -176,6 +187,8 @@ export default function ImagesAndVideo() {
           </Tab.Panels>
         </Tab.Group>
 
+        {/* Video Display */}
+
         <Disclosure as="div" key={"yt-videos"}>
           {({ open }) => (
             <>
@@ -217,24 +230,25 @@ export default function ImagesAndVideo() {
               </h3>
               <Disclosure.Panel
                 as="div"
-                className="pb-6 prose prose-sm grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-2 xl:gap-x-8"
+                className="pb-6 prose prose-sm grid grid-cols-1 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-col-2"
               >
                 {
                   <>
-                    <div className="md:col-span-2 mt-1 flex items-center justify-end">
+                    <div className="col-span-2 mt-1 flex items-center justify-end">
                       <a
                         href="#"
+                        onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("video")}}
                         className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                       >
                         Edit videos
                       </a>
                     </div>
                     {isLoading && (
-                      <div className="md:col-span-2 flex items-center justify-center">
+                      <div className="lg:col-span-2 flex items-center justify-center">
                         <ImSpinner8 className="animate-spin text-center text-2xl text-indigo-600" />
                       </div>
                     )}
-                    <div className="aspect-w-16 aspect-h-9 flex justify-center">
+                    <div className="col-span-2 lg:col-span-1 aspect-w-16 aspect-h-9 flex justify-center">
                       <iframe
                         src="https://www.youtube.com/embed/r9jwGansp1E"
                         frameBorder="0"
@@ -243,7 +257,7 @@ export default function ImagesAndVideo() {
                         onLoad={loadComplete}
                       ></iframe>
                     </div>
-                    <div className="aspect-w-16 aspect-h-9 flex justify-center">
+                    <div className="col-span-2 lg:col-span-1 aspect-w-16 aspect-h-9 flex justify-center">
                       <iframe
                         src="https://www.youtube.com/embed/r9jwGansp1E"
                         frameBorder="0"
@@ -252,7 +266,7 @@ export default function ImagesAndVideo() {
                         onLoad={loadComplete}
                       ></iframe>
                     </div>
-                    <div className="aspect-w-16 aspect-h-9 flex justify-center">
+                    <div className="col-span-2 lg:col-span-1 aspect-w-16 aspect-h-9 flex justify-center">
                       <iframe
                         src="https://www.youtube.com/embed/r9jwGansp1E"
                         frameBorder="0"
@@ -268,6 +282,12 @@ export default function ImagesAndVideo() {
           )}
         </Disclosure>
       </div>
+
+      {isUpdatModalOpen ? (
+        <UpdateModal toggleModal={toggleUpdateModal} section={selectedSection} productInfo={info.products[0]} />
+      ) : (
+        <></>
+      )}
 
       {isModalOpen ? (
         <ImageUploadModal
