@@ -6,65 +6,65 @@ const files = [
   {
     id: 1,
     title: "Newsletter",
-    description: "Last message sent an hour ago",
+    alt: "Last message sent an hour ago",
     users: "621 users",
-    source: images.profile[0],
+    source: images.products[0],
   },
   {
     id: 2,
     title: "Existing Customers",
-    description: "Last message sent 2 weeks ago",
+    alt: "Last message sent 2 weeks ago",
     users: "1200 users",
-    source: images.profile[1],
+    source: images.products[1],
   },
   {
     id: 3,
     title: "Trial Users",
-    description: "Last message sent 4 days ago",
+    alt: "Last message sent 4 days ago",
     users: "2740 users",
-    source: images.profile[2],
+    source: images.products[2],
   },
   {
     id: 4,
     title: "Trial Users",
-    description: "Last message sent 4 days ago",
+    alt: "Last message sent 4 days ago",
     users: "2740 users",
-    source: images.profile[3],
+    source: images.products[3],
   },
   {
     id: 5,
     title: "Trial Users",
-    description: "Last message sent 4 days ago",
+    alt: "Last message sent 4 days ago",
     users: "2740 users",
-    source: images.profile[4],
+    source: images.products[4],
   },
   {
     id: 6,
     title: "Trial Users",
-    description: "Last message sent 4 days ago",
+    alt: "Last message sent 4 days ago",
     users: "2740 users",
-    source: images.profile[4],
+    source: images.products[5],
   },
   {
     id: 7,
     title: "Trial Users",
-    description: "Last message sent 4 days ago",
+    alt: "Last message sent 4 days ago",
     users: "2740 users",
-    source: images.profile[4],
+    source: images.products[6],
   },
   {
     id: 8,
     title: "Trial Users",
-    description: "Last message sent 4 days ago",
+    alt: "Last message sent 4 days ago",
     users: "2740 users",
-    source: images.profile[4],
+    source: images.products[7],
   },
   {
     id: 9,
     title: "Trial Users",
-    description: "Last message sent 4 days ago",
+    alt: "Last message sent 4 days ago",
     users: "2740 users",
-    source: images.profile[4],
+    source: images.products[8],
   },
 ];
 
@@ -75,6 +75,7 @@ function classNames(...classes) {
 // eslint-disable-next-line react/prop-types
 export default function ImageSelector({ updateDisplayImages, displayImages }) {
   const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImageIds, setSelectedImageIds] = useState([]);
 
   useEffect(() => {
     if (selectedImages.length === 0) {
@@ -82,12 +83,15 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
     }else{
         updateDisplayImages(selectedImages);
     }
+    const preSelectedImageIds = displayImages.map(image => image.id);
+    setSelectedImageIds(preSelectedImageIds);
+
   }, [displayImages, selectedImages, updateDisplayImages]);
 
   const handleImagesToggle = async(image) => {
     await setSelectedImages((prevSelected) => {
-      if (prevSelected.includes(image)) {
-        return prevSelected.filter((list) => list !== image);
+      if (prevSelected.findIndex(subsetObj => subsetObj.id === image.id) !== -1) {
+        return prevSelected.filter((list) => list.id !== image.id);
       } else {
         return [...prevSelected, image];
       }
@@ -111,13 +115,13 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
             role="list"
             className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 max-h-96 overflow-y-scroll"
           >
-            {files.map((image) => (
+            {files.map((image, index) => (
               <li
-                key={image.id}
+                key={index}
                 onClick={() => handleImagesToggle(image)}
                 className={classNames(
                   "relative bg-white border rounded-lg shadow-sm p-0 flex justify-center flex-col cursor-pointer focus:outline-none",
-                  selectedImages.includes(image)
+                  selectedImageIds.includes(image.id)
                     ? "border-indigo-500 ring-2 ring-indigo-500"
                     : "border-gray-300"
                 )}
@@ -137,7 +141,7 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
                     </span>
                   </button>
                 </div>
-                {selectedImages.includes(image) && (
+                {selectedImageIds.includes(image.id) && (
                   <CheckCircleIcon
                     className="absolute right-2 top-2 h-5 w-5 text-indigo-600"
                     aria-hidden="true"
@@ -146,7 +150,7 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
                 <div
                   className={classNames(
                     "border-2",
-                    selectedImages.includes(image)
+                    selectedImageIds.includes(image.id)
                       ? "border-indigo-500"
                       : "border-transparent",
                     "absolute -inset-px rounded-lg pointer-events-none"
