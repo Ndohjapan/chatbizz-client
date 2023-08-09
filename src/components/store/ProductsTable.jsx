@@ -431,7 +431,7 @@ export default function ProductsTable() {
                             : "text-gray-900"
                         )}
                       >
-                        <Link to={location.pathname+"product/"+uniqueId}>{person.name}</Link>
+                        <Link to={location.pathname+"/product/"+uniqueId}>{person.name}</Link>
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         {"$" + person.price}
