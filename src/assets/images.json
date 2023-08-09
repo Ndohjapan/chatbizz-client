@@ -32,5 +32,17 @@
     ],
     "icons": {
         "box": "https://res.cloudinary.com/lcu-feeding/image/upload/v1690989522/chatbizz/resources/box_sfr4kh.png"
-    }
+    },
+    "products": [
+        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
+        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-02.jpg",
+        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-03.jpg",
+        "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-04.jpg",
+        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg",
+        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-02.jpg",
+        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-08.jpg",
+        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-06.jpg",
+        "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg",
+        "https://tailwindui.com/img/ecommerce-images/product-page-03-product-01.jpg"
+    ]
 }
