@@ -4,14 +4,10 @@ import { logout } from "../../slices/authSlice";
 import { Fragment } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { XIcon, ShoppingCartIcon, ChatAltIcon } from "@heroicons/react/outline";
+import { IoSettingsOutline } from "react-icons/io5";
 import StoreList from "./StoreList";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-const navigation = [
-  { name: "Products", href: "#", icon: ShoppingCartIcon, current: true },
-  { name: "Bot/Coversation", href: "#", icon: ChatAltIcon, current: false },
-];
 
 const userNavigation = [
   { name: "Your Profile", href: "#", signout: false },
@@ -25,6 +21,43 @@ function classNames(...classes) {
 // eslint-disable-next-line react/prop-types
 function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
   const auth = getAuth(app);
+  const location = useLocation();
+
+  let selectedPath = location.pathname.split("/").slice(0, 3).join("/");
+
+  let navigation = [
+    {
+      name: "Products",
+      icon: ShoppingCartIcon,
+      path: selectedPath,
+      selected: false
+    },
+    {
+      name: "Bot/Conversation",
+      icon: ChatAltIcon,
+      path: `${selectedPath}/bot`,
+      selected: false
+    },
+    {
+      name: "Store Settings",
+      icon: IoSettingsOutline,
+      path: `${selectedPath}/settings`,
+      selected: false
+    },
+  ];
+
+  switch (location.pathname.split("/")[3]) {
+    case "bot":
+      navigation[1].selected = true
+      break;
+    case "settings":
+      navigation[2].selected = true
+      break;
+      
+      default:
+      navigation[0].selected = true
+      break;
+  }
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -104,11 +137,11 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
                 <StoreList />
                 <nav className="mt-5 px-2 space-y-1">
                   {navigation.map((item) => (
-                    <a
+                    <Link
                       key={item.name}
-                      href={item.href}
+                      to={item.path}
                       className={classNames(
-                        item.current
+                        item.selected === true
                           ? "bg-gray-900 text-white"
                           : "text-gray-300 hover:bg-gray-700 hover:text-white",
                         "group flex items-center px-2 py-2 text-base font-medium rounded-md"
@@ -116,7 +149,7 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
                     >
                       <item.icon
                         className={classNames(
-                          item.current
+                          item.selected === true
                             ? "text-gray-300"
                             : "text-gray-400 group-hover:text-gray-300",
                           "mr-4 flex-shrink-0 h-6 w-6"
@@ -124,7 +157,7 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
                         aria-hidden="true"
                       />
                       {item.name}
-                    </a>
+                    </Link>
                   ))}
                 </nav>
               </div>
@@ -153,27 +186,27 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
             <StoreList />
             <nav className="mt-5 flex-1 px-2 space-y-1">
               {navigation.map((item) => (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.path}
                   className={classNames(
-                    item.current
+                    item.selected === true
                       ? "bg-gray-900 text-white"
                       : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                    "group flex items-center px-2 py-2 text-base font-medium rounded-md"
                   )}
                 >
                   <item.icon
                     className={classNames(
-                      item.current
+                      item.selected === true
                         ? "text-gray-300"
                         : "text-gray-400 group-hover:text-gray-300",
-                      "mr-3 flex-shrink-0 h-6 w-6"
+                      "mr-4 flex-shrink-0 h-6 w-6"
                     )}
                     aria-hidden="true"
                   />
                   {item.name}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>
@@ -230,7 +263,7 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
                           </div>
                         ) : (
                           <a
-                            href={item.href}
+                            href={item.path}
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"

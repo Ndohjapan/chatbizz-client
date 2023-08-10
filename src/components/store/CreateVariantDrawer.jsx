@@ -139,7 +139,7 @@ export default function CreateVariantDrawer({
           onClose={handleClose}
         >
           <div className="absolute inset-0 overflow-hidden">
-            <Dialog.Overlay className="absolute inset-0" />
+            <Dialog.Overlay className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
 
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
               <Transition.Child
