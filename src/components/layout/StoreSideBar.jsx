@@ -59,8 +59,6 @@ function StoreSideBar({ sidebarOpen, setSidebarOpen }) {
       break;
   }
 
-  console.log(navigation);
-
   const { userInfo } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
