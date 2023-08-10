@@ -2,73 +2,81 @@ import { SearchIcon } from "@heroicons/react/outline";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { useLayoutEffect, useRef, useState } from "react";
 import Fuse from "fuse.js";
-import { v4 as uuidv4 } from "uuid";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DeleteWarning from "../layout/DeleteWarning";
 import info from "../../assets/information.json";
+import images from "../../assets/images.json";
+import { Switch } from "@headlessui/react";
 
-const products = [
+const customers = [
   {
     id: 1,
-    name: 'Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)',
+    name: 'Joel',
     price: 229,
-    stock: 100,
-    variants: 0,
-    description:
+    number: "2349056144059",
+    lastMessageTime: "2023-10-27T23:45:16.086+00:00",
+    enabled: true,
+    lastMessage:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
   },
   {
     id: 2,
-    name: "SAMSUNG Galaxy Tab S7+ Plus 12.4” 128GB Android Tablet w/ S Pen Included, Edge-to-Edge Display, Expandable Storage, Fast Charging USB-C Port, SM-T970NZKAXAR, Mystic Black",
+    name: "~~❣️❣️",
     price: 39,
-    stock: 5,
-    variants: 2,
-    description:
+    number: "2349056144059",
+    lastMessageTime: "2023-10-28T16:24:16.086+00:00",
+    enabled: false,
+    lastMessage:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
   },
   {
     id: 3,
-    name: "Neutrogena Soothing & Calming Healthy Scalp Shampoo to Moisturize Dry Scalp & Hair, with Tea Tree Oil, pH-Balanced, Paraben-Free & Phthalate-Free, Safe for Color-Treated Hair, 12oz",
+    name: "--</dev>--",
     price: 45,
-    stock: 17,
-    variants: 3,
-    description:
+    number: "2349056144059",
+    lastMessageTime: "2023-10-27T17:24:16.086+00:00",
+    enabled: false,
+    lastMessage:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
   },
   {
     id: 4,
-    name: "DULOVE Lace Front Wigs Human Hair 13x4 Straight HD Transparent Lace Front Wigs for Black Women Human Hair Pre Plucked with Baby Hair 180 Density Glueless Natural Color 24inch",
+    name: "Patrick",
     price: 99,
-    stock: 20,
-    variants: 4,
-    description:
+    number: "2349056144059",
+    lastMessageTime: "2023-07-15T23:24:16.086+00:00",
+    enabled: false,
+    lastMessage:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
   },
   {
     id: 5,
-    name: "Cat Birthday Gift Set, Pet Party Supplies, Dog Toys, 6 Kinds of Cat Birthday Gifts, Gift Box, Headgear, Mouse Toy, Cat Teasing Stick",
+    name: "Mr. Kapts 🥑👷🏽‍♂️",
     price: 25,
-    stock: 15,
-    variants: 10,
-    description:
+    number: "2349056144059",
+    lastMessageTime: "2023-06-15T23:24:16.086+00:00",
+    enabled: true,
+    lastMessage:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
   },
   {
     id: 6,
-    name: 'NINA WOOF Dog Poop Bags with Handles - 200 Compostable & Biodegradable Dog Waste Bags for Puppy Walks, Travel, Thick Housebreaking Supplies, Premium Cornstarch Pet Trash Bag, Leak Fragrance-Free, 15"x 8"',
+    name: 'Chibuike',
     price: 87,
-    stock: 99,
-    variants: 2,
-    description:
+    number: "2349056144059",
+    lastMessageTime: "2023-10-27T06:24:16.086+00:00",
+    enabled: true,
+    lastMessage:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
   },
   {
     id: 7,
-    name: "Soft Cat Toys for Indoor Cats Self Play Pet Supplies Cat Gifts Interactive Pillows Cat nip Filled Toys 5PCS Plush Kitten Teething Toys Set Cute Kitty Chew Bite Toys Resistant Cartoon Cat Mouse Toys",
+    name: "Chukwuma",
     price: 149,
-    stock: 40,
-    variants: 0,
-    description:
+    number: "2349056144059",
+    lastMessageTime: "2023-10-27T11:24:16.086+00:00",
+    enabled: false,
+    lastMessage:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
   },
 ];
@@ -78,28 +86,41 @@ function classNames(...classes) {
 }
 
 export default function ProductsTable() {
-  const location = useLocation();
-  const uniqueId = uuidv4();
   const checkbox = useRef();
+  const [enabled, setEnabled] = useState(false);
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
   const [selectedPeople, setSelectedPeople] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [displayProducts, setDisplayProducts] = useState(products);
+  const [displayProducts, setDisplayProducts] = useState(customers);
   const [sortOrder, setSortOrder] = useState({
     name: "ascending",
     price: "ascending",
-    stock: "ascending",
+    lastMessageTime: "ascending",
     variants: "ascending",
-    description: "ascending",
+    lastMessage: "ascending",
+    enabled: "ascending"
   });
   const [sortOrderIcon, setSortOrderIcon] = useState({
     name: true,
     price: false,
-    stock: false,
+    lastMessageTime: false,
     variants: false,
-    description: false,
+    lastMessage: false,
+    enabled: false
   });
+
+  const toggleBotStatus = (index) => {
+    setDisplayProducts((prevProducts) => {
+      const updatedProducts = [...prevProducts];
+      updatedProducts[index] = {
+        ...updatedProducts[index],
+        enabled: !updatedProducts[index].enabled,
+      };
+      return updatedProducts;
+    });
+  };
+
   const toggleDeleteModal = (toggle) => {
     setIsDeleteModalOpen(toggle);
   };
@@ -110,10 +131,10 @@ export default function ProductsTable() {
       threshold: 0.4,
     };
 
-    const fuse = new Fuse(products, options);
+    const fuse = new Fuse(customers, options);
 
     if (input === "") {
-      setDisplayProducts(products);
+      setDisplayProducts(customers);
     } else {
       const result = fuse.search(input);
       setDisplayProducts(result.map((item) => item.item));
@@ -153,8 +174,9 @@ export default function ProductsTable() {
       name: false,
       price: false,
       variants: false,
-      stock: false,
-      description: false,
+      lastMessageTime: false,
+      lastMessage: false,
+      enabled: false,
       [column]: true,
     }));
 
@@ -166,14 +188,14 @@ export default function ProductsTable() {
 
   useLayoutEffect(() => {
     const isIndeterminate =
-      selectedPeople.length > 0 && selectedPeople.length < products.length;
-    setChecked(selectedPeople.length === products.length);
+      selectedPeople.length > 0 && selectedPeople.length < customers.length;
+    setChecked(selectedPeople.length === customers.length);
     setIndeterminate(isIndeterminate);
     checkbox.current.indeterminate = isIndeterminate;
   }, [selectedPeople]);
 
   function toggleAll() {
-    setSelectedPeople(checked || indeterminate ? [] : products);
+    setSelectedPeople(checked || indeterminate ? [] : customers);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
@@ -276,18 +298,18 @@ export default function ProductsTable() {
                         <button
                           href="#"
                           className="group inline-flex"
-                          onClick={() => handleSorting("price")}
+                          onClick={() => handleSorting("enabled")}
                         >
-                          Price
+                          Active
                           <span
                             className={classNames(
                               "ml-2 flex-none rounded bg-gray-100",
-                              sortOrderIcon["price"]
+                              sortOrderIcon["enabled"]
                                 ? "text-gray-700"
                                 : "text-gray-200"
                             )}
                           >
-                            {sortOrder["price"] === "ascending" ? (
+                            {sortOrder["enabled"] === "ascending" ? (
                               <ChevronDownIcon
                                 className="h-5 w-5"
                                 aria-hidden="true"
@@ -308,18 +330,18 @@ export default function ProductsTable() {
                         <button
                           href="#"
                           className="group inline-flex"
-                          onClick={() => handleSorting("stock")}
+                          onClick={() => handleSorting("lastMessage")}
                         >
-                          Stock
+                          Last Message
                           <span
                             className={classNames(
                               "ml-2 flex-none rounded bg-gray-100",
-                              sortOrderIcon["stock"]
+                              sortOrderIcon["lastMessage"]
                                 ? "text-gray-700"
                                 : "text-gray-200"
                             )}
                           >
-                            {sortOrder["stock"] === "ascending" ? (
+                            {sortOrder["lastMessage"] === "ascending" ? (
                               <ChevronDownIcon
                                 className="h-5 w-5"
                                 aria-hidden="true"
@@ -340,18 +362,18 @@ export default function ProductsTable() {
                         <button
                           href="#"
                           className="group inline-flex"
-                          onClick={() => handleSorting("variants")}
+                          onClick={() => handleSorting("lastMessageTime")}
                         >
-                          Variants
+                            Last Message Time
                           <span
                             className={classNames(
                               "ml-2 flex-none rounded bg-gray-100",
-                              sortOrderIcon["variants"]
+                              sortOrderIcon["lastMessageTime"]
                                 ? "text-gray-700"
                                 : "text-gray-200"
                             )}
                           >
-                            {sortOrder["variants"] === "ascending" ? (
+                            {sortOrder["lastMessageTime"] === "ascending" ? (
                               <ChevronDownIcon
                                 className="h-5 w-5"
                                 aria-hidden="true"
@@ -365,42 +387,11 @@ export default function ProductsTable() {
                           </span>
                         </button>
                       </th>
-                      <th
-                        scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        <button
-                          href="#"
-                          className="group inline-flex"
-                          onClick={() => handleSorting("description")}
-                        >
-                          Description
-                          <span
-                            className={classNames(
-                              "ml-2 flex-none rounded bg-gray-100",
-                              sortOrderIcon["description"]
-                                ? "text-gray-700"
-                                : "text-gray-200"
-                            )}
-                          >
-                            {sortOrder["description"] === "ascending" ? (
-                              <ChevronDownIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <ChevronUpIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </span>
-                        </button>
-                      </th>
+                    
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {displayProducts.map((person) => (
+                    {displayProducts.map((person, index) => (
                       <tr
                         key={person.id}
                         className={classNames(
@@ -415,7 +406,7 @@ export default function ProductsTable() {
                           <input
                             type="checkbox"
                             className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
-                            value={person.stock}
+                            value={person.lastMessageTime}
                             checked={selectedPeople.includes(person)}
                             onChange={(e) =>
                               setSelectedPeople(
@@ -426,29 +417,70 @@ export default function ProductsTable() {
                             }
                           />
                         </td>
-                        <td
-                          className={classNames(
-                            "whitespace-nowrap py-4 pr-3 text-sm font-medium max-w-xs truncate",
-                            selectedPeople.includes(person)
-                              ? "text-indigo-600"
-                              : "text-gray-900"
-                          )}
-                        >
-                          <Link to={location.pathname+"/product/" + uniqueId}>
-                            {person.name}
+                        <td className="whitespace-nowrap py-4 pr-3 text-sm font-medium max-w-xs truncate">
+                          <Link to={`https://wa.me/${person.number}`} target="_blank">
+                            <div className="flex items-center">
+                              <div className="h-10 w-10 flex-shrink-0">
+                                <img
+                                  className="h-10 w-10 rounded-full"
+                                  src={images.profile[index % 5]}
+                                  alt=""
+                                />
+                              </div>
+                              <div className="ml-4">
+                                <div
+                                  className={classNames(
+                                    "font-medium text-gray-900",
+                                    selectedPeople.includes(person)
+                                      ? "text-indigo-600"
+                                      : "text-gray-900"
+                                  )}
+                                >
+                                  {person.name}
+                                </div>
+                                <div
+                                  className={classNames(
+                                    "text-gray-500",
+                                    selectedPeople.includes(person)
+                                      ? "text-indigo-600"
+                                      : "text-gray-500"
+                                  )}
+                                >
+                                  {"+"+person.number}
+                                </div>
+                              </div>
+                            </div>
                           </Link>
                         </td>
+
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {"$" + person.price}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.stock}
-                        </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.variants}
+                          <Switch
+                            checked={person.enabled}
+                            onChange={() => {
+                              toggleBotStatus(index);
+                            }}
+                            className={classNames(
+                              person.enabled ? "bg-indigo-600" : "bg-gray-200",
+                              "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            )}
+                          >
+                            <span className="sr-only">Use setting</span>
+                            <span
+                              aria-hidden="true"
+                              className={classNames(
+                                person.enabled
+                                  ? "translate-x-5"
+                                  : "translate-x-0",
+                                "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                              )}
+                            />
+                          </Switch>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-xs truncate">
-                          {person.description}
+                          {person.lastMessage}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                          {person.lastMessageTime}
                         </td>
                       </tr>
                     ))}
@@ -461,9 +493,9 @@ export default function ProductsTable() {
       </div>
       {isDeleteModalOpen ? (
         <DeleteWarning
-          header={info.delete.product.header}
-          message={info.delete.product.message}
-          buttonText={info.delete.product.buttonText}
+          header={info.delete.conversation.header}
+          message={info.delete.conversation.message}
+          buttonText={info.delete.conversation.buttonText}
           toggleModal={toggleDeleteModal}
         />
       ) : (
