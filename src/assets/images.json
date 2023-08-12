@@ -44,5 +44,13 @@
         "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-06.jpg",
         "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-04.jpg",
         "https://tailwindui.com/img/ecommerce-images/product-page-03-product-01.jpg"
+    ],
+
+    "testimonials": [
+        "https://res.cloudinary.com/lcu-feeding/image/upload/c_scale,w_500/f_auto/q_auto:eco/v1691853478/chatbizz/resources/895700_Generate_testimonials_in_a_card_format_with_random_xl-1024-v1-0_edb6no.png",
+        "https://res.cloudinary.com/lcu-feeding/image/upload/c_scale,w_500/f_auto/q_auto:eco/v1691853481/chatbizz/resources/895699_Generate_testimonials_in_a_card_format_with_random_xl-1024-v1-0_lsinde.png",
+        "https://res.cloudinary.com/lcu-feeding/image/upload/c_scale,w_500/f_auto/q_auto:eco/v1691853481/chatbizz/resources/895698_Generate_testimonials_in_a_card_format_with_random_xl-1024-v1-0_bcooul.png",
+        "https://res.cloudinary.com/lcu-feeding/image/upload/c_scale,w_500/f_auto/q_auto:eco/v1691853481/chatbizz/resources/895701_Generate_testimonials_in_a_card_format_with_random_xl-1024-v1-0_hm57wi.png",
+        "https://res.cloudinary.com/lcu-feeding/image/upload/c_scale,w_500/f_auto/q_auto:eco/v1691853481/chatbizz/resources/188795_Generate_testimonials_in_a_card_format_with_random_xl-1024-v1-0_b0xcee.png"
     ]
 }
