@@ -23,6 +23,7 @@ function ImageUploadModal({
   toggleModal,
   updateDisplayImages,
   displayImages,
+  headerText
 }) {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
@@ -175,7 +176,7 @@ function ImageUploadModal({
               <div className="border-b border-gray-200">
                 <div className="sm:flex sm:items-baseline">
                   <h3 className="text-lg leading-6 font-bold text-gray-900">
-                    Files
+                    {headerText !== "Testimonials"? "Files" : "Testimonials"}
                   </h3>
                   <div className="mt-4 sm:mt-0 sm:ml-10">
                     <nav className="-mb-px flex space-x-8">

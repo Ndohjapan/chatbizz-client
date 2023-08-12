@@ -66,6 +66,48 @@ const files = [
     users: "2740 users",
     source: images.products[8],
   },
+  {
+    id: 9,
+    title: "Trial Users",
+    alt: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.products[8],
+  },
+  {
+    id: 10,
+    title: "Trial Users",
+    alt: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.testimonials[0],
+  },
+  {
+    id: 11,
+    title: "Trial Users",
+    alt: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.testimonials[1],
+  },
+  {
+    id: 12,
+    title: "Trial Users",
+    alt: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.testimonials[2],
+  },
+  {
+    id: 13,
+    title: "Trial Users",
+    alt: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.testimonials[3],
+  },
+  {
+    id: 14,
+    title: "Trial Users",
+    alt: "Last message sent 4 days ago",
+    users: "2740 users",
+    source: images.testimonials[4],
+  },
 ];
 
 function classNames(...classes) {

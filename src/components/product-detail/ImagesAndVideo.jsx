@@ -10,6 +10,7 @@ import { ImSpinner8 } from "react-icons/im";
 import ImageUploadModal from "../store/ImageUploadModal";
 import DeleteWarning from "../layout/DeleteWarning";
 import UpdateModal from "./sub-menus/UpdateModal";
+import ImageUploadIcon from "../../assets/ImageUploadIcon";
 
 const product = {
   name: info.products[0].name,
@@ -91,7 +92,8 @@ export default function ImagesAndVideo() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("video");
-
+  const [testimonialImages, setTestimonialImages] = useState([]);
+  const [buttonSelected, setButtonSelected] = useState([]);
 
   const toggleModal = (toggle) => {
     setIsModalOpen(toggle);
@@ -103,7 +105,7 @@ export default function ImagesAndVideo() {
 
   const toggleUpdateModal = (toggle) => {
     setIsUpdateModalOpen(toggle);
-  }
+  };
 
   const loadComplete = () => {
     setIsLoading(false);
@@ -120,10 +122,13 @@ export default function ImagesAndVideo() {
     setProductImages(images);
   };
 
+  const updateTestimonialImages = (images) => {
+    setTestimonialImages(images);
+  };
+
   return (
     <>
       <div>
-
         {/* Images Display */}
 
         <Tab.Group as="div" className="flex flex-col-reverse">
@@ -157,7 +162,10 @@ export default function ImagesAndVideo() {
                 </Tab>
               ))}
               <div
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setIsModalOpen(true)
+                  setButtonSelected("Product")
+                }}
                 className="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50"
               >
                 <>
@@ -237,7 +245,10 @@ export default function ImagesAndVideo() {
                     <div className="col-span-2 mt-1 flex items-center justify-end">
                       <a
                         href="#"
-                        onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("video")}}
+                        onClick={() => {
+                          setIsUpdateModalOpen(true);
+                          setSelectedSection("video");
+                        }}
                         className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                       >
                         Edit videos
@@ -281,10 +292,132 @@ export default function ImagesAndVideo() {
             </>
           )}
         </Disclosure>
+
+        {/* Testimonial Display */}
+
+        <Disclosure as="div" key={"testimonial-sections"}>
+          {({ open }) => (
+            <>
+              <h3>
+                <Disclosure.Button className="group relative w-full pb-6 pt-16 px-4 sm:px-0 flex justify-between items-center text-left">
+                  <span
+                    className={classNames(
+                      open ? "text-indigo-600" : "text-gray-900",
+                      "font-medium text-2xl"
+                    )}
+                  >
+                    <h3 className="text-2xl leading-6 font-medium text-gray-900">
+                      Testimonials
+                    </h3>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                      What buyers are saying
+                    </p>
+                  </span>
+                  <span className="ml-6 flex items-center">
+                    {open ? (
+                      <MinusSmIcon
+                        className="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                        aria-hidden="true"
+                        onClick={() => {
+                          handleAccordionToggle(false);
+                        }}
+                      />
+                    ) : (
+                      <PlusSmIcon
+                        className="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                        aria-hidden="true"
+                        onClick={() => {
+                          handleAccordionToggle(true);
+                        }}
+                      />
+                    )}
+                  </span>
+                </Disclosure.Button>
+              </h3>
+              <Disclosure.Panel
+                as="div"
+                className="pb-6 prose prose-sm grid grid-cols-1 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-col-2"
+              >
+                {
+                  <>
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                      <form className="space-y-6" action="#" method="POST">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Testimonials
+                          </label>
+                          <div
+                            onClick={() => {
+                              setIsModalOpen(true)
+                              setButtonSelected("Testimonial")
+                            }}
+                            className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer"
+                          >
+                            {testimonialImages.length === 0 ? (
+                              <>
+                                <div className="space-y-1 text-center">
+                                  <ImageUploadIcon />
+                                  <div className="flex text-sm text-gray-600">
+                                    <p className="pl-1">
+                                      Upload testimonials or select from uploaded
+                                      testimonials
+                                    </p>
+                                  </div>
+                                  <p className="text-xs text-gray-500">
+                                    PNG, JPG, JPEG up to 1MB each
+                                  </p>
+                                </div>
+                              </>
+                            ) : (
+                              <ul
+                                role="list"
+                                className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
+                              >
+                                {testimonialImages.map((image) => (
+                                  <li key={image.source} className="relative">
+                                    <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                                      <img
+                                        src={image.source}
+                                        alt=""
+                                        className="object-cover pointer-events-none group-hover:opacity-75"
+                                      />
+                                      <button
+                                        type="button"
+                                        className="absolute inset-0 focus:outline-none"
+                                      >
+                                        <span className="sr-only">
+                                          View details for {image.title}
+                                        </span>
+                                      </button>
+                                    </div>
+                                    <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
+                                      {image.title}
+                                    </p>
+                                    <p className="block text-sm font-medium text-gray-500 pointer-events-none">
+                                      {image.size}
+                                    </p>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </>
+                }
+              </Disclosure.Panel>
+            </>
+          )}
+        </Disclosure>
       </div>
 
       {isUpdatModalOpen ? (
-        <UpdateModal toggleModal={toggleUpdateModal} section={selectedSection} productInfo={info.products[0]} />
+        <UpdateModal
+          toggleModal={toggleUpdateModal}
+          section={selectedSection}
+          productInfo={info.products[0]}
+        />
       ) : (
         <></>
       )}
@@ -293,8 +426,9 @@ export default function ImagesAndVideo() {
         <ImageUploadModal
           isModalOpen={isModalOpen}
           toggleModal={toggleModal}
-          updateDisplayImages={updateProductImages}
-          displayImages={productImages}
+          updateDisplayImages={buttonSelected === "Product" ? updateProductImages : updateTestimonialImages}
+          displayImages={buttonSelected === "Product" ? productImages : testimonialImages}
+          headerText={buttonSelected === "Product" ? "Files" : "Testimonials"}
         />
       ) : (
         <></>
