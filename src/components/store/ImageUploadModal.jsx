@@ -61,7 +61,7 @@ function ImageUploadModal({
         );
         data.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
         data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-        data.append("folder", `chatbizz/users/${userInfo.uid}`);
+        data.append("folder", `chatbizz/users/${userInfo.uid}/products`);
 
         return new Promise((resolve, reject) => {
           const config = {
