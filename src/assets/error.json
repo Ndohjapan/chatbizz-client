@@ -12,6 +12,6 @@
     "error-signin": "Error signing in. Try again",
     "error-reset-password": "Error sending mail or user not found",
     "error-max-file": "You can only upload up to 7 files.",
-    "error-file-size": "The following files exceed the maximum allowed size 5MB: ",
+    "error-file-size": "The following files exceeds the maximum allowed size ",
     "title-error": "Error"
 }

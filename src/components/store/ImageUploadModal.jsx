@@ -214,6 +214,7 @@ function ImageUploadModal({
                         selectedFiles={selectedFiles}
                         setSelectedFiles={setSelectedFiles}
                         setPercentages={setPercentages}
+                        FileLimit = {headerText !== "Testimonials"? "Products" : "Testimonials"}
                       />
                     );
                   case "All":
