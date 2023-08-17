@@ -5,10 +5,15 @@ import ImageUploadIcon from "../../../assets/ImageUploadIcon";
 import { useDispatch } from "react-redux";
 import { showToast } from "../../../slices/authSlice";
 import errors from "../../../assets/error.json"
-const maxFilesLimit = 7;
-const maxFileSize = 5242880;
+const fileLimit = {"Products": {
+  maxFilesLimit: 7, 
+  maxFileSize: 5242880,
+}, "Testimonials": {
+  maxFilesLimit: 7,
+  maxFileSize: 1048576
+}}
 
-function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFiles, setPercentages}) {
+function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFiles, setPercentages, FileLimit}) {
   useEffect(() => {
     // Recalculate the container height on selectedFiles change
     const container = document.getElementById("file-container");
@@ -21,6 +26,9 @@ function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFi
       }
     }
   }, [selectedFiles]);
+
+  const maxFilesLimit = fileLimit[FileLimit].maxFilesLimit;
+  const maxFileSize = fileLimit[FileLimit].maxFileSize;
 
   const dispatch = useDispatch();
 
@@ -41,7 +49,6 @@ function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFi
   const handleDrop = (event) => {
     event.preventDefault();
     const files = Array.from(event.dataTransfer.files);
-
     if (files.length > maxFilesLimit) {
         dispatch(showToast({title: errors["title-error"], message: errors["error-max-file"]}));
         return;
@@ -49,7 +56,7 @@ function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFi
       
       const invalidFiles = files.filter((file) => file.size > maxFileSize);
       if (invalidFiles.length > 0) {
-        dispatch(showToast({title: errors["title-error"], message: errors["error-file-size"]+invalidFiles.map(file => file.name).join(", ")}));
+        dispatch(showToast({title: errors["title-error"], message: errors["error-file-size"]+ ` ${maxFileSize/1048576}MB: ` +invalidFiles.map(file => file.name).join(", ")}));
         return;
       }
 
@@ -70,7 +77,7 @@ function FileUpload({isDragActive, setIsDragActive, selectedFiles, setSelectedFi
     
     const invalidFiles = fileArray.filter((file) => file.size > maxFileSize);
     if (invalidFiles.length > 0) {
-      dispatch(showToast({title: errors["title-error"], message: errors["error-file-size"]+invalidFiles.map(file => file.name).join(", ")}));
+      dispatch(showToast({title: errors["title-error"], message: errors["error-file-size"]+` ${maxFileSize/1048576}MB: `+invalidFiles.map(file => file.name).join(", ")}));
       return;
     }
 
