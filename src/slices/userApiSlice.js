@@ -23,17 +23,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    getStudentsInroom: builder.mutation({
+    createStore: builder.mutation({
       query: (data) => ({
-        url: `${BASE_URL}/user/filter?page=${data.page}&limit=${data.limit}`,
+        url: `${BASE_URL}/stores`,
         method: "POST",
         headers: {
-          "x-access-token": (data.token)
+          "x-access-token": data.token
         },
-        body: {room: data.room}
+        body: data.storeData
       }),
     }),
   })
 });
 
-export const { useGetAvailableRoomsMutation, useGetStudentsInroomMutation, useLoginMutation } = usersApiSlice;
+export const { useLoginMutation, useCreateStoreMutation } = usersApiSlice;

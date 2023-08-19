@@ -1,5 +1,8 @@
 import { useState } from "react";
 import info from "../../../assets/information.json";
+import { useDispatch, useSelector } from "react-redux";
+import { setNewStoreAbout, setNewStoreName, setNewStoreWANum } from "../../../slices/authSlice";
+
 
 function StoreInformation() {
   const [formData, setFormData] = useState({
@@ -7,6 +10,11 @@ function StoreInformation() {
     number: "",
     about: "",
   });
+
+  const newStoreName = useSelector((state) => state.auth.newStoreName);
+  const newStoreWANum = useSelector((state) => state.auth.newStoreWANum);
+  const newStoreAbout = useSelector((state) => state.auth.newStoreAbout);
+  const dispatch = useDispatch();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -22,15 +30,19 @@ function StoreInformation() {
       case "name":
         if (value.trim().length < 3) {
           newErrors[name] = `Must be at least 3 characters long`;
+          dispatch(setNewStoreName(""));
         } else {
           delete newErrors[name];
+          dispatch(setNewStoreName(value));
         }
         break;
       case "about":
         if (value.trim().length < 20) {
           newErrors[name] = `Must be at least 20 characters long`;
+          dispatch(setNewStoreAbout(""));
         } else {
           delete newErrors[name];
+          dispatch(setNewStoreAbout(value));
         }
         break;
 
@@ -39,8 +51,10 @@ function StoreInformation() {
         const numberRegex = /^\+?[0-9]{10,}$/;
         if (!numberRegex.test(value)) {
           newErrors[name] = "Invalid phone number format";
+          dispatch(setNewStoreWANum(""));
         } else {
           delete newErrors[name];
+          dispatch(setNewStoreWANum(value));
         }
         break;
 
@@ -88,9 +102,7 @@ function StoreInformation() {
                     />
                   </div>
                   {errors.name && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.name}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.name}</p>
                   )}
                 </div>
               </div>
@@ -116,9 +128,7 @@ function StoreInformation() {
                     />
                   </div>
                   {errors.number && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.number}
-                    </p>
+                    <p className="text-red-500 text-sm mt-1">{errors.number}</p>
                   )}
                 </div>
               </div>
@@ -143,14 +153,11 @@ function StoreInformation() {
                   />
                 </div>
                 {errors.about && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.about}
-                    </p>
-                  )}
+                  <p className="text-red-500 text-sm mt-1">{errors.about}</p>
+                )}
                 <p className="mt-2 text-sm text-gray-500">
                   Briefly describe your store.
                 </p>
-
               </div>
             </form>
           </div>
