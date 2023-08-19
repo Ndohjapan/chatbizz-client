@@ -10,7 +10,14 @@ export default function Toast({ message, title, onClose }) {
 
   useEffect(() => {
     setCircleCheck(title !== errors["title-error"]);
-  }, [title]);
+
+    const timer = setTimeout(() => {
+      setShow(false);
+      onClose();
+    }, 5000);
+    
+    return () => clearTimeout(timer);
+  }, [onClose, title]);
 
   return (
     <>
@@ -18,7 +25,6 @@ export default function Toast({ message, title, onClose }) {
         className={`fixed top-4 right-4 z-50 ${
           show ? "animate-slide-in-right" : "animate-slide-out-right"
         } ${
-          // Custom responsive width classes
           "w-64 md:w-96"
         }`}
       >
