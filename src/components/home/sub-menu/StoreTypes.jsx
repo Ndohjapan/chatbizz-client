@@ -2,6 +2,8 @@ import { RadioGroup } from "@headlessui/react";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import images from "../../../assets/images.json"
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setNewStoreType } from "../../../slices/authSlice";
 
 const types = [
   {
@@ -27,6 +29,9 @@ function classNames(...classes) {
 function StoreTypes() {
 
   const [selectedStoreType, setSelectStoreType] = useState(types[0]);
+
+  const dispatch = useDispatch();
+  const newStoreType = useSelector((state) => state.auth.newStoreType);
 
 
   return (
@@ -60,8 +65,9 @@ function StoreTypes() {
                   <div
                     className="flex-1 flex"
                     onMouseDown={(e) => {
-                      e.preventDefault(); // Prevent the default behavior to avoid closing the modal
-                      setSelectStoreType(type); // Handle the selection of the radio element
+                      e.preventDefault();
+                      setSelectStoreType(type);
+                      dispatch(setNewStoreType(type.title))
                     }}
                   >
                     <div className="bg-white overflow-hidden shadow rounded-lg cursor-pointer">

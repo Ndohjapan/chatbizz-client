@@ -5,6 +5,10 @@ const initialState = {
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
   twk: localStorage.getItem("twk") ? localStorage.getItem("twk") : null,
+  newStoreName: "",
+  newStoreType: "",
+  newStoreAbout: "",
+  newStoreWANum: "",
   toast: {
     show: false,
     message: "",
@@ -23,9 +27,25 @@ const authSlice = createSlice({
       localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
       localStorage.setItem("twk", accessToken);
     },
+    setNewStoreName: (state, action) => {
+      state.newStoreName = action.payload;
+    },
+    setNewStoreType: (state, action) => {
+      state.newStoreType = action.payload;
+    },
+    setNewStoreAbout: (state, action) => {
+      state.newStoreAbout = action.payload;
+    },
+    setNewStoreWANum: (state, action) => {
+      state.newStoreWANum = action.payload;
+    },
     logout: (state, action) => {
       state.userInfo = null;
       state.twk = null;
+      state.newStoreName = "";
+      state.newStoreType = "Ecommerce";
+      state.newStoreAbout = "";
+      state.newStoreWANum = "";
       localStorage.removeItem("userInfo");
       localStorage.removeItem("twk");
     },
@@ -42,7 +62,15 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout, showToast, hideToast } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  setNewStoreName,
+  setNewStoreType,
+  setNewStoreAbout,
+  setNewStoreWANum,
+  logout,
+  showToast,
+  hideToast,
+} = authSlice.actions;
 
 export default authSlice.reducer;
