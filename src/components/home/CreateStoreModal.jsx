@@ -1,9 +1,15 @@
+import { useDispatch, useSelector } from "react-redux";
+import { useCreateStoreMutation } from "../../slices/userApiSlice";
+import { showToast } from "../../slices/authSlice";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
 import StoreTypes from "./sub-menu/StoreTypes";
 import StoreInformation from "./sub-menu/StoreInformation";
 import QRCodeView from "./sub-menu/QRCodeView";
+import { ImSpinner8 } from "react-icons/im";
+import errors from "../../assets/error.json";
+import info from "../../assets/information.json";
 
 const steps = [
   { name: "Step 1", href: "#", status: "complete", num: 1 },
@@ -21,6 +27,14 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
   const cancelButtonRef = useRef(null);
   const [stepNum, setStepNum] = useState(1);
 
+  const newStoreName = useSelector((state) => state.auth.newStoreName);
+  const newStoreWANum = useSelector((state) => state.auth.newStoreWANum);
+  const newStoreAbout = useSelector((state) => state.auth.newStoreAbout);
+  const newStoreType = useSelector((state) => state.auth.newStoreType);
+  const twk = useSelector((state) => state.auth.twk);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setOpen(isModalOpen);
     setStepNum(1);
@@ -35,9 +49,58 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
   };
 
   const handleNext = () => {
-    const nextNum = stepNum + 1
+    const nextNum = stepNum + 1;
     setStepNum(nextNum);
-  }
+  };
+
+  // Initialize the mutation hook
+  const [createStoreMutation, { isLoading: isCreatingStore }] =
+    useCreateStoreMutation();
+
+  const handleCreateStore = async () => {
+    const storeData = {
+      name: newStoreName,
+      storeType: newStoreType,
+      about: newStoreAbout,
+      whatsappNumber: newStoreWANum,
+    };
+
+    try {
+      const res = await createStoreMutation({ storeData, token: twk });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      dispatch(showToast({message: info["store-created"]}))
+      handleNext();
+      return res.data;
+    } catch (error) {
+      const message = JSON.parse(error.message);
+      if (message && message.data && message.data.validationErrors) {
+        const validationErrors = message.data.validationErrors;
+        const errorMessage = Object.values(validationErrors).join('\n, ');
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+        
+      } else if (message && message.data && message.data.message) {
+        const errorMessage = message.data.message;
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+      } else {
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errors["error-signin"],
+          })
+        );
+      }
+    }
+  };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -87,7 +150,9 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                         "relative"
                       )}
                       onClick={() => {
-                        setStepNum(step.num)
+                        if (step.num !== 3 && !isCreatingStore) {
+                          setStepNum(step.num);
+                        }
                       }}
                     >
                       {step.num < stepNum ? (
@@ -98,9 +163,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                           >
                             <div className="h-0.5 w-full bg-indigo-600" />
                           </div>
-                          <a
-                            className="relative w-8 h-8 flex items-center justify-center bg-indigo-600 rounded-full hover:bg-indigo-900"
-                          >
+                          <a className="relative w-8 h-8 flex items-center justify-center bg-indigo-600 rounded-full hover:bg-indigo-900">
                             <CheckIcon
                               className="w-5 h-5 text-white"
                               aria-hidden="true"
@@ -135,9 +198,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                           >
                             <div className="h-0.5 w-full bg-gray-200" />
                           </div>
-                          <a
-                            className="group relative w-8 h-8 flex items-center justify-center bg-white border-2 border-gray-300 rounded-full hover:border-gray-400"
-                          >
+                          <a className="group relative w-8 h-8 flex items-center justify-center bg-white border-2 border-gray-300 rounded-full hover:border-gray-400">
                             <span
                               className="h-2.5 w-2.5 bg-transparent rounded-full group-hover:bg-gray-300"
                               aria-hidden="true"
@@ -155,29 +216,43 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                   case 1:
                     return <StoreTypes />;
                   case 2:
-                    return <StoreInformation/>;
+                    return <StoreInformation />;
                   case 3:
-                    return <QRCodeView/>;
+                    return <QRCodeView />;
                   default:
                     return null;
                 }
               })()}
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                <button
-                  disabled={stepNum === 3 ? true : false}
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={handleNext}
-                >
-                  {stepNum === 3? "Submit" : "Next"}
-                </button>
+                {stepNum === 2 ? (
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={handleCreateStore}
+                  >
+                    {isCreatingStore ? (
+                      <ImSpinner8 className="animate-spin h-5 w-5 mr-3" />
+                    ) : (
+                      "Create"
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    disabled={stepNum === 3 ? true : false}
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={handleNext}
+                  >
+                    {stepNum === 3 ? "Continue" : "Next"}
+                  </button>
+                )}
                 <button
                   type="button"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
                   onClick={handleClose}
                   ref={cancelButtonRef}
                 >
-                  Cancel
+                  Close
                 </button>
               </div>
             </div>
