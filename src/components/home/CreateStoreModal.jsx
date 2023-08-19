@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useCreateStoreMutation } from "../../slices/userApiSlice";
-import { showToast } from "../../slices/authSlice";
+import { showToast, logout } from "../../slices/authSlice";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
@@ -10,6 +10,7 @@ import QRCodeView from "./sub-menu/QRCodeView";
 import { ImSpinner8 } from "react-icons/im";
 import errors from "../../assets/error.json";
 import info from "../../assets/information.json";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   { name: "Step 1", href: "#", status: "complete", num: 1 },
@@ -33,6 +34,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
   const newStoreType = useSelector((state) => state.auth.newStoreType);
   const twk = useSelector((state) => state.auth.twk);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -73,6 +75,12 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
       return res.data;
     } catch (error) {
       const message = JSON.parse(error.message);
+
+      if(message.status === 401){
+        dispatch(logout());
+        navigate("/login");
+      }
+
       if (message && message.data && message.data.validationErrors) {
         const validationErrors = message.data.validationErrors;
         const errorMessage = Object.values(validationErrors).join('\n, ');
