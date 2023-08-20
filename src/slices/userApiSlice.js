@@ -5,16 +5,6 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
 
-    getAvailableRooms: builder.mutation({
-      query: (data) => ({
-        url: `${BASE_URL}/room/available/${data.roomId}`,
-        method: "GET",
-        headers: {
-          "x-access-token": (data.token)
-        }
-      }),
-    }),
-
     login: builder.mutation({
       query: (data) => ({
         url: `${BASE_URL}/auth/login`,
@@ -33,7 +23,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data.storeData
       }),
     }),
+
+    getQR: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/stores/qr/${data.phone}`,
+        method: "GET",
+        headers: {
+          "x-access-token": data.token
+        }
+      }),
+    }),
   })
 });
 
-export const { useLoginMutation, useCreateStoreMutation } = usersApiSlice;
+export const { useLoginMutation, useCreateStoreMutation, useGetQRMutation } = usersApiSlice;
