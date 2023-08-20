@@ -158,7 +158,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                         "relative"
                       )}
                       onClick={() => {
-                        if (step.num !== 3 && !isCreatingStore) {
+                        if (step.num === 1 && !isCreatingStore) {
                           setStepNum(step.num);
                         }
                       }}
