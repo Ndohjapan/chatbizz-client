@@ -1,8 +1,14 @@
 import { useState } from "react";
+import { PhoneNumberUtil } from "google-libphonenumber";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import info from "../../../assets/information.json";
 import { useDispatch, useSelector } from "react-redux";
-import { setNewStoreAbout, setNewStoreName, setNewStoreWANum } from "../../../slices/authSlice";
-
+import {
+  setNewStoreAbout,
+  setNewStoreName,
+  setNewStoreWANum,
+} from "../../../slices/authSlice";
 
 function StoreInformation() {
   const [formData, setFormData] = useState({
@@ -10,17 +16,42 @@ function StoreInformation() {
     number: "",
     about: "",
   });
+  const [phone, setPhone] = useState("");
+  const [isValid, setIsValid] = useState(false);
 
   const newStoreName = useSelector((state) => state.auth.newStoreName);
   const newStoreWANum = useSelector((state) => state.auth.newStoreWANum);
   const newStoreAbout = useSelector((state) => state.auth.newStoreAbout);
   const dispatch = useDispatch();
 
+  const phoneUtil = PhoneNumberUtil.getInstance();
+
+  const isPhoneValid = (phone) => {
+    try {
+      return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone));
+    } catch (error) {
+      return false;
+    }
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
 
     validateInput(name, value);
+  };
+
+  const handleWAInput = (phone) => {
+    const response = isPhoneValid(phone);
+
+    if (!response) {
+      dispatch(setNewStoreWANum(""));
+    } else {
+      dispatch(setNewStoreWANum(phone.split(" ").join("")));
+    }
+
+    setIsValid(response);
+    setPhone(phone);
   };
 
   const validateInput = (name, value) => {
@@ -116,19 +147,23 @@ function StoreInformation() {
                     Whatsapp Phone <span className="text-red-500">*</span>
                   </label>
                   <div className="mt-1 flex rounded-md border-2 shadow-sm">
-                    <input
-                      type="text"
-                      name="number"
-                      id="number"
-                      required
-                      value={formData.number}
-                      onChange={handleInputChange}
-                      className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300 p-2"
-                      placeholder={info.store.number}
+                    <PhoneInput
+                      defaultCountry="ng"
+                      value={phone}
+                      placeholder="9012345678"
+                      onChange={(phone) => {
+                        handleWAInput(phone);
+                      }}
+                      inputClassName="focus:ring-indigo-500 focus:border-indigo-500 flex w-full rounded-md sm:text-sm border-gray-300 p-2 border-r-transparent"
+                      className="w-full"
+                      inputStyle={{padding: "0.5rem"}}
+                      countrySelectorStyleProps={{buttonStyle: {padding: "0.5rem"}}}
                     />
                   </div>
-                  {errors.number && (
-                    <p className="text-red-500 text-sm mt-1">{errors.number}</p>
+                  {!isValid && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Invalid Phone number
+                    </p>
                   )}
                 </div>
               </div>
