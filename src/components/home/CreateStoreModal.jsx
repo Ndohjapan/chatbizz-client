@@ -76,6 +76,8 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
     } catch (error) {
       const message = JSON.parse(error.message);
 
+      console.log(message);
+
       if(message.status === 401){
         dispatch(logout());
         navigate("/login");

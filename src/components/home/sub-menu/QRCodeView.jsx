@@ -6,7 +6,7 @@ import { useGetQRMutation } from "../../../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout, showToast } from "../../../slices/authSlice";
-import errors from '../../../assets/error.json';
+import errors from "../../../assets/error.json";
 import { ImSpinner8 } from "react-icons/im";
 
 function QRCodeView() {
@@ -20,35 +20,29 @@ function QRCodeView() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const handleGetQR = async () => {
-      try {
-        const res = await getQRCodeMutation({ phone: newStoreWANum, token: twk });
-        if (res.error) throw Error(JSON.stringify(res.error));
-        return res.data;
-      } catch (error) {
-        const message = JSON.parse(error.message);
-  
-        if (message.status === 401) {
-          dispatch(logout());
-          navigate("/login");
-        }
-  
-        const errorMessage = message.data.message;
-        dispatch(
-          showToast({
-            title: errors["title-error"],
-            message: errorMessage,
-          })
-        );
+  const handleGetQR = async () => {
+    try {
+      const res = await getQRCodeMutation({ phone: newStoreWANum, token: twk });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      setQrCode(res.data.qrCodeUrl);
+      return res.data;
+    } catch (error) {
+      const message = JSON.parse(error.message);
+
+      if (message.status === 401) {
+        dispatch(logout());
+        navigate("/login");
       }
-    };
 
-    handleGetQR().then(result => {
-      setQrCode(result.qrCodeUrl);
-    });
-
-  }, []);
+      const errorMessage = message.data.message;
+      dispatch(
+        showToast({
+          title: errors["title-error"],
+          message: errorMessage,
+        })
+      );
+    }
+  };
 
   return (
     <div className="space-y-6 mt-4">
@@ -71,12 +65,20 @@ function QRCodeView() {
                 src={qrCode}
                 alt="qr code"
               />
-
             ) : (
               <>
-              <div className="flex items-center justify-center h-full">
-              <ImSpinner8 className="text-7xl animate-spin text-gray-400"/>
-              </div>
+                <div className="flex items-center justify-center h-full">
+                  {isQRLoading ? (
+                    <ImSpinner8 className="text-7xl animate-spin text-gray-400" />
+                  ) : (
+                    <button
+                      onClick={handleGetQR}
+                      className="py-3 px-3 bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 border border-transparent rounded-md shadow-sm text-sm text-white font-medium "
+                    >
+                      Generate Qr
+                    </button>
+                  )}
+                </div>
               </>
             )}
             {/* {displayComponent === "checkmark" && <CheckMark />} */}
