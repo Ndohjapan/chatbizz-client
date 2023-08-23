@@ -21,7 +21,7 @@ function CheckMark() {
               </svg>
             </div>
             <div>
-              <h1 className="text-center text-gray-700 font-medium">Click on the submit button</h1>
+              <h1 className="text-center text-gray-700 font-medium">Click on the next button</h1>
             </div>
           </div>
         </>

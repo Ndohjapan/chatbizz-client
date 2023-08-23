@@ -25,6 +25,7 @@ function classNames(...classes) {
 // eslint-disable-next-line react/prop-types
 function CreateStoreModal({ isModalOpen, toggleModal }) {
   const [open, setOpen] = useState(false);
+  const [qrScanned, setQrScanned] = useState(false);
   const cancelButtonRef = useRef(null);
   const [stepNum, setStepNum] = useState(1);
 
@@ -52,6 +53,9 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
 
   const handleNext = () => {
     const nextNum = stepNum + 1;
+    if(nextNum > 3){
+      return handleClose();
+    }
     setStepNum(nextNum);
   };
 
@@ -70,7 +74,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
     try {
       const res = await createStoreMutation({ storeData, token: twk });
       if (res.error) throw Error(JSON.stringify(res.error));
-      dispatch(showToast({message: info["store-created"]}))
+      dispatch(showToast({ message: info["store-created"] }));
       handleNext();
       return res.data;
     } catch (error) {
@@ -78,21 +82,20 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
 
       console.log(message);
 
-      if(message.status === 401){
+      if (message.status === 401) {
         dispatch(logout());
         navigate("/login");
       }
 
       if (message && message.data && message.data.validationErrors) {
         const validationErrors = message.data.validationErrors;
-        const errorMessage = Object.values(validationErrors).join('\n, ');
+        const errorMessage = Object.values(validationErrors).join("\n, ");
         dispatch(
           showToast({
             title: errors["title-error"],
             message: errorMessage,
           })
         );
-        
       } else if (message && message.data && message.data.message) {
         const errorMessage = message.data.message;
         dispatch(
@@ -228,13 +231,23 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                   case 2:
                     return <StoreInformation />;
                   case 3:
-                    return <QRCodeView />;
+                    return <QRCodeView   qrScanned={qrScanned}
+                    setQrScanned={setQrScanned} />;
                   default:
                     return null;
                 }
               })()}
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                {stepNum === 2 ? (
+                {stepNum === 1 && (
+                  <button
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={handleNext}
+                  >
+                    {stepNum === 3 ? "Continue" : "Next"}
+                  </button>
+                )}
+                {stepNum === 2 && (
                   <button
                     type="button"
                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
@@ -246,14 +259,17 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
                       "Create"
                     )}
                   </button>
-                ) : (
+                )}
+                {stepNum === 3 && (
                   <button
-                    disabled={stepNum === 3 ? true : false}
                     type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    disabled={!qrScanned}
+                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium ${
+                      qrScanned ? "bg-indigo-600" : "bg-indigo-200"
+                    } text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm`}
                     onClick={handleNext}
                   >
-                    {stepNum === 3 ? "Continue" : "Next"}
+                    Continue
                   </button>
                 )}
                 <button
