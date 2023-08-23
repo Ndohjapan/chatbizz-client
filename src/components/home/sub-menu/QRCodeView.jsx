@@ -8,12 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { logout, showToast } from "../../../slices/authSlice";
 import errors from "../../../assets/error.json";
 import { ImSpinner8 } from "react-icons/im";
+import io from "socket.io-client";
 
-function QRCodeView() {
-  const [hideCode, setHideCode] = useState(false);
+function QRCodeView({qrScanned, setQrScanned}) {
   const [qrCode, setQrCode] = useState(null);
-  const [displayComponent, setDisplayComponent] = useState("");
-  const [getQRCodeMutation, { isLoading: isQRLoading }] = useGetQRMutation();
+  const [isQrLoading, setIsQrLoading] = useState(false);
+  const [displayQrScanSuccess, setDisplayQrScanSuccess] = useState(false);
+  const [displayQrScanFail, setDisplayQrScanFail] = useState(false);
+  const [getQRCodeMutation, { isLoading: requestQrLoading }] =
+    useGetQRMutation();
   const newStoreWANum = useSelector((state) => state.auth.newStoreWANum);
   const twk = useSelector((state) => state.auth.twk);
 
@@ -22,9 +25,35 @@ function QRCodeView() {
 
   const handleGetQR = async () => {
     try {
+      setIsQrLoading(true);
+      const socket = io(import.meta.env.VITE_SCOKET_URL, {
+        transportOptions: {
+          polling: {
+            extraHeaders: {
+              token: twk,
+            },
+          },
+        },
+      });
+
       const res = await getQRCodeMutation({ phone: newStoreWANum, token: twk });
       if (res.error) throw Error(JSON.stringify(res.error));
-      setQrCode(res.data.qrCodeUrl);
+
+      socket.on(`${newStoreWANum}-qr-code`, (data) => {
+        setIsQrLoading(false)
+        setQrCode(data);
+      });
+
+      socket.on(`${newStoreWANum}`, (data) => {
+        console.log("Recieved: ", data);
+        setDisplayQrScanSuccess(true);
+        setQrScanned(true);
+      });
+
+      socket.on(`${newStoreWANum}-error`, () => {
+        setDisplayQrScanFail(true);
+      });
+
       return res.data;
     } catch (error) {
       const message = JSON.parse(error.message);
@@ -53,22 +82,30 @@ function QRCodeView() {
               Whatsapp Code
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              Scan code to set up the bot for your store. Enable the bot from
+              Scan code to set up the bot for your store and <strong className='text-black'>wait for the green mark.</strong>  
+              
+              <br />
+              Enable the bot from
               your store menu once successful.
             </p>
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
             {qrCode ? (
-              <img
-                // hidden={hideCode}
-                className="w-full h-full mx-auto md:max-w-xs"
-                src={qrCode}
-                alt="qr code"
-              />
+              <>
+                {!displayQrScanSuccess ? (
+                  <img
+                    className="w-full h-full mx-auto md:max-w-xs"
+                    src={qrCode}
+                    alt="qr code"
+                  />
+                ) : (
+                  <>{!displayQrScanFail ? <CheckMark /> : <XMark />}</>
+                )}
+              </>
             ) : (
               <>
                 <div className="flex items-center justify-center h-full">
-                  {isQRLoading ? (
+                  {isQrLoading ? (
                     <ImSpinner8 className="text-7xl animate-spin text-gray-400" />
                   ) : (
                     <button
@@ -81,8 +118,6 @@ function QRCodeView() {
                 </div>
               </>
             )}
-            {/* {displayComponent === "checkmark" && <CheckMark />} */}
-            {/* {displayComponent === "xmark" && <XMark />} */}
           </div>
         </div>
       </div>
