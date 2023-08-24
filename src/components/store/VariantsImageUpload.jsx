@@ -213,6 +213,7 @@ function VariantsImageUpload({
                         selectedFiles={selectedFiles}
                         setSelectedFiles={setSelectedFiles}
                         setPercentages={setPercentages}
+                        FileLimit={"Products"}
                       />
                     );
                   case "All":
