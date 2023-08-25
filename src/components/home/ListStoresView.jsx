@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-function ListStoresView({files}) {
+function ListStoresView({ stores }) {
   return (
     <>
       <main>
@@ -11,27 +11,40 @@ function ListStoresView({files}) {
               role="list"
               className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
             >
-              {files.map((file) => (
+              {stores.map((store) => (
                 <div
-                  key={file.id}
+                  key={store._id}
                   className="bg-white overflow-hidden shadow rounded-lg cursor-pointer"
                 >
                   <Link to="/store/1234">
-                  <div className="px-4 py-5 sm:p-6">
-                    {/* Content goes here */}
-                    <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
-                    <img
-                      src={file.source}
-                      alt=""
-                      className="object-cover pointer-events-none group-hover:opacity-75"
-                    />
-                  </div>
+                    <div className="px-4 py-5 sm:p-6">
+                      {/* Content goes here */}
+                      <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                        <img
+                          src={store.image}
+                          alt={store.name}
+                          className="object-cover pointer-events-none group-hover:opacity-75"
+                        />
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 px-4 py-4 sm:px-6">
+                      <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
+                        {store.name}
 
-                  </div>
-                  <div className="bg-gray-50 px-4 py-4 sm:px-6">
-                  <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">{file.title}</p>
-          <p className="block text-sm font-medium text-gray-500 pointer-events-none">{file.size}</p>
-                  </div>
+                        {store.whatsappConnected ? (
+                          <span className="ml-3 inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                            Connected
+                          </span>
+                        ) : (
+                          <span className="ml-3 inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                            Disconnected
+                          </span>
+                        )}
+                      </p>
+                      <p className="block text-sm font-medium text-gray-500 pointer-events-none">
+                        {store.storeType}
+                      </p>
+                    </div>
                   </Link>
                 </div>
               ))}
