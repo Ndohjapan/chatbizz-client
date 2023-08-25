@@ -49,6 +49,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
     setOpen(false);
     setTimeout(() => {
       setStepNum(1);
+      dispatch(setNewStoreAlert());
       toggleModal(false);
     }, 300);
   };
@@ -56,7 +57,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
   const handleNext = () => {
     const nextNum = stepNum + 1;
     if(nextNum > 3){
-      dispatch(setNewStoreAlert())
+      dispatch(setNewStoreAlert());
       return handleClose();
     }
     setStepNum(nextNum);
