@@ -14,6 +14,7 @@ const initialState = {
     message: "",
     title: "Successful",
   },
+  newStoreAlert: 0
 };
 
 const authSlice = createSlice({
@@ -38,6 +39,9 @@ const authSlice = createSlice({
     },
     setNewStoreWANum: (state, action) => {
       state.newStoreWANum = action.payload;
+    },
+    setNewStoreAlert: (state, action) => {
+      state.newStoreAlert += 1
     },
     logout: (state, action) => {
       state.userInfo = null;
@@ -71,6 +75,7 @@ export const {
   logout,
   showToast,
   hideToast,
+  setNewStoreAlert
 } = authSlice.actions;
 
 export default authSlice.reducer;

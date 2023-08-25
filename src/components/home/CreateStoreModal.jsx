@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useCreateStoreMutation } from "../../slices/userApiSlice";
-import { showToast, logout } from "../../slices/authSlice";
+import { showToast, logout, setNewStoreAlert } from "../../slices/authSlice";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/solid";
@@ -11,6 +11,8 @@ import { ImSpinner8 } from "react-icons/im";
 import errors from "../../assets/error.json";
 import info from "../../assets/information.json";
 import { useNavigate } from "react-router-dom";
+import random from "random";
+import images from "../../assets/images.json";
 
 const steps = [
   { name: "Step 1", href: "#", status: "complete", num: 1 },
@@ -47,6 +49,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
     setOpen(false);
     setTimeout(() => {
       setStepNum(1);
+      dispatch(setNewStoreAlert());
       toggleModal(false);
     }, 300);
   };
@@ -54,6 +57,7 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
   const handleNext = () => {
     const nextNum = stepNum + 1;
     if(nextNum > 3){
+      dispatch(setNewStoreAlert());
       return handleClose();
     }
     setStepNum(nextNum);
@@ -69,7 +73,9 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
       storeType: newStoreType,
       about: newStoreAbout,
       whatsappNumber: newStoreWANum,
+      image: newStoreType === "Ecommerce" ?  images.illustration.ecommerce[random.int(0, 3)] : images.illustration["digital-product"][random.int(0, 3)]
     };
+
 
     try {
       const res = await createStoreMutation({ storeData, token: twk });
@@ -79,8 +85,6 @@ function CreateStoreModal({ isModalOpen, toggleModal }) {
       return res.data;
     } catch (error) {
       const message = JSON.parse(error.message);
-
-      console.log(message);
 
       if (message.status === 401) {
         dispatch(logout());
