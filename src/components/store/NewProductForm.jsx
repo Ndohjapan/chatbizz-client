@@ -148,17 +148,16 @@ function NewProductForm() {
     });
 
     setStateVariants(update);
-};
+  };
 
-const deleteVariant = (idToDelete) => {
-    const update =  stateVariants.filter((variant) => variant.id !== idToDelete);
+  const deleteVariant = (idToDelete) => {
+    const update = stateVariants.filter((variant) => variant.id !== idToDelete);
     setStateVariants(update);
   };
 
   return (
     <>
       <div className="space-y-6">
-
         {/* Basic information */}
 
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
@@ -286,7 +285,10 @@ const deleteVariant = (idToDelete) => {
                           <li key={image.source} className="relative">
                             <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                               <img
-                                src={image.source}
+                                src={image.secure_url.replace(
+                                  "/upload/",
+                                  "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                )}
                                 alt=""
                                 className="object-cover pointer-events-none group-hover:opacity-75"
                               />
@@ -353,7 +355,7 @@ const deleteVariant = (idToDelete) => {
                           placeholder="https://youtube.com/"
                           defaultValue={link}
                           onChange={(e) => {
-                            handleLinkChange(index, e.target.value)
+                            handleLinkChange(index, e.target.value);
                           }}
                         />
                         {index === 0 ? (
@@ -403,7 +405,10 @@ const deleteVariant = (idToDelete) => {
               <form action="#" method="POST">
                 <div className="grid grid-cols-6 gap-6 mt-3">
                   {colors.map((link, index) => (
-                    <div className="col-span-6 sm:col-span-5" key={`color-${index}`}>
+                    <div
+                      className="col-span-6 sm:col-span-5"
+                      key={`color-${index}`}
+                    >
                       <label
                         htmlFor={`color-${index}`}
                         className="block text-sm font-medium text-gray-700"
@@ -471,7 +476,10 @@ const deleteVariant = (idToDelete) => {
               <form action="#" method="POST">
                 <div className="grid grid-cols-6 gap-6 mt-3">
                   {sizes.map((link, index) => (
-                    <div className="col-span-6 sm:col-span-5" key={`size-${index}`}>
+                    <div
+                      className="col-span-6 sm:col-span-5"
+                      key={`size-${index}`}
+                    >
                       <label
                         htmlFor={`size-${index}`}
                         className="block text-sm font-medium text-gray-700"
@@ -738,7 +746,12 @@ const deleteVariant = (idToDelete) => {
                       >
                         {stateVariants.map((variant) => (
                           <li key={variant.id} className="relative">
-                            <div className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer" onClick={() => {deleteVariant(variant.id)}}>
+                            <div
+                              className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
+                              onClick={() => {
+                                deleteVariant(variant.id);
+                              }}
+                            >
                               <TrashIcon className="text-red-400" />
                             </div>
                             <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg  focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">

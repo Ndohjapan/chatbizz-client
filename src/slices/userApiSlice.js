@@ -43,7 +43,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         }
       }),
     }),
+
+    getImages: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/products/store/12345/images`,
+        method: "GET",
+        headers: {
+          "x-access-token": data.token
+        }
+      }),
+    }),
   })
 });
 
-export const { useLoginMutation, useCreateStoreMutation, useGetQRMutation, useGetStoresMutation } = usersApiSlice;
+export const { useLoginMutation, useCreateStoreMutation, useGetQRMutation, useGetStoresMutation, useGetImagesMutation } = usersApiSlice;

@@ -10,39 +10,6 @@ import { logout, showToast } from "../slices/authSlice";
 import errors from "../assets/error.json";
 import { ImSpinner8 } from "react-icons/im";
 
-const stores = [
-  {
-    id: 1,
-    title: "Lavent Living",
-    size: "Ecommerce",
-    connected: true,
-    source: images.illustration.ecommerce[new Date().getMilliseconds() % 4],
-  },
-  {
-    id: 2,
-    title: "Expertnaire",
-    size: "Digital",
-    connected: false,
-    source:
-      images.illustration["digital-product"][new Date().getMilliseconds() % 4],
-  },
-  {
-    id: 3,
-    title: "OHIC",
-    size: "Digital",
-    connected: true,
-    source:
-      images.illustration["digital-product"][new Date().getMilliseconds() % 4],
-  },
-  {
-    id: 4,
-    title: "Geel Geworden",
-    size: "Ecommerce",
-    connected: true,
-    source: images.illustration.ecommerce[new Date().getMilliseconds() % 4],
-  },
-];
-
 function Home() {
   const [viewStores, setViewStores] = useState(0);
   const [stores, setStores] = useState([]);

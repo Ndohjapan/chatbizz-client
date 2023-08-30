@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import images from "../../../assets/images.json";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout, showToast } from "../../../slices/authSlice";
+import errors from "../../../assets/error.json";
+import { useGetImagesMutation } from "../../../slices/userApiSlice";
+import { ImSpinner8 } from "react-icons/im";
 
 const files = [
   {
@@ -67,42 +73,42 @@ const files = [
     source: images.products[8],
   },
   {
-    id: 9,
+    id: 10,
     title: "Trial Users",
     alt: "Last message sent 4 days ago",
     users: "2740 users",
     source: images.products[8],
   },
   {
-    id: 10,
+    id: 11,
     title: "Trial Users",
     alt: "Last message sent 4 days ago",
     users: "2740 users",
     source: images.testimonials[0],
   },
   {
-    id: 11,
+    id: 12,
     title: "Trial Users",
     alt: "Last message sent 4 days ago",
     users: "2740 users",
     source: images.testimonials[1],
   },
   {
-    id: 12,
+    id: 13,
     title: "Trial Users",
     alt: "Last message sent 4 days ago",
     users: "2740 users",
     source: images.testimonials[2],
   },
   {
-    id: 13,
+    id: 14,
     title: "Trial Users",
     alt: "Last message sent 4 days ago",
     users: "2740 users",
     source: images.testimonials[3],
   },
   {
-    id: 14,
+    id: 15,
     title: "Trial Users",
     alt: "Last message sent 4 days ago",
     users: "2740 users",
@@ -116,24 +122,64 @@ function classNames(...classes) {
 
 // eslint-disable-next-line react/prop-types
 export default function ImageSelector({ updateDisplayImages, displayImages }) {
+  const [images, setImages] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedImageIds, setSelectedImageIds] = useState([]);
+  const [apiCallDone, setApiCallDone] = useState(false);
+  const [getImagesMutation, { isLoading }] = useGetImagesMutation();
+  const twk = useSelector((state) => state.auth.twk);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (selectedImages.length === 0) {
       setSelectedImages(displayImages);
-    }else{
-        updateDisplayImages(selectedImages);
+    } else {
+      updateDisplayImages(selectedImages);
     }
-    const preSelectedImageIds = displayImages.map(image => image.id);
+    const preSelectedImageIds = displayImages.map((image) => image.asset_id);
     setSelectedImageIds(preSelectedImageIds);
 
-  }, [displayImages, selectedImages, updateDisplayImages]);
+    const handleGetImages = async () => {
+      try {
+        const res = await getImagesMutation({ token: twk });
+        if (res.error) throw Error(JSON.stringify(res.error));
+        console.log(res.data);
+        setImages(res.data.resources);
+        return res.data;
+      } catch (error) {
+        const message = JSON.parse(error.message);
 
-  const handleImagesToggle = async(image) => {
+        if (message.status === 401) {
+          dispatch(logout());
+          navigate("/login");
+        }
+
+        const errorMessage = message.data.message;
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+      }
+    };
+
+    if (!apiCallDone) {
+      setApiCallDone(true);
+      handleGetImages();
+    }
+  }, [displayImages, selectedImages]);
+
+  const handleImagesToggle = async (image) => {
     await setSelectedImages((prevSelected) => {
-      if (prevSelected.findIndex(subsetObj => subsetObj.id === image.id) !== -1) {
-        return prevSelected.filter((list) => list.id !== image.id);
+      if (
+        prevSelected.findIndex(
+          (subsetObj) => subsetObj.asset_id === image.asset_id
+        ) !== -1
+      ) {
+        return prevSelected.filter((list) => list.asset_id !== image.asset_id);
       } else {
         return [...prevSelected, image];
       }
@@ -152,56 +198,66 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
           <h1 className="text-base font-medium text-gray-900">
             Select Image(s)
           </h1>
-
-          <ul
-            role="list"
-            className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 max-h-96 overflow-y-scroll"
-          >
-            {files.map((image, index) => (
-              <li
-                key={index}
-                onClick={() => handleImagesToggle(image)}
-                className={classNames(
-                  "relative bg-white border rounded-lg shadow-sm p-0 flex justify-center flex-col cursor-pointer focus:outline-none",
-                  selectedImageIds.includes(image.id)
-                    ? "border-indigo-500 ring-2 ring-indigo-500"
-                    : "border-gray-300"
-                )}
-              >
-                <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden">
-                  <img
-                    src={image.source}
-                    alt=""
-                    className="object-cover pointer-events-none group-hover:opacity-75"
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-0 focus:outline-none"
-                  >
-                    <span className="sr-only">
-                      View details for {image.title}
-                    </span>
-                  </button>
-                </div>
-                {selectedImageIds.includes(image.id) && (
-                  <CheckCircleIcon
-                    className="absolute right-2 top-2 h-5 w-5 text-indigo-600"
+          {isLoading ? (
+            <>
+            <div className="my-7 flex items-center justify-center">
+            <ImSpinner8 className="text-5xl animate-spin text-gray-400" />
+          </div>
+            </>
+          ) : (
+            <ul
+              role="list"
+              className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 max-h-96 overflow-y-scroll"
+            >
+              {images.map((image, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleImagesToggle(image)}
+                  className={classNames(
+                    "relative bg-white border rounded-lg shadow-sm p-0 flex justify-center flex-col cursor-pointer focus:outline-none",
+                    selectedImageIds.includes(image.asset_id)
+                      ? "border-indigo-500 ring-2 ring-indigo-500"
+                      : "border-gray-300"
+                  )}
+                >
+                  <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden">
+                    <img
+                      src={image.secure_url.replace(
+                        "/upload/",
+                        "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                      )}
+                      alt=""
+                      className="object-cover pointer-events-none group-hover:opacity-75"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-0 focus:outline-none"
+                    >
+                      <span className="sr-only">
+                        View details for {image.public_id}
+                      </span>
+                    </button>
+                  </div>
+                  {selectedImageIds.includes(image.asset_id) && (
+                    <CheckCircleIcon
+                      className="absolute right-2 top-2 h-5 w-5 text-indigo-600"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <div
+                    className={classNames(
+                      "border-2",
+                      selectedImageIds.includes(image.asset_id)
+                        ? "border-indigo-500"
+                        : "border-transparent",
+                      "absolute -inset-px rounded-lg pointer-events-none"
+                    )}
                     aria-hidden="true"
                   />
-                )}
-                <div
-                  className={classNames(
-                    "border-2",
-                    selectedImageIds.includes(image.id)
-                      ? "border-indigo-500"
-                      : "border-transparent",
-                    "absolute -inset-px rounded-lg pointer-events-none"
-                  )}
-                  aria-hidden="true"
-                />
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         {selectedImages.length > 0 && (
           <button
