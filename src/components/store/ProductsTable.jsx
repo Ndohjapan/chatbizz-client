@@ -7,7 +7,7 @@ import { Link, useLocation } from "react-router-dom";
 import DeleteWarning from "../layout/DeleteWarning";
 import info from "../../assets/information.json";
 
-const products = [
+const products1 = [
   {
     id: 1,
     name: 'Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)',
@@ -77,7 +77,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductsTable() {
+export default function ProductsTable({products}) {
   const location = useLocation();
   const uniqueId = uuidv4();
   const checkbox = useRef();
@@ -223,6 +223,9 @@ export default function ProductsTable() {
                   </div>
                 )}
                 <table className="min-w-full table-fixed divide-y divide-gray-300">
+                  
+                  {/* Table header */}
+
                   <thead className="bg-gray-50">
                     <tr>
                       <th
@@ -399,29 +402,32 @@ export default function ProductsTable() {
                       </th>
                     </tr>
                   </thead>
+
+                  {/* Table body */}
+
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {displayProducts.map((person) => (
+                    {displayProducts.map((product) => (
                       <tr
-                        key={person.id}
+                        key={product._id}
                         className={classNames(
-                          selectedPeople.includes(person) ? "bg-gray-50" : "",
+                          selectedPeople.includes(product) ? "bg-gray-50" : "",
                           ""
                         )}
                       >
                         <td className="relative w-12 px-6 sm:w-16 sm:px-8">
-                          {selectedPeople.includes(person) && (
+                          {selectedPeople.includes(product) && (
                             <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" />
                           )}
                           <input
                             type="checkbox"
                             className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
-                            value={person.stock}
-                            checked={selectedPeople.includes(person)}
+                            value={product.stock}
+                            checked={selectedPeople.includes(product)}
                             onChange={(e) =>
                               setSelectedPeople(
                                 e.target.checked
-                                  ? [...selectedPeople, person]
-                                  : selectedPeople.filter((p) => p !== person)
+                                  ? [...selectedPeople, product]
+                                  : selectedPeople.filter((p) => p !== product)
                               )
                             }
                           />
@@ -429,26 +435,26 @@ export default function ProductsTable() {
                         <td
                           className={classNames(
                             "whitespace-nowrap py-4 pr-3 text-sm font-medium max-w-xs truncate",
-                            selectedPeople.includes(person)
+                            selectedPeople.includes(product)
                               ? "text-indigo-600"
                               : "text-gray-900"
                           )}
                         >
                           <Link to={location.pathname+"/product/" + uniqueId}>
-                            {person.name}
+                            {product.name}
                           </Link>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {"$" + person.price}
+                          {"$" + product.price}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.stock}
+                          {product.stock}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.variants}
+                          {product.variants.length}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-xs truncate">
-                          {person.description}
+                          {product.description}
                         </td>
                       </tr>
                     ))}

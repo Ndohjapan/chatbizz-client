@@ -2,7 +2,6 @@ import StoresHeader from "../components/home/StoresHeader";
 import EmptyStoresView from "../components/home/EmptyStoresView";
 import ListStoresView from "../components/home/ListStoresView";
 import { useEffect, useState } from "react";
-import images from "../assets/images.json";
 import { useGetStoresMutation } from "../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +10,6 @@ import errors from "../assets/error.json";
 import { ImSpinner8 } from "react-icons/im";
 
 function Home() {
-  const [viewStores, setViewStores] = useState(0);
   const [stores, setStores] = useState([]);
   const [getStoresMutation, { isLoading }] = useGetStoresMutation();
   const twk = useSelector((state) => state.auth.twk);
@@ -20,29 +18,30 @@ function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const handleGetStores = async () => {
-      try {
-        const res = await getStoresMutation({ token: twk });
-        if (res.error) throw Error(JSON.stringify(res.error));
-        setStores(res.data);
-      } catch (error) {
-        const message = JSON.parse(error.message);
+  const handleGetStores = async () => {
+    try {
+      const res = await getStoresMutation({ token: twk });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      setStores(res.data);
+    } catch (error) {
+      const message = JSON.parse(error.message);
 
-        if (message.status === 401) {
-          dispatch(logout());
-          navigate("/login");
-        }
-
-        const errorMessage = message.data.message;
-        dispatch(
-          showToast({
-            title: errors["title-error"],
-            message: errorMessage,
-          })
-        );
+      if (message.status === 401) {
+        dispatch(logout());
+        navigate("/login");
       }
-    };
+
+      const errorMessage = message.data.message;
+      dispatch(
+        showToast({
+          title: errors["title-error"],
+          message: errorMessage,
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
 
     handleGetStores();
 

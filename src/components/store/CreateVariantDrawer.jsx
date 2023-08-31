@@ -88,34 +88,34 @@ export default function CreateVariantDrawer({
   const submitForm = () => {
     const name = document.getElementById("variantName").value;
     const description = document.getElementById("variantDescription").value;
-    const feature = document.getElementById("variantFeatures").value;
+    const features = document.getElementById("variantFeatures").value;
     const images = variantDisplayImages;
     const price = document.getElementById("variantPrice").value;
     const currency = document.getElementById("variantCurrency").value;
     const weight = document.getElementById("variantWeight").value;
-    const unit = document.getElementById("variantUnit").value;
+    const weightUnit = document.getElementById("variantUnit").value;
     const stock = document.getElementById("variantStock").value;
-    const group = document.getElementById("variantGroup").value;
-    const color = variantColors;
-    const size = varientSizes;
-    const dimension = document.getElementById("variantDimension").value;
+    const stockUnit = document.getElementById("variantGroup").value;
+    const colors = variantColors;
+    const sizes = varientSizes;
+    const dimensions = document.getElementById("variantDimension").value;
     const users = document.getElementById("variantUsers").value;
     const sex = document.getElementById("variantSex").value;
 
     const form = {
       name,
       description,
-      feature,
+      features,
       images,
       price,
       weight,
       currency,
-      group,
+      stockUnit,
       stock,
-      unit,
-      color,
-      dimension,
-      size,
+      weightUnit,
+      colors,
+      dimensions,
+      sizes,
       users,
       sex,
     };
@@ -332,12 +332,15 @@ export default function CreateVariantDrawer({
                                             {variantDisplayImages.map(
                                               (image) => (
                                                 <li
-                                                  key={image.source}
+                                                  key={image.asset_id}
                                                   className="relative"
                                                 >
                                                   <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                                                     <img
-                                                      src={image.source}
+                                                      src={image.secure_url.replace(
+                                                        "/upload/",
+                                                        "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                                      )}
                                                       alt=""
                                                       className="object-cover pointer-events-none group-hover:opacity-75"
                                                     />
@@ -656,6 +659,7 @@ export default function CreateVariantDrawer({
                                               <option>Cartons</option>
                                               <option>Units</option>
                                               <option>Pallete</option>
+                                              <option>Pieces</option>
                                             </select>
                                           </div>
                                         </div>
