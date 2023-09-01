@@ -35,7 +35,8 @@ function Login() {
   const getJWT = async (token) => {
     try {
       const res = await getJwt({ token });
-      return res.data;
+      if (res.error) return Error(JSON.stringify(res.error));
+      return res;
     } catch (error) {
       dispatch(
         showToast({
@@ -57,15 +58,24 @@ function Login() {
         if (token) {
           const idToken = await auth.currentUser.getIdToken();
           const res = await getJWT(idToken);
-          const userInfo = {
-            email,
-            photoURL,
-            uid,
-            displayName,
-            accessToken: res.token,
-          };
-          dispatch(setCredentials({ ...userInfo }));
-          navigate("/");
+          if (!res.data) {
+            dispatch(
+              showToast({
+                title: errors["title-error"],
+                message: JSON.parse(res.message).data.message,
+              })
+            );
+          } else {
+            const userInfo = {
+              email,
+              photoURL,
+              uid,
+              displayName,
+              accessToken: res.data.token,
+            };
+            dispatch(setCredentials({ ...userInfo }));
+            navigate("/");
+          }
         }
       })
       // eslint-disable-next-line no-unused-vars
@@ -91,16 +101,26 @@ function Login() {
           if (user.emailVerified) {
             const idToken = await auth.currentUser.getIdToken();
             const res = await getJWT(idToken);
-            const userInfo = {
-              email,
-              photoURL,
-              uid,
-              displayName,
-              accessToken: res.token,
-            };
-            dispatch(setCredentials({ ...userInfo }));
-            navigate("/");
-            resolve(true);
+            if (!res.data) {
+              dispatch(
+                showToast({
+                  title: errors["title-error"],
+                  message: JSON.parse(res.message).data.message,
+                })
+              );
+              reject(false);
+            } else {
+              const userInfo = {
+                email,
+                photoURL,
+                uid,
+                displayName,
+                accessToken: res.data.token,
+              };
+              dispatch(setCredentials({ ...userInfo }));
+              navigate("/");
+              resolve(true);
+            }
           } else {
             dispatch(
               showToast({
@@ -112,6 +132,7 @@ function Login() {
           }
         })
         .catch((error) => {
+          console.log(error);
           const message = errors[error.code] || errors["error-signin"];
           dispatch(showToast({ title: errors["title-error"], message }));
           reject(false);
