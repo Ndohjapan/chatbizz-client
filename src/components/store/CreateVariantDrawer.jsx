@@ -108,10 +108,10 @@ export default function CreateVariantDrawer({
       features,
       images,
       price,
-      weight,
+      weight: weight.length ? weight : undefined,
       currency,
       stockUnit,
-      stock,
+      stock: stock.length ? stock : undefined,
       weightUnit,
       colors,
       dimensions,
@@ -120,8 +120,8 @@ export default function CreateVariantDrawer({
       sex,
     };
 
-    if (variant.id) {
-      form.id = variant.id;
+    if (variant.index) {
+      form.index = variant.index;
       updateVariant(form);
       handleClose();
     } else {
@@ -271,8 +271,8 @@ export default function CreateVariantDrawer({
                                             info.variants[0].features
                                           }
                                           defaultValue={
-                                            variant.feature
-                                              ? variant.feature
+                                            variant.features
+                                              ? variant.features
                                               : ""
                                           }
                                         />
@@ -771,7 +771,7 @@ export default function CreateVariantDrawer({
                         }}
                         className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       >
-                        {variant.id ? "Update" : "Save"}
+                        {variant.index ? "Update" : "Save"}
                       </button>
                     </div>
                   </div>

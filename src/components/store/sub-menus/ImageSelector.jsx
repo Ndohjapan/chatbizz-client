@@ -6,6 +6,7 @@ import { logout, showToast } from "../../../slices/authSlice";
 import errors from "../../../assets/error.json";
 import { useGetImagesMutation } from "../../../slices/userApiSlice";
 import { ImSpinner8 } from "react-icons/im";
+import { IoImagesOutline } from "react-icons/io5";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -89,69 +90,97 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
   return (
     <>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div>
+        <div className="w-full">
           <h1 className="text-base font-medium text-gray-900">
             Select Image(s)
           </h1>
           {isLoading ? (
             <>
-            <div className="my-7 flex items-center justify-center">
-            <ImSpinner8 className="text-5xl animate-spin text-gray-400" />
-          </div>
+              <div className="my-7 flex items-center justify-center">
+                <ImSpinner8 className="text-5xl animate-spin text-gray-400" />
+              </div>
             </>
           ) : (
-            <ul
-              role="list"
-              className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 max-h-96 overflow-y-scroll"
-            >
-              {images.map((image, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleImagesToggle(image)}
-                  className={classNames(
-                    "relative bg-white border rounded-lg shadow-sm p-0 flex justify-center flex-col cursor-pointer focus:outline-none",
-                    selectedImageIds.includes(image.asset_id)
-                      ? "border-indigo-500 ring-2 ring-indigo-500"
-                      : "border-gray-300"
-                  )}
-                >
-                  <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden">
-                    <img
-                      src={image.secure_url.replace(
-                        "/upload/",
-                        "/upload/c_scale,w_500/f_auto/q_auto:eco/"
-                      )}
-                      alt=""
-                      className="object-cover pointer-events-none group-hover:opacity-75"
-                    />
-                    <button
-                      type="button"
-                      className="absolute inset-0 focus:outline-none"
-                    >
-                      <span className="sr-only">
-                        View details for {image.public_id}
-                      </span>
-                    </button>
-                  </div>
-                  {selectedImageIds.includes(image.asset_id) && (
-                    <CheckCircleIcon
-                      className="absolute right-2 top-2 h-5 w-5 text-indigo-600"
-                      aria-hidden="true"
-                    />
-                  )}
-                  <div
-                    className={classNames(
-                      "border-2",
-                      selectedImageIds.includes(image.asset_id)
-                        ? "border-indigo-500"
-                        : "border-transparent",
-                      "absolute -inset-px rounded-lg pointer-events-none"
-                    )}
-                    aria-hidden="true"
-                  />
-                </li>
-              ))}
-            </ul>
+            <>
+              {images.length ? (
+                <>
+                  <ul
+                    role="list"
+                    className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 max-h-96 overflow-y-scroll"
+                  >
+                    {images.map((image, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleImagesToggle(image)}
+                        className={classNames(
+                          "relative bg-white border rounded-lg shadow-sm p-0 flex justify-center flex-col cursor-pointer focus:outline-none",
+                          selectedImageIds.includes(image.asset_id)
+                            ? "border-indigo-500 ring-2 ring-indigo-500"
+                            : "border-gray-300"
+                        )}
+                      >
+                        <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden">
+                          <img
+                            src={image.secure_url.replace(
+                              "/upload/",
+                              "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                            )}
+                            alt=""
+                            className="object-cover pointer-events-none group-hover:opacity-75"
+                          />
+                          <button
+                            type="button"
+                            className="absolute inset-0 focus:outline-none"
+                          >
+                            <span className="sr-only">
+                              View details for {image.public_id}
+                            </span>
+                          </button>
+                        </div>
+                        {selectedImageIds.includes(image.asset_id) && (
+                          <CheckCircleIcon
+                            className="absolute right-2 top-2 h-5 w-5 text-indigo-600"
+                            aria-hidden="true"
+                          />
+                        )}
+                        <div
+                          className={classNames(
+                            "border-2",
+                            selectedImageIds.includes(image.asset_id)
+                              ? "border-indigo-500"
+                              : "border-transparent",
+                            "absolute -inset-px rounded-lg pointer-events-none"
+                          )}
+                          aria-hidden="true"
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <>
+                  <main>
+                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                      <div className="py-4 sm:px-0">
+                        <div className="border-4 border-dashed border-gray-200 rounded-lg h-48 flex justify-center items-center flex-col">
+                          <div className="text-center">
+                            <div className="flex items-center justify-center">
+                              <IoImagesOutline className="text-gray-300 text-4xl"/>
+                            </div>
+                            <h3 className="mt-2 text-sm font-medium text-gray-600">
+                              No Images
+                            </h3>
+                            <p className="mt-1 text-sm text-gray-500">
+                              Get started by uploading images
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </main>
+                </>
+              )}
+            </>
           )}
         </div>
         {selectedImages.length > 0 && (

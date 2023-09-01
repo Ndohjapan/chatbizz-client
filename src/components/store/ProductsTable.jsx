@@ -7,6 +7,8 @@ import { Link, useLocation } from "react-router-dom";
 import DeleteWarning from "../layout/DeleteWarning";
 import info from "../../assets/information.json";
 
+const currencies = {"NGN": "₦", "USD": "$", "GBP": "£", "EUR": "€", "CAD": "CAD"}
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -380,7 +382,7 @@ export default function ProductsTable({products}) {
                           </Link>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {"$" + product.price}
+                          {currencies[product.currency] + product.price}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {product.stock}

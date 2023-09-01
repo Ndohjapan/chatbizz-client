@@ -112,13 +112,13 @@ function NewProductForm() {
   };
 
   const createVariant = (newVariant) => {
-    newVariant.id = uuidv4();
+    newVariant.index = uuidv4();
     setStateVariants([...stateVariants, newVariant]);
   };
 
   const updateVariant = (updatedVariant) => {
     const update = stateVariants.map((variant) => {
-      if (variant.id === updatedVariant.id) {
+      if (variant.index === updatedVariant.index) {
         return {
           ...variant,
           ...updatedVariant,
@@ -131,7 +131,7 @@ function NewProductForm() {
   };
 
   const deleteVariant = (idToDelete) => {
-    const update = stateVariants.filter((variant) => variant.id !== idToDelete);
+    const update = stateVariants.filter((variant) => variant.index !== idToDelete);
     setStateVariants(update);
   };
 
@@ -185,10 +185,8 @@ function NewProductForm() {
       if (res.error) throw Error(JSON.stringify(res.error));
       dispatch(showToast({ message: info["product-created"] }));
       navigate(`/store/${storeId}`);
-      return res.data;
     }  catch (error) {
       const message = JSON.parse(error.message);
-
       if (message.status === 401) {
         dispatch(logout());
         navigate("/login");
@@ -221,7 +219,6 @@ function NewProductForm() {
       }
     }
 
-    console.log(product);
   };
 
   return (
@@ -829,11 +826,11 @@ function NewProductForm() {
                         className="grid grid-cols-5 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-6 xl:gap-x-8"
                       >
                         {stateVariants.map((variant) => (
-                          <li key={variant.id} className="relative">
+                          <li key={variant.index} className="relative">
                             <div
                               className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
                               onClick={() => {
-                                deleteVariant(variant.id);
+                                deleteVariant(variant.index);
                               }}
                             >
                               <TrashIcon className="text-red-400" />
