@@ -7,77 +7,14 @@ import { Link, useLocation } from "react-router-dom";
 import DeleteWarning from "../layout/DeleteWarning";
 import info from "../../assets/information.json";
 
-const products = [
-  {
-    id: 1,
-    name: 'Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)',
-    price: 229,
-    stock: 100,
-    variants: 0,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 2,
-    name: "SAMSUNG Galaxy Tab S7+ Plus 12.4” 128GB Android Tablet w/ S Pen Included, Edge-to-Edge Display, Expandable Storage, Fast Charging USB-C Port, SM-T970NZKAXAR, Mystic Black",
-    price: 39,
-    stock: 5,
-    variants: 2,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 3,
-    name: "Neutrogena Soothing & Calming Healthy Scalp Shampoo to Moisturize Dry Scalp & Hair, with Tea Tree Oil, pH-Balanced, Paraben-Free & Phthalate-Free, Safe for Color-Treated Hair, 12oz",
-    price: 45,
-    stock: 17,
-    variants: 3,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 4,
-    name: "DULOVE Lace Front Wigs Human Hair 13x4 Straight HD Transparent Lace Front Wigs for Black Women Human Hair Pre Plucked with Baby Hair 180 Density Glueless Natural Color 24inch",
-    price: 99,
-    stock: 20,
-    variants: 4,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 5,
-    name: "Cat Birthday Gift Set, Pet Party Supplies, Dog Toys, 6 Kinds of Cat Birthday Gifts, Gift Box, Headgear, Mouse Toy, Cat Teasing Stick",
-    price: 25,
-    stock: 15,
-    variants: 10,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 6,
-    name: 'NINA WOOF Dog Poop Bags with Handles - 200 Compostable & Biodegradable Dog Waste Bags for Puppy Walks, Travel, Thick Housebreaking Supplies, Premium Cornstarch Pet Trash Bag, Leak Fragrance-Free, 15"x 8"',
-    price: 87,
-    stock: 99,
-    variants: 2,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 7,
-    name: "Soft Cat Toys for Indoor Cats Self Play Pet Supplies Cat Gifts Interactive Pillows Cat nip Filled Toys 5PCS Plush Kitten Teething Toys Set Cute Kitty Chew Bite Toys Resistant Cartoon Cat Mouse Toys",
-    price: 149,
-    stock: 40,
-    variants: 0,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-];
+const currencies = {"NGN": "₦", "USD": "$", "GBP": "£", "EUR": "€", "CAD": "CAD"}
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function ProductsTable() {
+// eslint-disable-next-line react/prop-types
+export default function ProductsTable({products}) {
   const location = useLocation();
   const uniqueId = uuidv4();
   const checkbox = useRef();
@@ -223,6 +160,9 @@ export default function ProductsTable() {
                   </div>
                 )}
                 <table className="min-w-full table-fixed divide-y divide-gray-300">
+                  
+                  {/* Table header */}
+
                   <thead className="bg-gray-50">
                     <tr>
                       <th
@@ -399,29 +339,32 @@ export default function ProductsTable() {
                       </th>
                     </tr>
                   </thead>
+
+                  {/* Table body */}
+
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {displayProducts.map((person) => (
+                    {displayProducts.map((product) => (
                       <tr
-                        key={person.id}
+                        key={product._id}
                         className={classNames(
-                          selectedPeople.includes(person) ? "bg-gray-50" : "",
+                          selectedPeople.includes(product) ? "bg-gray-50" : "",
                           ""
                         )}
                       >
                         <td className="relative w-12 px-6 sm:w-16 sm:px-8">
-                          {selectedPeople.includes(person) && (
+                          {selectedPeople.includes(product) && (
                             <div className="absolute inset-y-0 left-0 w-0.5 bg-indigo-600" />
                           )}
                           <input
                             type="checkbox"
                             className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 sm:left-6"
-                            value={person.stock}
-                            checked={selectedPeople.includes(person)}
+                            value={product.stock}
+                            checked={selectedPeople.includes(product)}
                             onChange={(e) =>
                               setSelectedPeople(
                                 e.target.checked
-                                  ? [...selectedPeople, person]
-                                  : selectedPeople.filter((p) => p !== person)
+                                  ? [...selectedPeople, product]
+                                  : selectedPeople.filter((p) => p !== product)
                               )
                             }
                           />
@@ -429,26 +372,26 @@ export default function ProductsTable() {
                         <td
                           className={classNames(
                             "whitespace-nowrap py-4 pr-3 text-sm font-medium max-w-xs truncate",
-                            selectedPeople.includes(person)
+                            selectedPeople.includes(product)
                               ? "text-indigo-600"
                               : "text-gray-900"
                           )}
                         >
                           <Link to={location.pathname+"/product/" + uniqueId}>
-                            {person.name}
+                            {product.name}
                           </Link>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {"$" + person.price}
+                          {currencies[product.currency] + product.price}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.stock}
+                          {product.stock}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {person.variants}
+                          {product.variants.length}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 max-w-xs truncate">
-                          {person.description}
+                          {product.description}
                         </td>
                       </tr>
                     ))}
