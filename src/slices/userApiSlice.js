@@ -45,7 +45,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 
     getImages: builder.mutation({
       query: (data) => ({
-        url: `${BASE_URL}/products/store/12345/images`,
+        url: `${BASE_URL}/products/store/${data.store}/images`,
         method: "GET",
         headers: {
           "x-access-token": data.token,

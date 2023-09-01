@@ -34,6 +34,10 @@ function VariantsImageUpload({
   const [progress, setProgress] = useState(0);
   const [percentages, setPercentages] = useState([]);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const selectedStore = useSelector((state) => state.auth.selectedStore);
+  const url = location.pathname.match(/store\/([^/]*)/);
+
+  const storeId = selectedStore ? selectedStore : url[1];
 
   const dispatch = useDispatch();
 
@@ -62,7 +66,7 @@ function VariantsImageUpload({
         );
         data.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
         data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-        data.append("folder", `chatbizz/users/${userInfo.uid}/products`);
+        data.append("folder", `chatbizz/users/${userInfo.uid}/products/store_${storeId}`);
 
         return new Promise((resolve, reject) => {
           const config = {

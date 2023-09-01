@@ -19,6 +19,10 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
   const [apiCallDone, setApiCallDone] = useState(false);
   const [getImagesMutation, { isLoading }] = useGetImagesMutation();
   const twk = useSelector((state) => state.auth.twk);
+  const selectedStore = useSelector((state) => state.auth.selectedStore);
+  const url = location.pathname.match(/store\/([^/]*)/);
+
+  const storeId = selectedStore ? selectedStore : url[1];
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -34,7 +38,7 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
 
     const handleGetImages = async () => {
       try {
-        const res = await getImagesMutation({ token: twk });
+        const res = await getImagesMutation({ token: twk, store: storeId });
         if (res.error) throw Error(JSON.stringify(res.error));
         console.log(res.data);
         setImages(res.data.resources);

@@ -75,6 +75,7 @@
         }
     },
 
-    "store-created": "Store created successfully"
+    "store-created": "Store created successfully",
+    "product-created": "Product created successfully"
 
 }

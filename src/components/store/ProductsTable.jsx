@@ -7,76 +7,11 @@ import { Link, useLocation } from "react-router-dom";
 import DeleteWarning from "../layout/DeleteWarning";
 import info from "../../assets/information.json";
 
-const products1 = [
-  {
-    id: 1,
-    name: 'Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)Durable Packaging 8" x 8" x 3" Clear Hinged Plastic Food Bakery Take-Out Container (pack of 25)',
-    price: 229,
-    stock: 100,
-    variants: 0,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 2,
-    name: "SAMSUNG Galaxy Tab S7+ Plus 12.4” 128GB Android Tablet w/ S Pen Included, Edge-to-Edge Display, Expandable Storage, Fast Charging USB-C Port, SM-T970NZKAXAR, Mystic Black",
-    price: 39,
-    stock: 5,
-    variants: 2,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 3,
-    name: "Neutrogena Soothing & Calming Healthy Scalp Shampoo to Moisturize Dry Scalp & Hair, with Tea Tree Oil, pH-Balanced, Paraben-Free & Phthalate-Free, Safe for Color-Treated Hair, 12oz",
-    price: 45,
-    stock: 17,
-    variants: 3,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 4,
-    name: "DULOVE Lace Front Wigs Human Hair 13x4 Straight HD Transparent Lace Front Wigs for Black Women Human Hair Pre Plucked with Baby Hair 180 Density Glueless Natural Color 24inch",
-    price: 99,
-    stock: 20,
-    variants: 4,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 5,
-    name: "Cat Birthday Gift Set, Pet Party Supplies, Dog Toys, 6 Kinds of Cat Birthday Gifts, Gift Box, Headgear, Mouse Toy, Cat Teasing Stick",
-    price: 25,
-    stock: 15,
-    variants: 10,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 6,
-    name: 'NINA WOOF Dog Poop Bags with Handles - 200 Compostable & Biodegradable Dog Waste Bags for Puppy Walks, Travel, Thick Housebreaking Supplies, Premium Cornstarch Pet Trash Bag, Leak Fragrance-Free, 15"x 8"',
-    price: 87,
-    stock: 99,
-    variants: 2,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-  {
-    id: 7,
-    name: "Soft Cat Toys for Indoor Cats Self Play Pet Supplies Cat Gifts Interactive Pillows Cat nip Filled Toys 5PCS Plush Kitten Teething Toys Set Cute Kitty Chew Bite Toys Resistant Cartoon Cat Mouse Toys",
-    price: 149,
-    stock: 40,
-    variants: 0,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim reiciendis quisquam iure? Enim libero officiis debitis provident eius, cum, nisi facere numquam dolores ipsum est voluptate cupiditate quod illo similique!",
-  },
-];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+// eslint-disable-next-line react/prop-types
 export default function ProductsTable({products}) {
   const location = useLocation();
   const uniqueId = uuidv4();

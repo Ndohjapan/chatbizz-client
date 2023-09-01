@@ -50,8 +50,6 @@ function Store() {
 
     const storeId = selectedStore ? selectedStore : url[1];
 
-    console.log(storeId);
-
     handleGetProducts(storeId);
   }, []);
 
@@ -72,7 +70,7 @@ function Store() {
         </>
       ) : (
         <>
-          {products ? (
+          {products.length ? (
             <ProductsTable products={products} />
           ) : (
             <EmptyProductTable />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ImageUploadModal from "./ImageUploadModal";
 import CreateVariantDrawer from "./CreateVariantDrawer";
 import { TrashIcon } from "@heroicons/react/outline";
@@ -10,6 +10,12 @@ import { VscSymbolColor } from "react-icons/vsc";
 import images from "../../assets/images.json";
 import { v4 as uuidv4 } from "uuid";
 import TShirtSizeIcon from "../../assets/TShirtSizeIcon";
+import { useDispatch, useSelector } from "react-redux";
+import { useCreateProductMutation } from "../../slices/userApiSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { logout, showToast } from "../../slices/authSlice";
+import errors from "../../assets/error.json";
+import { ImSpinner8 } from "react-icons/im";
 
 function NewProductForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +27,15 @@ function NewProductForm() {
   const [colors, setColors] = useState([""]);
   const [sizes, setSizes] = useState([""]);
   const [ytErrors, setYtErrors] = useState({});
+  const location = useLocation();
+
+  const [createProductMutation, { isLoading }] = useCreateProductMutation();
+  const twk = useSelector((state) => state.auth.twk);
+
+  const selectedStore = useSelector((state) => state.auth.selectedStore);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const addLink = (e) => {
     e.preventDefault();
@@ -120,12 +135,17 @@ function NewProductForm() {
     setStateVariants(update);
   };
 
-  const createProduct = () => {
+  const createProduct = async () => {
+    const url = location.pathname.match(/store\/([^/]*)/);
+
+    const storeId = selectedStore ? selectedStore : url[1];
+
     const name = document.getElementById("name").value;
     const description = document.getElementById("description").value;
     const features = document.getElementById("features").value;
+    const store = `${storeId}`;
     const images = displayImages;
-    const videos = links[0] ? links : undefined;
+    const videos = links[0] ? links : [];
     colors;
     sizes;
     const price = document.getElementById("price").value;
@@ -141,6 +161,7 @@ function NewProductForm() {
 
     const product = {
       name,
+      store,
       description,
       features,
       images,
@@ -149,15 +170,56 @@ function NewProductForm() {
       sizes,
       price,
       currency,
-      weight,
+      weight: weight.length ? weight : undefined,
       weightUnit,
-      stock,
+      stock: stock.length ? stock : undefined,
       stockUnit,
       dimensions,
       users,
       sex,
       variants,
     };
+
+    try {
+      const res = await createProductMutation({ token: twk, product });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      dispatch(showToast({ message: info["product-created"] }));
+      navigate(`/store/${storeId}`);
+      return res.data;
+    }  catch (error) {
+      const message = JSON.parse(error.message);
+
+      if (message.status === 401) {
+        dispatch(logout());
+        navigate("/login");
+      }
+
+      if (message && message.data && message.data.validationErrors) {
+        const validationErrors = message.data.validationErrors;
+        const errorMessage = Object.values(validationErrors).join("\n, ");
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+      } else if (message && message.data && message.data.message) {
+        const errorMessage = message.data.message;
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+      } else {
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errors["error-signin"],
+          })
+        );
+      }
+    }
 
     console.log(product);
   };
@@ -231,6 +293,7 @@ function NewProductForm() {
                     className="block text-sm font-medium text-gray-700"
                   >
                     Features / Benefits{" "}
+                    <span className="text-red-400 font-bold">*</span>
                   </label>
                   <div className="mt-1">
                     <textarea
@@ -569,7 +632,8 @@ function NewProductForm() {
                       htmlFor="price"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Price
+                      Price{" "}
+                    <span className="text-red-400 font-bold">*</span>
                     </label>
                     <div className="mt-1 relative rounded-md shadow-sm border">
                       <input
@@ -593,6 +657,40 @@ function NewProductForm() {
                           <option>CAD</option>
                           <option>GBP</option>
                           <option>EUR</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="stock"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      In Stock{" "}
+                    <span className="text-red-400 font-bold">*</span>
+                    </label>
+                    <div className="mt-1 relative rounded-md shadow-sm border">
+                      <input
+                        type="number"
+                        name="stock"
+                        id="stock"
+                        className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
+                        placeholder="0"
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center">
+                        <label htmlFor="unit" className="sr-only">
+                          Unit
+                        </label>
+                        <select
+                          id="stock-unit"
+                          name="stock-unit"
+                          className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                        >
+                          <option>Cartons</option>
+                          <option>Units</option>
+                          <option>Pallete</option>
+                          <option>Pieces</option>
                         </select>
                       </div>
                     </div>
@@ -624,39 +722,6 @@ function NewProductForm() {
                         >
                           <option>Kg</option>
                           <option>Lbs</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      htmlFor="stock"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      In Stock
-                    </label>
-                    <div className="mt-1 relative rounded-md shadow-sm border">
-                      <input
-                        type="number"
-                        name="stock"
-                        id="stock"
-                        className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
-                        placeholder="0"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center">
-                        <label htmlFor="unit" className="sr-only">
-                          Unit
-                        </label>
-                        <select
-                          id="stock-unit"
-                          name="stock-unit"
-                          className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-                        >
-                          <option>Cartons</option>
-                          <option>Units</option>
-                          <option>Pallete</option>
-                          <option>Pieces</option>
                         </select>
                       </div>
                     </div>
@@ -778,9 +843,9 @@ function NewProductForm() {
                                 src={
                                   variant.images[0]
                                     ? variant.images[0].secure_url.replace(
-                                      "/upload/",
-                                      "/upload/c_scale,w_500/f_auto/q_auto:eco/"
-                                    )
+                                        "/upload/",
+                                        "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                      )
                                     : images.icons.box
                                 }
                                 alt=""
@@ -824,20 +889,30 @@ function NewProductForm() {
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end p-6 pt-0 sm:rounded-lg">
           <button
             type="button"
             className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={createProduct}
-          >
-            Save
-          </button>
+          {isLoading ? (
+            <button
+              type="submit"
+              className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled
+            >
+              <ImSpinner8 className="animate-spin text-gray-400" />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={createProduct}
+            >
+              Save
+            </button>
+          )}
         </div>
       </div>
       {isModalOpen ? (

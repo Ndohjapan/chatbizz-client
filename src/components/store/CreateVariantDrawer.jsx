@@ -68,10 +68,10 @@ export default function CreateVariantDrawer({
     if (variant.images) {
       setVariantDisplayImages(variant.images);
     }
-    if(variant.color){
+    if (variant.color) {
       setVariantColors(variant.color);
     }
-    if(variant.size){
+    if (variant.size) {
       setVarientSizes(variant.size);
     }
   }, [IsDrawerOpen, variant]);
@@ -173,12 +173,13 @@ export default function CreateVariantDrawer({
                         </div>
                       </div>
                       <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                        {/* Replace with your content */}
                         <div
                           className="h-full border-2 border-dashed border-gray-200"
                           aria-hidden="true"
                         >
                           <div className="space-y-6">
+                            {/* Basic Information */}
+
                             <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
                               <div className="md:grid md:grid-cols-3 md:gap-6">
                                 <div className="md:col-span-1">
@@ -258,10 +259,7 @@ export default function CreateVariantDrawer({
                                         htmlFor="variantFeatures"
                                         className="block text-sm font-medium text-gray-700"
                                       >
-                                        Features / Benefits{" "}
-                                        <span className="text-red-400 font-bold">
-                                          *
-                                        </span>
+                                        Features / Benefits
                                       </label>
                                       <div className="mt-1">
                                         <textarea
@@ -287,6 +285,8 @@ export default function CreateVariantDrawer({
                                 </div>
                               </div>
                             </div>
+
+                            {/* Variant Image */}
 
                             <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
                               <div className="md:grid md:grid-cols-3 md:gap-6">
@@ -372,6 +372,8 @@ export default function CreateVariantDrawer({
                               </div>
                             </div>
 
+                            {/* Variant Colors */}
+
                             <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
                               <div className="md:grid md:grid-cols-3 md:gap-6">
                                 <div className="md:col-span-1">
@@ -449,6 +451,8 @@ export default function CreateVariantDrawer({
                                 </div>
                               </div>
                             </div>
+
+                            {/* Variant Sizes */}
 
                             <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
                               <div className="md:grid md:grid-cols-3 md:gap-6">
@@ -528,6 +532,8 @@ export default function CreateVariantDrawer({
                               </div>
                             </div>
 
+                            {/* More Information  */}
+
                             <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
                               <div className="md:grid md:grid-cols-3 md:gap-6">
                                 <div className="md:col-span-1">
@@ -541,6 +547,8 @@ export default function CreateVariantDrawer({
                                 <div className="mt-5 md:mt-0 md:col-span-2">
                                   <form action="#" method="POST">
                                     <div className="grid grid-cols-6 gap-6">
+                                      {/* Price */}
+
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
                                           htmlFor="variantPrice"
@@ -585,6 +593,52 @@ export default function CreateVariantDrawer({
                                         </div>
                                       </div>
 
+                                      {/* Stock */}
+
+                                      <div className="col-span-6 sm:col-span-3">
+                                        <label
+                                          htmlFor="variantStock"
+                                          className="block text-sm font-medium text-gray-700"
+                                        >
+                                          In Stock{"  "}
+                                          <span className="text-red-400 font-bold">
+                                            *
+                                          </span>
+                                        </label>
+                                        <div className="mt-1 relative rounded-md shadow-sm border">
+                                          <input
+                                            type="number"
+                                            name="variantStock"
+                                            id="variantStock"
+                                            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
+                                            placeholder={info.variants[0].stock}
+                                            defaultValue={
+                                              variant.stock ? variant.stock : ""
+                                            }
+                                          />
+                                          <div className="absolute inset-y-0 right-0 flex items-center">
+                                            <label
+                                              htmlFor="variantGroup"
+                                              className="sr-only"
+                                            >
+                                              Unit
+                                            </label>
+                                            <select
+                                              id="variantGroup"
+                                              name="variantGroup"
+                                              className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                                            >
+                                              <option>Cartons</option>
+                                              <option>Units</option>
+                                              <option>Pallete</option>
+                                              <option>Pieces</option>
+                                            </select>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      {/* Weight */}
+
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
                                           htmlFor="variantWeight"
@@ -626,44 +680,7 @@ export default function CreateVariantDrawer({
                                         </div>
                                       </div>
 
-                                      <div className="col-span-6 sm:col-span-3">
-                                        <label
-                                          htmlFor="variantStock"
-                                          className="block text-sm font-medium text-gray-700"
-                                        >
-                                          In Stock
-                                        </label>
-                                        <div className="mt-1 relative rounded-md shadow-sm border">
-                                          <input
-                                            type="number"
-                                            name="variantStock"
-                                            id="variantStock"
-                                            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
-                                            placeholder={info.variants[0].stock}
-                                            defaultValue={
-                                              variant.stock ? variant.stock : ""
-                                            }
-                                          />
-                                          <div className="absolute inset-y-0 right-0 flex items-center">
-                                            <label
-                                              htmlFor="variantGroup"
-                                              className="sr-only"
-                                            >
-                                              Unit
-                                            </label>
-                                            <select
-                                              id="variantGroup"
-                                              name="variantGroup"
-                                              className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-                                            >
-                                              <option>Cartons</option>
-                                              <option>Units</option>
-                                              <option>Pallete</option>
-                                              <option>Pieces</option>
-                                            </select>
-                                          </div>
-                                        </div>
-                                      </div>
+                                      {/* Dimension */}
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
@@ -689,6 +706,8 @@ export default function CreateVariantDrawer({
                                         />
                                       </div>
 
+                                      {/* Users */}
+
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
                                           htmlFor="variantUsers"
@@ -707,6 +726,8 @@ export default function CreateVariantDrawer({
                                           <option>Adult</option>
                                         </select>
                                       </div>
+
+                                      {/* Sex */}
 
                                       <div className="col-span-6 sm:col-span-3">
                                         <label
