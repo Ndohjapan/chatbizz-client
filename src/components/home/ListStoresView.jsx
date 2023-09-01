@@ -1,7 +1,13 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { setSelectedStore } from "../../slices/authSlice";
+
 
 // eslint-disable-next-line react/prop-types
 function ListStoresView({ stores }) {
+
+  const dispatch = useDispatch();
+
   return (
     <>
       <main>
@@ -16,9 +22,8 @@ function ListStoresView({ stores }) {
                   key={store._id}
                   className="bg-white overflow-hidden shadow rounded-lg cursor-pointer"
                 >
-                  <Link to="/store/1234">
+                  <Link to={`/store/${store._id}`} onClick={ () => {dispatch(setSelectedStore(store._id))}}>
                     <div className="px-4 py-5 sm:p-6">
-                      {/* Content goes here */}
                       <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                         <img
                           src={store.image}

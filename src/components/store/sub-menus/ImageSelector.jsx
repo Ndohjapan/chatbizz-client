@@ -1,114 +1,12 @@
 import { useEffect, useState } from "react";
 import { CheckCircleIcon } from "@heroicons/react/solid";
-import images from "../../../assets/images.json";
-
-const files = [
-  {
-    id: 1,
-    title: "Newsletter",
-    alt: "Last message sent an hour ago",
-    users: "621 users",
-    source: images.products[0],
-  },
-  {
-    id: 2,
-    title: "Existing Customers",
-    alt: "Last message sent 2 weeks ago",
-    users: "1200 users",
-    source: images.products[1],
-  },
-  {
-    id: 3,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[2],
-  },
-  {
-    id: 4,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[3],
-  },
-  {
-    id: 5,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[4],
-  },
-  {
-    id: 6,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[5],
-  },
-  {
-    id: 7,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[6],
-  },
-  {
-    id: 8,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[7],
-  },
-  {
-    id: 9,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[8],
-  },
-  {
-    id: 9,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.products[8],
-  },
-  {
-    id: 10,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.testimonials[0],
-  },
-  {
-    id: 11,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.testimonials[1],
-  },
-  {
-    id: 12,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.testimonials[2],
-  },
-  {
-    id: 13,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.testimonials[3],
-  },
-  {
-    id: 14,
-    title: "Trial Users",
-    alt: "Last message sent 4 days ago",
-    users: "2740 users",
-    source: images.testimonials[4],
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout, showToast } from "../../../slices/authSlice";
+import errors from "../../../assets/error.json";
+import { useGetImagesMutation } from "../../../slices/userApiSlice";
+import { ImSpinner8 } from "react-icons/im";
+import { IoImagesOutline } from "react-icons/io5";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -116,24 +14,68 @@ function classNames(...classes) {
 
 // eslint-disable-next-line react/prop-types
 export default function ImageSelector({ updateDisplayImages, displayImages }) {
+  const [images, setImages] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedImageIds, setSelectedImageIds] = useState([]);
+  const [apiCallDone, setApiCallDone] = useState(false);
+  const [getImagesMutation, { isLoading }] = useGetImagesMutation();
+  const twk = useSelector((state) => state.auth.twk);
+  const selectedStore = useSelector((state) => state.auth.selectedStore);
+  const url = location.pathname.match(/store\/([^/]*)/);
+
+  const storeId = selectedStore ? selectedStore : url[1];
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (selectedImages.length === 0) {
       setSelectedImages(displayImages);
-    }else{
-        updateDisplayImages(selectedImages);
+    } else {
+      updateDisplayImages(selectedImages);
     }
-    const preSelectedImageIds = displayImages.map(image => image.id);
+    const preSelectedImageIds = displayImages.map((image) => image.asset_id);
     setSelectedImageIds(preSelectedImageIds);
 
-  }, [displayImages, selectedImages, updateDisplayImages]);
+    const handleGetImages = async () => {
+      try {
+        const res = await getImagesMutation({ token: twk, store: storeId });
+        if (res.error) throw Error(JSON.stringify(res.error));
+        console.log(res.data);
+        setImages(res.data.resources);
+        return res.data;
+      } catch (error) {
+        const message = JSON.parse(error.message);
 
-  const handleImagesToggle = async(image) => {
+        if (message.status === 401) {
+          dispatch(logout());
+          navigate("/login");
+        }
+
+        const errorMessage = message.data.message;
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+      }
+    };
+
+    if (!apiCallDone) {
+      setApiCallDone(true);
+      handleGetImages();
+    }
+  }, [displayImages, selectedImages]);
+
+  const handleImagesToggle = async (image) => {
     await setSelectedImages((prevSelected) => {
-      if (prevSelected.findIndex(subsetObj => subsetObj.id === image.id) !== -1) {
-        return prevSelected.filter((list) => list.id !== image.id);
+      if (
+        prevSelected.findIndex(
+          (subsetObj) => subsetObj.asset_id === image.asset_id
+        ) !== -1
+      ) {
+        return prevSelected.filter((list) => list.asset_id !== image.asset_id);
       } else {
         return [...prevSelected, image];
       }
@@ -148,60 +90,98 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
   return (
     <>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div>
+        <div className="w-full">
           <h1 className="text-base font-medium text-gray-900">
             Select Image(s)
           </h1>
-
-          <ul
-            role="list"
-            className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 max-h-96 overflow-y-scroll"
-          >
-            {files.map((image, index) => (
-              <li
-                key={index}
-                onClick={() => handleImagesToggle(image)}
-                className={classNames(
-                  "relative bg-white border rounded-lg shadow-sm p-0 flex justify-center flex-col cursor-pointer focus:outline-none",
-                  selectedImageIds.includes(image.id)
-                    ? "border-indigo-500 ring-2 ring-indigo-500"
-                    : "border-gray-300"
-                )}
-              >
-                <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden">
-                  <img
-                    src={image.source}
-                    alt=""
-                    className="object-cover pointer-events-none group-hover:opacity-75"
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-0 focus:outline-none"
+          {isLoading ? (
+            <>
+              <div className="my-7 flex items-center justify-center">
+                <ImSpinner8 className="text-5xl animate-spin text-gray-400" />
+              </div>
+            </>
+          ) : (
+            <>
+              {images.length ? (
+                <>
+                  <ul
+                    role="list"
+                    className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 max-h-96 overflow-y-scroll"
                   >
-                    <span className="sr-only">
-                      View details for {image.title}
-                    </span>
-                  </button>
-                </div>
-                {selectedImageIds.includes(image.id) && (
-                  <CheckCircleIcon
-                    className="absolute right-2 top-2 h-5 w-5 text-indigo-600"
-                    aria-hidden="true"
-                  />
-                )}
-                <div
-                  className={classNames(
-                    "border-2",
-                    selectedImageIds.includes(image.id)
-                      ? "border-indigo-500"
-                      : "border-transparent",
-                    "absolute -inset-px rounded-lg pointer-events-none"
-                  )}
-                  aria-hidden="true"
-                />
-              </li>
-            ))}
-          </ul>
+                    {images.map((image, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleImagesToggle(image)}
+                        className={classNames(
+                          "relative bg-white border rounded-lg shadow-sm p-0 flex justify-center flex-col cursor-pointer focus:outline-none",
+                          selectedImageIds.includes(image.asset_id)
+                            ? "border-indigo-500 ring-2 ring-indigo-500"
+                            : "border-gray-300"
+                        )}
+                      >
+                        <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden">
+                          <img
+                            src={image.secure_url.replace(
+                              "/upload/",
+                              "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                            )}
+                            alt=""
+                            className="object-cover pointer-events-none group-hover:opacity-75"
+                          />
+                          <button
+                            type="button"
+                            className="absolute inset-0 focus:outline-none"
+                          >
+                            <span className="sr-only">
+                              View details for {image.public_id}
+                            </span>
+                          </button>
+                        </div>
+                        {selectedImageIds.includes(image.asset_id) && (
+                          <CheckCircleIcon
+                            className="absolute right-2 top-2 h-5 w-5 text-indigo-600"
+                            aria-hidden="true"
+                          />
+                        )}
+                        <div
+                          className={classNames(
+                            "border-2",
+                            selectedImageIds.includes(image.asset_id)
+                              ? "border-indigo-500"
+                              : "border-transparent",
+                            "absolute -inset-px rounded-lg pointer-events-none"
+                          )}
+                          aria-hidden="true"
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <>
+                  <main>
+                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                      <div className="py-4 sm:px-0">
+                        <div className="border-4 border-dashed border-gray-200 rounded-lg h-48 flex justify-center items-center flex-col">
+                          <div className="text-center">
+                            <div className="flex items-center justify-center">
+                              <IoImagesOutline className="text-gray-300 text-4xl"/>
+                            </div>
+                            <h3 className="mt-2 text-sm font-medium text-gray-600">
+                              No Images
+                            </h3>
+                            <p className="mt-1 text-sm text-gray-500">
+                              Get started by uploading images
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </main>
+                </>
+              )}
+            </>
+          )}
         </div>
         {selectedImages.length > 0 && (
           <button

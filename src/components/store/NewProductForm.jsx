@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ImageUploadModal from "./ImageUploadModal";
 import CreateVariantDrawer from "./CreateVariantDrawer";
 import { TrashIcon } from "@heroicons/react/outline";
@@ -10,53 +10,12 @@ import { VscSymbolColor } from "react-icons/vsc";
 import images from "../../assets/images.json";
 import { v4 as uuidv4 } from "uuid";
 import TShirtSizeIcon from "../../assets/TShirtSizeIcon";
-
-const variants = [];
-
-const variants2 = [
-  {
-    id: 1,
-    name: "Hello world",
-    description: "From the world above",
-    feature: "1. Can help the world. 2. Can cure hunger",
-    images: [images.profile[0], images.profile[1], images.profile[2]],
-    price: {
-      amount: 200,
-      currency: "NGN",
-    },
-    weight: {
-      amount: 10,
-      unit: "Kg",
-    },
-    stock: 22,
-    color: ["orange"],
-    size: [22],
-    dimension: "22 x 15.47 x 0.79 inches",
-    users: "Children",
-    sex: "Female",
-  },
-  {
-    id: 2,
-    name: "Hello world",
-    description: "From the world above",
-    feature: "1. Can help the world. 2. Can cure hunger",
-    images: [images.profile[1], images.profile[2], images.profile[3]],
-    price: {
-      amount: 200,
-      currency: "NGN",
-    },
-    weight: {
-      amount: 10,
-      unit: "Kg",
-    },
-    stock: 22,
-    color: "orange",
-    size: 22,
-    dimension: "22 x 15.47 x 0.79 inches",
-    users: "Children",
-    sex: "Female",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { useCreateProductMutation } from "../../slices/userApiSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { logout, showToast } from "../../slices/authSlice";
+import errors from "../../assets/error.json";
+import { ImSpinner8 } from "react-icons/im";
 
 function NewProductForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,6 +26,16 @@ function NewProductForm() {
   const [links, setLinks] = useState([""]);
   const [colors, setColors] = useState([""]);
   const [sizes, setSizes] = useState([""]);
+  const [ytErrors, setYtErrors] = useState({});
+  const location = useLocation();
+
+  const [createProductMutation, { isLoading }] = useCreateProductMutation();
+  const twk = useSelector((state) => state.auth.twk);
+
+  const selectedStore = useSelector((state) => state.auth.selectedStore);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const addLink = (e) => {
     e.preventDefault();
@@ -103,8 +72,19 @@ function NewProductForm() {
 
   const handleLinkChange = (index, value) => {
     const updatedLinks = [...links];
-    updatedLinks[index] = value;
-    setLinks(updatedLinks);
+    const newErrors = { ...ytErrors };
+    const youtubeRegex =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+
+    if (!youtubeRegex.test(value)) {
+      newErrors[index] = true;
+      setYtErrors(newErrors);
+    } else {
+      newErrors[index] = false;
+      setYtErrors(newErrors);
+      updatedLinks[index] = value;
+      setLinks(updatedLinks);
+    }
   };
 
   const handleColorChange = (index, value) => {
@@ -132,13 +112,13 @@ function NewProductForm() {
   };
 
   const createVariant = (newVariant) => {
-    newVariant.id = uuidv4();
+    newVariant.index = uuidv4();
     setStateVariants([...stateVariants, newVariant]);
   };
 
   const updateVariant = (updatedVariant) => {
     const update = stateVariants.map((variant) => {
-      if (variant.id === updatedVariant.id) {
+      if (variant.index === updatedVariant.index) {
         return {
           ...variant,
           ...updatedVariant,
@@ -148,17 +128,102 @@ function NewProductForm() {
     });
 
     setStateVariants(update);
-};
+  };
 
-const deleteVariant = (idToDelete) => {
-    const update =  stateVariants.filter((variant) => variant.id !== idToDelete);
+  const deleteVariant = (idToDelete) => {
+    const update = stateVariants.filter((variant) => variant.index !== idToDelete);
     setStateVariants(update);
+  };
+
+  const createProduct = async () => {
+    const url = location.pathname.match(/store\/([^/]*)/);
+
+    const storeId = selectedStore ? selectedStore : url[1];
+
+    const name = document.getElementById("name").value;
+    const description = document.getElementById("description").value;
+    const features = document.getElementById("features").value;
+    const store = `${storeId}`;
+    const images = displayImages;
+    const videos = links[0] ? links : [];
+    colors;
+    sizes;
+    const price = document.getElementById("price").value;
+    const currency = document.getElementById("currency").value;
+    const weight = document.getElementById("weight").value;
+    const weightUnit = document.getElementById("weight-unit").value;
+    const stock = document.getElementById("stock").value;
+    const stockUnit = document.getElementById("stock-unit").value;
+    const dimensions = document.getElementById("dimensions").value;
+    const users = document.getElementById("users").value;
+    const sex = document.getElementById("sex").value;
+    const variants = stateVariants;
+
+    const product = {
+      name,
+      store,
+      description,
+      features,
+      images,
+      videos,
+      colors,
+      sizes,
+      price,
+      currency,
+      weight: weight.length ? weight : undefined,
+      weightUnit,
+      stock: stock.length ? stock : undefined,
+      stockUnit,
+      dimensions,
+      users,
+      sex,
+      variants,
+    };
+
+    try {
+      const res = await createProductMutation({ token: twk, product });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      dispatch(showToast({ message: info["product-created"] }));
+      navigate(`/store/${storeId}`);
+    }  catch (error) {
+      const message = JSON.parse(error.message);
+      if (message.status === 401) {
+        dispatch(logout());
+        navigate("/login");
+      }
+
+      if (message && message.data && message.data.validationErrors) {
+        const validationErrors = message.data.validationErrors;
+        const errorMessage = Object.values(validationErrors).join("\n, ");
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+      } else if (message && message.data && message.data.message) {
+        const errorMessage = message.data.message;
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errorMessage,
+          })
+        );
+      } else {
+        dispatch(
+          showToast({
+            title: errors["title-error"],
+            message: errors["error-signin"],
+          })
+        );
+      }
+    }
+
   };
 
   return (
     <>
       <div className="space-y-6">
-
         {/* Basic information */}
 
         <div className="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
@@ -202,7 +267,8 @@ const deleteVariant = (idToDelete) => {
                     htmlFor="description"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    Product Description
+                    Product Description{" "}
+                    <span className="text-red-400 font-bold">*</span>
                   </label>
                   <div className="mt-1">
                     <textarea
@@ -283,10 +349,13 @@ const deleteVariant = (idToDelete) => {
                         className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
                       >
                         {displayImages.map((image) => (
-                          <li key={image.source} className="relative">
+                          <li key={image.asset_id} className="relative">
                             <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                               <img
-                                src={image.source}
+                                src={image.secure_url.replace(
+                                  "/upload/",
+                                  "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                )}
                                 alt=""
                                 className="object-cover pointer-events-none group-hover:opacity-75"
                               />
@@ -353,7 +422,7 @@ const deleteVariant = (idToDelete) => {
                           placeholder="https://youtube.com/"
                           defaultValue={link}
                           onChange={(e) => {
-                            handleLinkChange(index, e.target.value)
+                            handleLinkChange(index, e.target.value);
                           }}
                         />
                         {index === 0 ? (
@@ -371,6 +440,11 @@ const deleteVariant = (idToDelete) => {
                           </button>
                         )}
                       </div>
+                      {ytErrors[index] && (
+                        <p className="text-red-500 text-sm mt-1">
+                          Invalid Youtube Link
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -403,7 +477,10 @@ const deleteVariant = (idToDelete) => {
               <form action="#" method="POST">
                 <div className="grid grid-cols-6 gap-6 mt-3">
                   {colors.map((link, index) => (
-                    <div className="col-span-6 sm:col-span-5" key={`color-${index}`}>
+                    <div
+                      className="col-span-6 sm:col-span-5"
+                      key={`color-${index}`}
+                    >
                       <label
                         htmlFor={`color-${index}`}
                         className="block text-sm font-medium text-gray-700"
@@ -423,6 +500,9 @@ const deleteVariant = (idToDelete) => {
                           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
                           placeholder="Red, Oraange, Wine red, metallic brown"
                           defaultValue={link}
+                          onChange={(e) => {
+                            handleColorChange(index, e.target.value);
+                          }}
                         />
                         {index === 0 ? (
                           <></>
@@ -471,7 +551,10 @@ const deleteVariant = (idToDelete) => {
               <form action="#" method="POST">
                 <div className="grid grid-cols-6 gap-6 mt-3">
                   {sizes.map((link, index) => (
-                    <div className="col-span-6 sm:col-span-5" key={`size-${index}`}>
+                    <div
+                      className="col-span-6 sm:col-span-5"
+                      key={`size-${index}`}
+                    >
                       <label
                         htmlFor={`size-${index}`}
                         className="block text-sm font-medium text-gray-700"
@@ -491,6 +574,9 @@ const deleteVariant = (idToDelete) => {
                           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
                           placeholder="S, M, L, XL, XXL, 38, 41"
                           defaultValue={link}
+                          onChange={(e) => {
+                            handleSizeChange(index, e.target.value);
+                          }}
                         />
                         {index === 0 ? (
                           <></>
@@ -543,7 +629,8 @@ const deleteVariant = (idToDelete) => {
                       htmlFor="price"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Price
+                      Price{" "}
+                    <span className="text-red-400 font-bold">*</span>
                     </label>
                     <div className="mt-1 relative rounded-md shadow-sm border">
                       <input
@@ -558,8 +645,8 @@ const deleteVariant = (idToDelete) => {
                           Price
                         </label>
                         <select
-                          id="price"
-                          name="price"
+                          id="currency"
+                          name="currency"
                           className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                         >
                           <option>NGN</option>
@@ -567,6 +654,40 @@ const deleteVariant = (idToDelete) => {
                           <option>CAD</option>
                           <option>GBP</option>
                           <option>EUR</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="stock"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      In Stock{" "}
+                    <span className="text-red-400 font-bold">*</span>
+                    </label>
+                    <div className="mt-1 relative rounded-md shadow-sm border">
+                      <input
+                        type="number"
+                        name="stock"
+                        id="stock"
+                        className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
+                        placeholder="0"
+                      />
+                      <div className="absolute inset-y-0 right-0 flex items-center">
+                        <label htmlFor="unit" className="sr-only">
+                          Unit
+                        </label>
+                        <select
+                          id="stock-unit"
+                          name="stock-unit"
+                          className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                        >
+                          <option>Cartons</option>
+                          <option>Units</option>
+                          <option>Pallete</option>
+                          <option>Pieces</option>
                         </select>
                       </div>
                     </div>
@@ -592,8 +713,8 @@ const deleteVariant = (idToDelete) => {
                           Unit
                         </label>
                         <select
-                          id="unit"
-                          name="unit"
+                          id="weight-unit"
+                          name="weight-unit"
                           className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                         >
                           <option>Kg</option>
@@ -605,47 +726,15 @@ const deleteVariant = (idToDelete) => {
 
                   <div className="col-span-6 sm:col-span-3">
                     <label
-                      htmlFor="stock"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      In Stock
-                    </label>
-                    <div className="mt-1 relative rounded-md shadow-sm border">
-                      <input
-                        type="number"
-                        name="stock"
-                        id="stock"
-                        className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
-                        placeholder="0"
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center">
-                        <label htmlFor="unit" className="sr-only">
-                          Unit
-                        </label>
-                        <select
-                          id="unit"
-                          name="unit"
-                          className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-                        >
-                          <option>Cartons</option>
-                          <option>Units</option>
-                          <option>Pallete</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label
-                      htmlFor="dimension"
+                      htmlFor="dimensions"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Dimension
                     </label>
                     <input
-                      type="dimension"
-                      name="dimension"
-                      id="dimension"
+                      type="dimensions"
+                      name="dimensions"
+                      id="dimensions"
                       autoComplete="7.87 x 5.31 x 0.79 inches"
                       placeholder="7.87 x 5.31 x 0.79 inches"
                       className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
@@ -737,15 +826,23 @@ const deleteVariant = (idToDelete) => {
                         className="grid grid-cols-5 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-6 xl:gap-x-8"
                       >
                         {stateVariants.map((variant) => (
-                          <li key={variant.id} className="relative">
-                            <div className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer" onClick={() => {deleteVariant(variant.id)}}>
+                          <li key={variant.index} className="relative">
+                            <div
+                              className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
+                              onClick={() => {
+                                deleteVariant(variant.index);
+                              }}
+                            >
                               <TrashIcon className="text-red-400" />
                             </div>
                             <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg  focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                               <img
                                 src={
                                   variant.images[0]
-                                    ? variant.images[0].source
+                                    ? variant.images[0].secure_url.replace(
+                                        "/upload/",
+                                        "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                      )
                                     : images.icons.box
                                 }
                                 alt=""
@@ -789,19 +886,30 @@ const deleteVariant = (idToDelete) => {
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end p-6 pt-0 sm:rounded-lg">
           <button
             type="button"
             className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            Save
-          </button>
+          {isLoading ? (
+            <button
+              type="submit"
+              className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled
+            >
+              <ImSpinner8 className="animate-spin text-gray-400" />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={createProduct}
+            >
+              Save
+            </button>
+          )}
         </div>
       </div>
       {isModalOpen ? (
