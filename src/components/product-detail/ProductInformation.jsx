@@ -14,55 +14,13 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const variants2 = [
-  {
-    id: 1,
-    name: "Hello world",
-    description: "From the world above",
-    feature: "1. Can help the world. 2. Can cure hunger",
-    images: [images.products[2], images.products[1], images.products[2]],
-    price: {
-      amount: 200,
-      currency: "NGN",
-    },
-    weight: {
-      amount: 10,
-      unit: "Kg",
-    },
-    stock: 22,
-    color: ["orange"],
-    size: [22],
-    dimension: "22 x 15.47 x 0.79 inches",
-    users: "Children",
-    sex: "Female",
-  },
-  {
-    id: 2,
-    name: "Hello world",
-    description: "From the world above",
-    feature: "1. Can help the world. 2. Can cure hunger",
-    images: [images.products[8], images.products[2], images.products[3]],
-    price: {
-      amount: 200,
-      currency: "NGN",
-    },
-    weight: {
-      amount: 10,
-      unit: "Kg",
-    },
-    stock: 22,
-    color: "orange",
-    size: 22,
-    dimension: "22 x 15.47 x 0.79 inches",
-    users: "Children",
-    sex: "Female",
-  },
-];
+const currencies = {"NGN": "₦", "USD": "$", "GBP": "£", "EUR": "€", "CAD": "CAD"}
 
-export default function ProductInformation() {
+
+export default function ProductInformation({product}) {
   const [drawerProductOpen, setDrawerProductOpen] = useState(false);
   const [drawerNewVariantOpen, setDrawerNewVariantOpen] = useState(false);
-  const [stateVariants, setStateVariants] = useState(variants2);
+  const [stateVariants, setStateVariants] = useState(product.variants);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("name");
@@ -157,7 +115,7 @@ export default function ProductInformation() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              {info.products[0].name}
+                              {product.name}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -176,7 +134,7 @@ export default function ProductInformation() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              {info.products[0].description}
+                              {product.description}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -194,7 +152,7 @@ export default function ProductInformation() {
                             Price
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">$300</span>
+                            <span className="flex-grow">{currencies[product.currency] + product.price}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
@@ -212,7 +170,7 @@ export default function ProductInformation() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              22{" "}
+                              {product.stock + " "}
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                 mid
                               </span>{" "}
@@ -236,7 +194,7 @@ export default function ProductInformation() {
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
                               {" "}
-                              {info.products[0].feature}
+                              {product.features}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -257,10 +215,9 @@ export default function ProductInformation() {
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
                               <ul>
-                                <li> Orange</li>
-                                <li> Blue</li>
-                                <li> Brown</li>
-                                <li> Orange</li>
+                                {product.colors.map((color, index) => (
+                                  <li key={index}> {color}</li>
+                                ))}
                               </ul>
                             </span>
                             <span className="ml-4 flex-shrink-0">
@@ -282,10 +239,9 @@ export default function ProductInformation() {
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
                               <ul>
-                                <li> XXL</li>
-                                <li> XL</li>
-                                <li> 21</li>
-                                <li> 23</li>
+                              {product.sizes.map((size, index) => (
+                                  <li key={index}> {size}</li>
+                                ))}
                               </ul>
                             </span>
                             <span className="ml-4 flex-shrink-0">
@@ -305,7 +261,7 @@ export default function ProductInformation() {
                             Weight
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> 22kg</span>
+                            <span className="flex-grow"> {product.weight ? product.weight : 0 +" "+ product.weightUnit}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
@@ -325,7 +281,7 @@ export default function ProductInformation() {
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
                               {" "}
-                              {"7.87 x 5.31 x 0.79 inches"}
+                              {product.dimensions}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -343,7 +299,7 @@ export default function ProductInformation() {
                             Users
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> Children </span>
+                            <span className="flex-grow"> {product.users} </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
@@ -361,7 +317,7 @@ export default function ProductInformation() {
                             Sex
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> Unisex</span>
+                            <span className="flex-grow"> {product.sex}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
@@ -410,8 +366,8 @@ export default function ProductInformation() {
                         role="list"
                         className="grid grid-cols-5 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-6 xl:gap-x-8"
                       >
-                        {stateVariants.map((variant) => (
-                          <li key={variant.id} className="relative">
+                        {stateVariants.map((variant, index) => (
+                          <li key={index} className="relative">
                             <div
                               className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
                               onClick={() => setIsDeleteModalOpen(true)}
@@ -421,8 +377,11 @@ export default function ProductInformation() {
                             <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg  focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                               <img
                                 src={
-                                  variant.images[0]
-                                    ? variant.images[0]
+                                  variant.image
+                                    ? variant.image.replace(
+                                      "/upload/",
+                                      "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                    )
                                     : images.icons.box
                                 }
                                 alt=""
@@ -439,10 +398,10 @@ export default function ProductInformation() {
                               />
                             </div>
                             <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                              {variant.color}
+                              {variant.colors ? variant.colors[0] : variant.name}
                             </p>
                             <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                              {variant.size}
+                              {variant.sizes ? variant.sizes[0] : variant.features}
                             </p>
                           </li>
                         ))}
@@ -482,7 +441,7 @@ export default function ProductInformation() {
           toggleDrawer={toggleNewVariantDrawer}
           createVariant={createVariant}
           updateVariant={updateVariant}
-          variant={variants2}
+          variant={stateVariants}
         />
       ) : (
         <></>
