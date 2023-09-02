@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useGetStoresMutation } from "../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout, showToast } from "../slices/authSlice";
+import { logout, setAllStores, showToast } from "../slices/authSlice";
 import errors from "../assets/error.json";
 import { ImSpinner8 } from "react-icons/im";
 
@@ -22,6 +22,7 @@ function Home() {
     try {
       const res = await getStoresMutation({ token: twk });
       if (res.error) throw Error(JSON.stringify(res.error));
+      dispatch(setAllStores(res.data));
       setStores(res.data);
     } catch (error) {
       const message = JSON.parse(error.message);

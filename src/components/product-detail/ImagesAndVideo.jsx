@@ -12,87 +12,19 @@ import DeleteWarning from "../layout/DeleteWarning";
 import UpdateModal from "./sub-menus/UpdateModal";
 import ImageUploadIcon from "../../assets/ImageUploadIcon";
 
-const product = {
-  name: info.products[0].name,
-  price: "$140",
-  rating: 4,
-  images: [
-    {
-      id: 3,
-      title: "Trial Users",
-      alt: "Last message sent 4 days ago",
-      users: "2740 users",
-      source: images.products[2],
-    },
-    {
-      id: 4,
-      title: "Trial Users",
-      alt: "Last message sent 4 days ago",
-      users: "2740 users",
-      source: images.products[3],
-    },
-    {
-      id: 5,
-      title: "Trial Users",
-      alt: "Last message sent 4 days ago",
-      users: "2740 users",
-      source: images.products[4],
-    },
-    {
-      id: 6,
-      title: "Trial Users",
-      alt: "Last message sent 4 days ago",
-      users: "2740 users",
-      source: images.products[5],
-    },
-    {
-      id: 7,
-      title: "Trial Users",
-      alt: "Last message sent 4 days ago",
-      users: "2740 users",
-      source: images.products[6],
-    },
-    {
-      id: 8,
-      title: "Trial Users",
-      alt: "Last message sent 4 days ago",
-      users: "2740 users",
-      source: images.products[7],
-    },
-  ],
-  description: `
-    <p>The Zip Tote Basket is the perfect midpoint between shopping tote and comfy backpack. With convertible straps, you can hand carry, should sling, or backpack this convenient and spacious bag. The zip top and durable canvas construction keeps your goods protected for all-day use.</p>
-  `,
-  details: [
-    {
-      name: "Features / Benefit",
-      items:
-        "We have been from the day of the pentecost to this day and we have seen the Lord our God",
-    },
-  ],
-  sizes: [
-    { name: "XXS", inStock: true },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: false },
-  ],
-  colors: ["Orange", "Red", "Yellow", "Blue"],
-};
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function ImagesAndVideo() {
+export default function ImagesAndVideo({ product }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productImages, setProductImages] = useState(product.images);
+  const [productVideos, setProductVideos] = useState(product.videos);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("video");
-  const [testimonialImages, setTestimonialImages] = useState([]);
+  const [testimonialImages, setTestimonialImages] = useState(product.testimonials);
   const [buttonSelected, setButtonSelected] = useState([]);
 
   const toggleModal = (toggle) => {
@@ -126,6 +58,20 @@ export default function ImagesAndVideo() {
     setTestimonialImages(images);
   };
 
+  function getYoutubeEmbedUrl(youtubeUrl) {
+    const youtubeRegex =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+
+    const match = youtubeUrl.match(youtubeRegex);
+
+    if (match) {
+      const embed = `https://www.youtube.com/embed/${match[1]}`;
+      return embed;
+    } else {
+      return youtubeUrl;
+    }
+  }
+
   return (
     <>
       <div>
@@ -142,10 +88,13 @@ export default function ImagesAndVideo() {
                 >
                   {({ selected }) => (
                     <>
-                      <span className="sr-only">{image.name}</span>
+                      <span className="sr-only">{image.public_id}</span>
                       <span className="absolute inset-0 rounded-md overflow-hidden">
                         <img
-                          src={image.source}
+                          src={image.secure_url.replace(
+                            "/upload/",
+                            "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                          )}
                           alt=""
                           className="w-full h-full object-center object-cover"
                         />
@@ -161,37 +110,83 @@ export default function ImagesAndVideo() {
                   )}
                 </Tab>
               ))}
-              <div
-                onClick={() => {
-                  setIsModalOpen(true)
-                  setButtonSelected("Product")
-                }}
-                className="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50"
-              >
-                <>
-                  <span className="sr-only">Add more</span>
-                  <StatusMoreIcon />
-                </>
-              </div>
+              {productImages.length > 0 && (
+                <div
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setButtonSelected("Product");
+                  }}
+                  className="relative h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50"
+                >
+                  <>
+                    <span className="sr-only">Add more</span>
+                    <StatusMoreIcon />
+                  </>
+                </div>
+              )}
             </Tab.List>
           </div>
 
           <Tab.Panels className="w-full aspect-w-1 aspect-h-1 relative">
-            {productImages.map((image) => (
-              <Tab.Panel key={image.id}>
-                <img
-                  src={image.source}
-                  alt={image.alt}
-                  className="w-full h-full object-center object-cover sm:rounded-lg"
-                />
-                <div
-                  className="absolute top-3 right-2 w-8  h-4 cursor-pointer"
-                  onClick={() => setIsDeleteModalOpen(true)}
-                >
-                  <TrashIcon className="text-red-400" />
-                </div>
-              </Tab.Panel>
-            ))}
+            <>
+              {productImages.length ? (
+                <>
+                  {productImages.map((image) => (
+                    <Tab.Panel key={image.asset_id}>
+                      <img
+                        src={image.secure_url.replace(
+                          "/upload/",
+                          "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                        )}
+                        alt={image.asset_id}
+                        className="w-full h-full object-center object-cover sm:rounded-lg"
+                      />
+                      <div
+                        className="absolute top-3 right-2 w-8  h-4 cursor-pointer"
+                        onClick={() => setIsDeleteModalOpen(true)}
+                      >
+                        <TrashIcon className="text-red-400" />
+                      </div>
+                    </Tab.Panel>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <main>
+                    <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                      <div className="py-4 sm:px-0">
+                        <div className="border-4 border-dashed border-gray-200 rounded-lg h-48 flex justify-center items-center flex-col">
+                          <div className="text-center">
+                            <div className="flex items-center justify-center">
+                              <ImageUploadIcon className="text-gray-300 text-4xl" />
+                            </div>
+                            <h3 className="mt-2 text-sm font-medium text-gray-600">
+                              No Images
+                            </h3>
+                            <p className="mt-1 text-sm text-gray-500">
+                              Get started {"  "}
+                              <label
+                                htmlFor="file-upload"
+                                className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                              >
+                                <span
+                                  onClick={() => {
+                                    setIsModalOpen(true);
+                                    setButtonSelected("Product");
+                                  }}
+                                >
+                                  click to browse
+                                </span>
+                              </label>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </main>
+                </>
+              )}
+            </>
           </Tab.Panels>
         </Tab.Group>
 
@@ -238,7 +233,7 @@ export default function ImagesAndVideo() {
               </h3>
               <Disclosure.Panel
                 as="div"
-                className="pb-6 prose prose-sm grid grid-cols-1 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-col-2"
+                className="pb-6 prose prose-sm grid grid-cols-1 gap-x-4 gap-y-8 sm:gap-x-6"
               >
                 {
                   <>
@@ -254,38 +249,25 @@ export default function ImagesAndVideo() {
                         Edit videos
                       </a>
                     </div>
-                    {isLoading && (
-                      <div className="lg:col-span-2 flex items-center justify-center">
+                    {isLoading && productVideos.length && (
+                      <div className="flex items-center justify-center">
                         <ImSpinner8 className="animate-spin text-center text-2xl text-indigo-600" />
                       </div>
                     )}
-                    <div className="col-span-2 lg:col-span-1 aspect-w-16 aspect-h-9 flex justify-center">
-                      <iframe
-                        src="https://www.youtube.com/embed/r9jwGansp1E"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        onLoad={loadComplete}
-                      ></iframe>
-                    </div>
-                    <div className="col-span-2 lg:col-span-1 aspect-w-16 aspect-h-9 flex justify-center">
-                      <iframe
-                        src="https://www.youtube.com/embed/r9jwGansp1E"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        onLoad={loadComplete}
-                      ></iframe>
-                    </div>
-                    <div className="col-span-2 lg:col-span-1 aspect-w-16 aspect-h-9 flex justify-center">
-                      <iframe
-                        src="https://www.youtube.com/embed/r9jwGansp1E"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        onLoad={loadComplete}
-                      ></iframe>
-                    </div>
+                    {productVideos.map((video, index) => (
+                      <div
+                        key={index}
+                        className="col-span-2 aspect-w-16 aspect-h-9 flex justify-center"
+                      >
+                        <iframe
+                          src={getYoutubeEmbedUrl(video)}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          onLoad={loadComplete}
+                        ></iframe>
+                      </div>
+                    ))}
                   </>
                 }
               </Disclosure.Panel>
@@ -348,8 +330,8 @@ export default function ImagesAndVideo() {
                           </label>
                           <div
                             onClick={() => {
-                              setIsModalOpen(true)
-                              setButtonSelected("Testimonial")
+                              setIsModalOpen(true);
+                              setButtonSelected("Testimonial");
                             }}
                             className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer"
                           >
@@ -359,8 +341,8 @@ export default function ImagesAndVideo() {
                                   <ImageUploadIcon />
                                   <div className="flex text-sm text-gray-600">
                                     <p className="pl-1">
-                                      Upload testimonials or select from uploaded
-                                      testimonials
+                                      Upload testimonials or select from
+                                      uploaded testimonials
                                     </p>
                                   </div>
                                   <p className="text-xs text-gray-500">
@@ -374,10 +356,13 @@ export default function ImagesAndVideo() {
                                 className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
                               >
                                 {testimonialImages.map((image) => (
-                                  <li key={image.source} className="relative">
+                                  <li key={image.asset_id} className="relative">
                                     <div className="group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                                       <img
-                                        src={image.source}
+                                        src={image.secure_url.replace(
+                                          "/upload/",
+                                          "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                        )}
                                         alt=""
                                         className="object-cover pointer-events-none group-hover:opacity-75"
                                       />
@@ -386,15 +371,15 @@ export default function ImagesAndVideo() {
                                         className="absolute inset-0 focus:outline-none"
                                       >
                                         <span className="sr-only">
-                                          View details for {image.title}
+                                          View details for {image.asset_id}
                                         </span>
                                       </button>
                                     </div>
                                     <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                                      {image.title}
+                                      {image.asset_id}
                                     </p>
                                     <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                                      {image.size}
+                                      {image.asset_id}
                                     </p>
                                   </li>
                                 ))}
@@ -426,8 +411,14 @@ export default function ImagesAndVideo() {
         <ImageUploadModal
           isModalOpen={isModalOpen}
           toggleModal={toggleModal}
-          updateDisplayImages={buttonSelected === "Product" ? updateProductImages : updateTestimonialImages}
-          displayImages={buttonSelected === "Product" ? productImages : testimonialImages}
+          updateDisplayImages={
+            buttonSelected === "Product"
+              ? updateProductImages
+              : updateTestimonialImages
+          }
+          displayImages={
+            buttonSelected === "Product" ? productImages : testimonialImages
+          }
           headerText={buttonSelected === "Product" ? "Files" : "Testimonials"}
         />
       ) : (

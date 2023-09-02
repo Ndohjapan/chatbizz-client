@@ -15,7 +15,8 @@ const initialState = {
     title: "Successful",
   },
   newStoreAlert: 0,
-  selectedStore: ""
+  selectedStore: "",
+  stores: []
 };
 
 const authSlice = createSlice({
@@ -46,6 +47,17 @@ const authSlice = createSlice({
     },
     setSelectedStore: (state, action) => {
       state.selectedStore = action.payload;
+      state.stores = state.stores.map(store => {
+        if (store._id === action.payload) {
+          store.selected = true;
+        }else{
+          store.selected = false;
+        }
+        return store; 
+      });
+    },
+    setAllStores: (state, action) => {
+      state.stores = action.payload;
     },
     logout: (state, action) => {
       state.userInfo = null;
@@ -80,7 +92,8 @@ export const {
   showToast,
   hideToast,
   setNewStoreAlert,
-  setSelectedStore
+  setSelectedStore,
+  setAllStores
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -63,6 +63,16 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    getProduct: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/products/${data.product}/store/${data.store}`,
+        method: "GET",
+        headers: {
+          "x-access-token": data.token,
+        },
+      }),
+    }),
+
     createProduct: builder.mutation({
       query: (data) => ({
         url: `${BASE_URL}/products`,
@@ -83,5 +93,6 @@ export const {
   useGetStoresMutation,
   useGetImagesMutation,
   useCreateProductMutation,
-  useGetProductsMutation
+  useGetProductsMutation,
+  useGetProductMutation
 } = usersApiSlice;
