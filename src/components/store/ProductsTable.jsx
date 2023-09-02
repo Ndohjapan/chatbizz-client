@@ -377,7 +377,7 @@ export default function ProductsTable({products}) {
                               : "text-gray-900"
                           )}
                         >
-                          <Link to={location.pathname+"/product/" + uniqueId}>
+                          <Link to={location.pathname+"/product/" + product._id}>
                             {product.name}
                           </Link>
                         </td>

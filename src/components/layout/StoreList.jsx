@@ -75,7 +75,7 @@ export default function StoreList() {
 
   useEffect(() => {
     handleGetStores();
-  }, []); // Only run this effect once, on component mount
+  }, []); 
 
   return (
     <>
