@@ -2,11 +2,11 @@ import React from 'react'
 import DrawerProductInfo from './DrawerProductInfo'
 import DrawerImageAndVideo from './DrawerImageAndVideo'
 
-export default function DrawerProduct() {
+export default function DrawerProduct({variant}) {
   return (
     <>
-    <DrawerImageAndVideo/>
-    <DrawerProductInfo/>
+    <DrawerImageAndVideo variant={variant}/>
+    <DrawerProductInfo variant={variant}/>
     </>
   )
 }
