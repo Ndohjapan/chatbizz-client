@@ -19,6 +19,7 @@ const currencies = {"NGN": "₦", "USD": "$", "GBP": "£", "EUR": "€", "CAD": 
 
 export default function ProductInformation({product}) {
   const [drawerProductOpen, setDrawerProductOpen] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState("");
   const [drawerNewVariantOpen, setDrawerNewVariantOpen] = useState(false);
   const [stateVariants, setStateVariants] = useState(product.variants);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -387,6 +388,7 @@ export default function ProductInformation({product}) {
                                 alt=""
                                 onClick={() => {
                                   setDrawerProductOpen(true);
+                                  setSelectedVariant(variant._id)
                                 }}
                                 className="object-cover object-center group-hover:opacity-75 w-full h-full cursor-pointer"
                                 style={{
@@ -431,7 +433,7 @@ export default function ProductInformation({product}) {
       )}
 
       {drawerProductOpen ? (
-        <VariantDrawer toggleDrawer={toggleProductDrawer} />
+        <VariantDrawer toggleDrawer={toggleProductDrawer} productId={product._id} variantId={selectedVariant} />
       ) : (
         <></>
       )}

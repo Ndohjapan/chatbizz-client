@@ -6,7 +6,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function DrawerProductInfo() {
+const currencies = {"NGN": "₦", "USD": "$", "GBP": "£", "EUR": "€", "CAD": "CAD"}
+
+export default function DrawerProductInfo({variant}) {
   return (
     <>
           <Disclosure as="div" key={"yt-videos"} defaultOpen={true}>
@@ -57,7 +59,7 @@ export default function DrawerProductInfo() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              {info.products[0].name}
+                              {variant.name}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -75,7 +77,7 @@ export default function DrawerProductInfo() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              {info.products[0].description}
+                              {variant.description}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -92,7 +94,7 @@ export default function DrawerProductInfo() {
                             Price
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">$300</span>
+                            <span className="flex-grow">{currencies[variant.currency] + variant.price}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
@@ -109,7 +111,7 @@ export default function DrawerProductInfo() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              22{" "}
+                            {variant.stock + " "}
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                 mid
                               </span>{" "}
@@ -132,7 +134,7 @@ export default function DrawerProductInfo() {
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
                               {" "}
-                              {info.products[0].feature}
+                              {variant.features}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -151,11 +153,10 @@ export default function DrawerProductInfo() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              <ul>
-                                <li> Orange</li>
-                                <li> Blue</li>
-                                <li> Brown</li>
-                                <li> Orange</li>
+                            <ul>
+                                {variant.colors.map((color, index) => (
+                                  <li key={index}> {color}</li>
+                                ))}
                               </ul>
                             </span>
                             <span className="ml-4 flex-shrink-0">
@@ -175,11 +176,10 @@ export default function DrawerProductInfo() {
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
-                              <ul>
-                                <li> XXL</li>
-                                <li> XL</li>
-                                <li> 21</li>
-                                <li> 23</li>
+                            <ul>
+                              {variant.sizes.map((size, index) => (
+                                  <li key={index}> {size}</li>
+                                ))}
                               </ul>
                             </span>
                             <span className="ml-4 flex-shrink-0">
@@ -198,7 +198,7 @@ export default function DrawerProductInfo() {
                             Weight
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> 22kg</span>
+                            <span className="flex-grow"> {variant.weight ? variant.weight : 0 +" "+ variant.weightUnit}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
@@ -217,7 +217,7 @@ export default function DrawerProductInfo() {
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
                               {" "}
-                              {"7.87 x 5.31 x 0.79 inches"}
+                              {variant.dimensions}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
@@ -234,7 +234,7 @@ export default function DrawerProductInfo() {
                             Users
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> Children </span>
+                            <span className="flex-grow"> {variant.users} </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
@@ -250,7 +250,7 @@ export default function DrawerProductInfo() {
                             Sex
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> Unisex</span>
+                            <span className="flex-grow"> {variant.sex}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
