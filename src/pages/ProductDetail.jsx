@@ -16,12 +16,26 @@ export default function ProductDetail() {
   const twk = useSelector((state) => state.auth.twk);
   const selectedStore = useSelector((state) => state.auth.selectedStore);
   const url = location.pathname.match(/store\/([^/]*)/);
-  const [product, setProduct] = useState(undefined)
+  const [product, setProduct] = useState(undefined);
 
   const storeId = selectedStore ? selectedStore : url[1];
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const updateProductFunc = async (update) => {
+    try {
+      const updatedProduct = {
+        ...product,
+        ...update,
+      };
+
+      setProduct(updatedProduct);
+
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
 
   const handleGetProduct = async () => {
     try {
@@ -32,7 +46,6 @@ export default function ProductDetail() {
       });
       if (res.error) throw Error(JSON.stringify(res.error));
       setProduct(res.data);
-      return res.data;
     } catch (error) {
       const message = JSON.parse(error.message);
 
@@ -63,8 +76,14 @@ export default function ProductDetail() {
           <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
             {!isLoading && product ? (
               <>
-                <ImagesAndVideo product={product} />
-                <ProductInformation product={product} />
+                <ImagesAndVideo
+                  product={product}
+                  updateProductFunction={updateProductFunc}
+                />
+                <ProductInformation
+                  product={product}
+                  updateProductFnc={updateProductFunc}
+                />
               </>
             ) : (
               <>

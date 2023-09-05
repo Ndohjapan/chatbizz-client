@@ -7,10 +7,12 @@ import TShirtSizeIcon from "../../../assets/TShirtSizeIcon";
 import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
-export default function UpdateModal({ toggleModal, section, productInfo }) {
+export default function UpdateModal({ toggleModal, section, productInfo, updateProductFnc }) {
   const [links, setLinks] = useState(productInfo.videos);
   const [colors, setColors] = useState(productInfo.colors);
   const [sizes, setSizes] = useState(productInfo.sizes);
+  const [ytErrors, setYtErrors] = useState({});
+  const [updatedProduct, setUpdatedProduct] = useState(productInfo);
 
   const [open, setOpen] = useState(true);
 
@@ -38,6 +40,18 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
     setColors(updatedColors);
   };
 
+  const handleColorChange = (index, value) => {
+    const updatedColors = [...colors];
+    updatedColors[index] = value
+    setColors(updatedColors);
+  }
+
+  const handleSizeChange = (index, value) => {
+    const updatedSizes = [...sizes];
+    updatedSizes[index] = value
+    setSizes(updatedSizes);
+  }
+
   const addSize = (e) => {
     e.preventDefault();
     setSizes([...sizes, ""]);
@@ -51,8 +65,19 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
 
   const handleLinkChange = (index, value) => {
     const updatedLinks = [...links];
-    updatedLinks[index] = value;
-    setLinks(updatedLinks);
+    const newErrors = { ...ytErrors };
+    const youtubeRegex =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+
+    if (!youtubeRegex.test(value)) {
+      newErrors[index] = true;
+      setYtErrors(newErrors);
+    } else {
+      newErrors[index] = false;
+      setYtErrors(newErrors);
+      updatedLinks[index] = value;
+      setLinks(updatedLinks);
+    }
   };
 
   const handleClose = () => {
@@ -60,6 +85,60 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
     setTimeout(() => {
       toggleModal(false);
     }, 500);
+  };
+
+  const updateFields = async () => {
+
+    let update;
+
+    if(section === "name"){
+      const name = document.getElementById("name").value;
+      update = {name}
+    }
+    else if(section === "description"){
+      const description = document.getElementById("description").value      
+      update = {description}
+    }
+
+    else if(section === "features"){
+      const features = document.getElementById("features").value
+      update = {features};
+    }
+
+    else if(section === "video"){
+      const videos = links[0] ? links : undefined;
+      update = {videos};
+    }
+    else if(section === "color"){
+      update = {colors};
+    }
+
+    else if(section === "size"){
+      update = {sizes};
+    }
+    
+    else if(section === "more"){
+      const price = document.getElementById("price").value
+      const currency = document.getElementById("currency").value
+      const weight = document.getElementById("weight").value
+      const weightUnit = document.getElementById("weight-unit").value
+      const stock = document.getElementById("stock").value
+      const stockUnit = document.getElementById("stock-unit").value
+      const dimensions = document.getElementById("dimensions").value
+      const users = document.getElementById("users").value
+      const sex = document.getElementById("sex").value
+
+      update = {price, currency, weight, weightUnit, stock, stockUnit, dimensions, users, sex}
+    }
+
+    await setUpdatedProduct((prevUpdate) => {
+      return {
+        ...prevUpdate,
+        ...update,
+      };
+    });
+
+    updateProductFnc(update);
   };
 
   return (
@@ -148,9 +227,7 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                               placeholder={
                                                 info.products[0].name
                                               }
-                                              defaultValue={
-                                                productInfo.name
-                                              }
+                                              defaultValue={productInfo.name}
                                             />
                                           </div>
                                           <p className="mt-2 text-sm text-gray-500">
@@ -254,9 +331,7 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                               placeholder={
                                                 info.products[0].feature
                                               }
-                                              defaultValue={
-                                                productInfo.feature
-                                              }
+                                              defaultValue={productInfo.feature}
                                             />
                                           </div>
                                           <p className="mt-2 text-sm text-gray-500">
@@ -334,6 +409,11 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                                   </button>
                                                 )}
                                               </div>
+                                              {ytErrors[index] && (
+                                                <p className="text-red-500 text-sm mt-1">
+                                                  Invalid Youtube Link
+                                                </p>
+                                              )}
                                             </div>
                                           ))}
                                         </div>
@@ -392,6 +472,12 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                                   className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
                                                   placeholder="Red, Oraange, Wine red, metallic brown"
                                                   defaultValue={link}
+                                                  onChange={(e) => {
+                                                    handleColorChange(
+                                                      index,
+                                                      e.target.value
+                                                    );
+                                                  }}
                                                 />
                                                 {index === 0 ? (
                                                   <></>
@@ -468,6 +554,12 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                                   className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:pl-14 sm:text-sm border-gray-300 rounded-md p-2"
                                                   placeholder="S, M, L, XL, XXL, 38, 41"
                                                   defaultValue={link}
+                                                  onChange={(e) => {
+                                                    handleSizeChange(
+                                                      index,
+                                                      e.target.value
+                                                    );
+                                                  }}
                                                 />
                                                 {index === 0 ? (
                                                   <></>
@@ -537,14 +629,14 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                               />
                                               <div className="absolute inset-y-0 right-0 flex items-center">
                                                 <label
-                                                  htmlFor="price"
+                                                  htmlFor="currency"
                                                   className="sr-only"
                                                 >
                                                   Price
                                                 </label>
                                                 <select
-                                                  id="price"
-                                                  name="price"
+                                                  id="currency"
+                                                  name="currency"
                                                   className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
                                                 >
                                                   <option>NGN</option>
@@ -571,19 +663,22 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                                 id="weight"
                                                 className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md  p-2"
                                                 placeholder="0.00"
-                                                defaultValue={productInfo.weight}
+                                                defaultValue={
+                                                  productInfo.weight
+                                                }
                                               />
                                               <div className="absolute inset-y-0 right-0 flex items-center">
                                                 <label
-                                                  htmlFor="unit"
+                                                  htmlFor="weight-unit"
                                                   className="sr-only"
                                                 >
                                                   Unit
                                                 </label>
                                                 <select
-                                                  id="unit"
-                                                  name="unit"
+                                                  id="weight-unit"
+                                                  name="weight-unit"
                                                   className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                                                  defaultValue={productInfo.weightUnit}
                                                 >
                                                   <option>Kg</option>
                                                   <option>Lbs</option>
@@ -610,19 +705,21 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                                               />
                                               <div className="absolute inset-y-0 right-0 flex items-center">
                                                 <label
-                                                  htmlFor="unit"
+                                                  htmlFor="stock-unit"
                                                   className="sr-only"
                                                 >
                                                   Unit
                                                 </label>
                                                 <select
-                                                  id="unit"
-                                                  name="unit"
+                                                  id="stock-unit"
+                                                  name="stock-unit"
                                                   className="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
+                                                  defaultValue={productInfo.stockUnit}
                                                 >
                                                   <option>Cartons</option>
                                                   <option>Units</option>
                                                   <option>Pallete</option>
+                                                  <option>Pieces</option>
                                                 </select>
                                               </div>
                                             </div>
@@ -630,18 +727,20 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
 
                                           <div className="col-span-6 sm:col-span-3">
                                             <label
-                                              htmlFor="dimension"
+                                              htmlFor="dimensions"
                                               className="block text-sm font-medium text-gray-700"
                                             >
                                               Dimension
                                             </label>
                                             <input
-                                              type="dimension"
-                                              name="dimension"
-                                              id="dimension"
+                                              type="dimensions"
+                                              name="dimensions"
+                                              id="dimensions"
                                               autoComplete="7.87 x 5.31 x 0.79 inches"
                                               placeholder="7.87 x 5.31 x 0.79 inches"
-                                              defaultValue={productInfo.dimension}
+                                              defaultValue={
+                                                productInfo.dimensions
+                                              }
                                               className="mt-1 border focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2"
                                             />
                                           </div>
@@ -703,7 +802,10 @@ export default function UpdateModal({ toggleModal, section, productInfo }) {
                   <button
                     type="button"
                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={handleClose}
+                    onClick={async () => {
+                      await updateFields();
+                      handleClose();
+                    }}
                   >
                     Update
                   </button>

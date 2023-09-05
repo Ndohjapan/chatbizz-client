@@ -15,12 +15,11 @@ import ImageUploadIcon from "../../assets/ImageUploadIcon";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function ImagesAndVideo({ product }) {
+export default function ImagesAndVideo({ product, updateProductFunction }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productImages, setProductImages] = useState(product.images);
-  const [productVideos, setProductVideos] = useState(product.videos);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("video");
@@ -52,10 +51,13 @@ export default function ImagesAndVideo({ product }) {
 
   const updateProductImages = (images) => {
     setProductImages(images);
+    updateProductFunction({images})
+    
   };
-
-  const updateTestimonialImages = (images) => {
-    setTestimonialImages(images);
+  
+  const updateTestimonialImages = (testimonials) => {
+    setTestimonialImages(testimonials);
+    updateProductFunction({testimonials})
   };
 
   function getYoutubeEmbedUrl(youtubeUrl) {
@@ -249,12 +251,12 @@ export default function ImagesAndVideo({ product }) {
                         Edit videos
                       </a>
                     </div>
-                    {isLoading && productVideos.length && (
+                    {isLoading && product.videos.length && (
                       <div className="flex items-center justify-center">
                         <ImSpinner8 className="animate-spin text-center text-2xl text-indigo-600" />
                       </div>
                     )}
-                    {productVideos.map((video, index) => (
+                    {product.videos.map((video, index) => (
                       <div
                         key={index}
                         className="col-span-2 aspect-w-16 aspect-h-9 flex justify-center"
@@ -376,10 +378,8 @@ export default function ImagesAndVideo({ product }) {
                                       </button>
                                     </div>
                                     <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                                      {image.asset_id}
                                     </p>
                                     <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                                      {image.asset_id}
                                     </p>
                                   </li>
                                 ))}
@@ -401,7 +401,8 @@ export default function ImagesAndVideo({ product }) {
         <UpdateModal
           toggleModal={toggleUpdateModal}
           section={selectedSection}
-          productInfo={info.products[0]}
+          productInfo={product}
+          updateProductFnc={updateProductFunction}
         />
       ) : (
         <></>
