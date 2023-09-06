@@ -24,6 +24,8 @@ export default function ImagesAndVideo({ product, updateProductFunction }) {
   const [selectedSection, setSelectedSection] = useState("video");
   const [testimonialImages, setTestimonialImages] = useState(product.testimonials);
   const [buttonSelected, setButtonSelected] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState();
+
 
   const toggleModal = (toggle) => {
     setIsModalOpen(toggle);
@@ -57,6 +59,18 @@ export default function ImagesAndVideo({ product, updateProductFunction }) {
   const updateTestimonialImages = (testimonials) => {
     setTestimonialImages(testimonials);
     updateProductFunction({testimonials})
+  };
+
+  
+  const deleteImage = () => {
+    let updatedImages = [...productImages];
+
+    // Remove 1 element at selectedImageIndex
+    updatedImages.splice(selectedImageIndex, 1);
+  
+    setProductImages(updatedImages);
+    
+    updateProductFunction({images: updatedImages})
   };
 
   function getYoutubeEmbedUrl(youtubeUrl) {
@@ -132,8 +146,8 @@ export default function ImagesAndVideo({ product, updateProductFunction }) {
             <>
               {productImages.length ? (
                 <>
-                  {productImages.map((image) => (
-                    <Tab.Panel key={image.asset_id}>
+                  {productImages.map((image, index) => (
+                    <Tab.Panel key={index}>
                       <img
                         src={image.secure_url.replace(
                           "/upload/",
@@ -144,7 +158,10 @@ export default function ImagesAndVideo({ product, updateProductFunction }) {
                       />
                       <div
                         className="absolute top-3 right-2 w-8  h-4 cursor-pointer"
-                        onClick={() => setIsDeleteModalOpen(true)}
+                        onClick={() => {
+                          setSelectedImageIndex(index)
+                          setIsDeleteModalOpen(true)
+                        }}
                       >
                         <TrashIcon className="text-red-400" />
                       </div>
@@ -430,6 +447,7 @@ export default function ImagesAndVideo({ product, updateProductFunction }) {
           message={info.delete.image.message}
           buttonText={info.delete.image.buttonText}
           toggleModal={toggleDeleteModal}
+          deleteFunction={deleteImage}
         />
       ) : (
         <></>
