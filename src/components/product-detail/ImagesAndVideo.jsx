@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Tab } from "@headlessui/react";
 import { Disclosure } from "@headlessui/react";
 import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
-import images from "../../assets/images.json";
 import StatusMoreIcon from "../../assets/StatusMoreIcon";
 import { TrashIcon } from "@heroicons/react/outline";
 import info from "../../assets/information.json";

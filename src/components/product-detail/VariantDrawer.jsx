@@ -28,6 +28,20 @@ export default function VariantDrawer({ toggleDrawer, variantId, productId }) {
     }, 500);
   };
 
+  const updateVariantFunc = async (update) => {
+    try {
+      const updatedVariant = {
+        ...variant,
+        ...update,
+      };
+
+      setVariant(updatedVariant);
+
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
   const handleGetVariant = async () => {
     try {
       const res = await getVariantNutation({
@@ -113,7 +127,7 @@ export default function VariantDrawer({ toggleDrawer, variantId, productId }) {
                         </>
                       ) : (
                         <>
-                          <DrawerProduct variant={variant} />
+                          <DrawerProduct variant={variant} updateVariantFnc={updateVariantFunc}/>
                         </>
                       )}
                       {/* /End replace */}

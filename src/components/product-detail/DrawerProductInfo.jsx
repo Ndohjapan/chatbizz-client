@@ -1,6 +1,8 @@
+import { useState } from "react";
 import info from "../../assets/information.json";
 import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
+import UpdateModal from "./sub-menus/UpdateModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -8,7 +10,14 @@ function classNames(...classes) {
 
 const currencies = {"NGN": "₦", "USD": "$", "GBP": "£", "EUR": "€", "CAD": "CAD"}
 
-export default function DrawerProductInfo({variant}) {
+export default function DrawerProductInfo({variant, updateVariantFnc}) {
+  const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedSection, setSelectedSection] = useState("name");
+
+  const toggleUpdateModal = (toggle) => {
+    setIsUpdateModalOpen(toggle);
+  };
+
   return (
     <>
           <Disclosure as="div" key={"yt-videos"} defaultOpen={true}>
@@ -64,6 +73,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("name");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -82,6 +95,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("description");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -98,6 +115,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -113,12 +134,16 @@ export default function DrawerProductInfo({variant}) {
                             <span className="flex-grow">
                             {variant.stock + " "}
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                mid
+                                {variant.stockUnit}
                               </span>{" "}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -139,6 +164,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("features");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -162,6 +191,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("color");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -185,6 +218,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("size");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -198,10 +235,14 @@ export default function DrawerProductInfo({variant}) {
                             Weight
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> {variant.weight ? variant.weight : 0 +" "+ variant.weightUnit}</span>
+                            <span className="flex-grow"> {variant.weight ? variant.weight + " "+ variant.weightUnit: 0 +" "+ variant.weightUnit}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -222,6 +263,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -238,6 +283,10 @@ export default function DrawerProductInfo({variant}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -271,6 +320,17 @@ export default function DrawerProductInfo({variant}) {
           </>
         )}
       </Disclosure>
+
+      {isUpdatModalOpen ? (
+        <UpdateModal
+          toggleModal={toggleUpdateModal}
+          section={selectedSection}
+          productInfo={variant}
+          updateProductFnc={updateVariantFnc}
+        />
+      ) : (
+        <></>
+      )}
     </>
   )
 }

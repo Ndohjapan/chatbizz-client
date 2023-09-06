@@ -181,7 +181,7 @@ export default function ProductInformation({ product, updateProductFnc }) {
                             <span className="flex-grow">
                               {product.stock + " "}
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                mid
+                                {product.stockUnit}
                               </span>{" "}
                             </span>
                             <span className="ml-4 flex-shrink-0">
