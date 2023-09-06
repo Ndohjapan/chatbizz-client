@@ -1,14 +1,18 @@
 import { useState } from "react";
 import images from "../../assets/images.json";
 import info from "../../assets/information.json";
+import errors from "../../assets/error.json";
 import { MinusSmIcon, PlusSmIcon, TrashIcon } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
 import StatusMoreIcon from "../../assets/StatusMoreIcon";
-import { v4 as uuidv4 } from "uuid";
 import CreateVariantDrawer from "../../components/store/CreateVariantDrawer";
 import VariantDrawer from "./VariantDrawer";
 import DeleteWarning from "../layout/DeleteWarning";
 import UpdateModal from "./sub-menus/UpdateModal";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useCreateVariantMutation, useDeleteVariantMutation } from "../../slices/userApiSlice";
+import { logout, showToast } from "../../slices/authSlice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -23,8 +27,17 @@ export default function ProductInformation({ product, updateProductFnc }) {
   const [stateVariants, setStateVariants] = useState(product.variants);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [stillOpen, setStillOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("name");
   const [selectedVariantIndex, setSelectedVariantIndex] = useState();
+  const [createVariantMutation, { isLoading: variantLoading }] =
+    useCreateVariantMutation();
+  const [deleteVariantMutation, { isLoading: variantDeleting }] =
+    useDeleteVariantMutation();
+  const twk = useSelector((state) => state.auth.twk);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleProductDrawer = (toggle) => {
     setDrawerProductOpen(toggle);
@@ -35,47 +48,118 @@ export default function ProductInformation({ product, updateProductFnc }) {
   };
 
   const toggleNewVariantDrawer = (toggle) => {
-    setDrawerNewVariantOpen(toggle);
+    if(!stillOpen){
+      setDrawerNewVariantOpen(toggle);
+    }
   };
 
   const toggleUpdateModal = (toggle) => {
     setIsUpdateModalOpen(toggle);
   };
 
-  const createVariant = (newVariant) => {
-    newVariant.id = uuidv4();
-    setStateVariants([...stateVariants, newVariant]);
+  const createVariant = async (variant) => {
+    const newVariant = await handleCreateVariant({
+      ...variant,
+      product: product._id,
+      store: product.store,
+    });
+
+    const updatedVariant = [
+      ...stateVariants,
+      {
+        _id: newVariant._id,
+        image: newVariant.images[0] ? newVariant.images[0].secure_url : undefined,
+        name: newVariant.name,
+      },
+    ];
+
+    setStateVariants(updatedVariant);
+    updateProductFnc({ variants: updatedVariant });
+    setStillOpen(false);
+    toggleNewVariantDrawer(true);
   };
 
   const updateSelectedVariant = (update) => {
-    console.log(update);
     let updatedVariants = [...stateVariants];
-    
+
     updatedVariants[selectedVariantIndex] = update;
-    
+
     setStateVariants(updatedVariants);
-    updateProductFnc({variants: updatedVariants});    
-    console.log(updatedVariants);
-  }
-
-  const updateVariant = (updatedVariant) => {
-    const update = stateVariants.map((variant) => {
-      if (variant.id === updatedVariant.id) {
-        return {
-          ...variant,
-          ...updatedVariant,
-        };
-      }
-      return variant;
-    });
-
-    setStateVariants(update);
-    updateProductFnc({variants: update})
+    updateProductFnc({ variants: updatedVariants });
   };
 
-  const deleteVariant = (idToDelete) => {
-    const update = stateVariants.filter((variant) => variant.id !== idToDelete);
-    setStateVariants(update);
+  const handleCreateVariant = async (variant) => {
+    setStillOpen(true);
+    try {
+      const res = await createVariantMutation({
+        token: twk,
+        variant,
+      });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      dispatch(showToast({ message: info["variant-created"] }));
+      return res.data;
+    } catch (error) {
+      const message = JSON.parse(error.message);
+
+      console.log(message);
+
+      if (message.status === 401) {
+        dispatch(logout());
+        navigate("/login");
+      }
+
+      const errorMessage = message.data.message;
+      dispatch(
+        showToast({
+          title: errors["title-error"],
+          message: errorMessage,
+        })
+      );
+    }
+  };
+
+  const handleDeleteVariant = async (variantId) => {
+    setStillOpen(true);
+    try {
+      const res = await deleteVariantMutation({
+        token: twk,
+        variant: variantId,
+        product: product._id
+      });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      dispatch(showToast({ message: info["variant-deleted"] }));
+      return res.data;
+    } catch (error) {
+      const message = JSON.parse(error.message);
+
+      console.log(message);
+
+      if (message.status === 401) {
+        dispatch(logout());
+        navigate("/login");
+      }
+
+      const errorMessage = message.data.message;
+      dispatch(
+        showToast({
+          title: errors["title-error"],
+          message: errorMessage,
+        })
+      );
+    }
+  };
+
+  const deleteVariant = async() => {
+    let updatedVariants = [...stateVariants];
+    let deleteVariantId = updatedVariants[selectedVariantIndex]._id;
+    updatedVariants = updatedVariants.filter((variant, index) => {
+      if(index != selectedVariantIndex){
+        return variant;
+      }
+    })
+    setStateVariants(updatedVariants);
+    updateProductFnc({ variants: updatedVariants });
+    handleDeleteVariant(deleteVariantId);
   };
 
   return (
@@ -420,7 +504,8 @@ export default function ProductInformation({ product, updateProductFnc }) {
                             <div
                               className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
                               onClick={() => {
-                                setIsDeleteModalOpen(true)
+                                setIsDeleteModalOpen(true);
+                                setSelectedVariantIndex(index);
                               }}
                             >
                               <TrashIcon className="text-red-400" />
@@ -507,7 +592,7 @@ export default function ProductInformation({ product, updateProductFnc }) {
           IsDrawerOpen={drawerNewVariantOpen}
           toggleDrawer={toggleNewVariantDrawer}
           createVariant={createVariant}
-          updateVariant={updateVariant}
+          updateVariant={createVariant}
           variant={stateVariants}
         />
       ) : (
@@ -519,6 +604,7 @@ export default function ProductInformation({ product, updateProductFnc }) {
           message={info.delete.variant.message}
           buttonText={info.delete.variant.buttonText}
           toggleModal={toggleDeleteModal}
+          deleteFunction={deleteVariant}
         />
       ) : (
         <></>

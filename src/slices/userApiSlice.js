@@ -94,6 +94,28 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    deleteVariant: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/variants/${data.variant}/products/${data.product}`,
+        method: "DELETE",
+        headers: {
+          "x-access-token": data.token,
+        },
+      }),
+    }),
+
+        
+    createVariant: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/variants/`,
+        method: "POST",
+        headers: {
+          "x-access-token": data.token,
+        },
+        body: data.variant,
+      }),
+    }),
+
     updateVariant: builder.mutation({
       query: (data) => ({
         url: `${BASE_URL}/variants/${data.variantId}`,
@@ -104,6 +126,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data.updateData,
       }),
     }),
+
     
     updateProduct: builder.mutation({
       query: (data) => ({
@@ -129,5 +152,7 @@ export const {
   useGetProductMutation,
   useGetVariantMutation,
   useUpdateVariantMutation,
-  useUpdateProductMutation
+  useUpdateProductMutation,
+  useCreateVariantMutation,
+  useDeleteVariantMutation
 } = usersApiSlice;

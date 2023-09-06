@@ -85,6 +85,8 @@
 
     "store-created": "Store created successfully",
     "product-created": "Product created successfully",
+    "variant-created": "Variant created successfully",
+    "variant-deleted": "Variant deleted successfully",
     "variant-updated": "Variant updated successfully",
     "product-updated": "Product updated successfully"
 
