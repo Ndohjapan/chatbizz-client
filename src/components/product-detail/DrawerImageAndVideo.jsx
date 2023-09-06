@@ -33,7 +33,7 @@ export default function DrawerImageAndVideo({
   };
 
   const deleteImage = () => {
-    let updatedImages = variantImages;
+    let updatedImages = [...variantImages];
     updatedImages.splice(selectedImageIndex, 1);
 
     setVariantImages(updatedImages);

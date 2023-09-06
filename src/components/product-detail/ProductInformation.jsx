@@ -24,6 +24,7 @@ export default function ProductInformation({ product, updateProductFnc }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("name");
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState();
 
   const toggleProductDrawer = (toggle) => {
     setDrawerProductOpen(toggle);
@@ -46,6 +47,17 @@ export default function ProductInformation({ product, updateProductFnc }) {
     setStateVariants([...stateVariants, newVariant]);
   };
 
+  const updateSelectedVariant = (update) => {
+    console.log(update);
+    let updatedVariants = [...stateVariants];
+    
+    updatedVariants[selectedVariantIndex] = update;
+    
+    setStateVariants(updatedVariants);
+    updateProductFnc({variants: updatedVariants});    
+    console.log(updatedVariants);
+  }
+
   const updateVariant = (updatedVariant) => {
     const update = stateVariants.map((variant) => {
       if (variant.id === updatedVariant.id) {
@@ -58,6 +70,7 @@ export default function ProductInformation({ product, updateProductFnc }) {
     });
 
     setStateVariants(update);
+    updateProductFnc({variants: update})
   };
 
   const deleteVariant = (idToDelete) => {
@@ -406,7 +419,9 @@ export default function ProductInformation({ product, updateProductFnc }) {
                           <li key={index} className="relative">
                             <div
                               className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
-                              onClick={() => setIsDeleteModalOpen(true)}
+                              onClick={() => {
+                                setIsDeleteModalOpen(true)
+                              }}
                             >
                               <TrashIcon className="text-red-400" />
                             </div>
@@ -424,6 +439,7 @@ export default function ProductInformation({ product, updateProductFnc }) {
                                 onClick={() => {
                                   setDrawerProductOpen(true);
                                   setSelectedVariant(variant._id);
+                                  setSelectedVariantIndex(index);
                                 }}
                                 className="object-cover object-center group-hover:opacity-75 w-full h-full cursor-pointer"
                                 style={{
@@ -481,6 +497,7 @@ export default function ProductInformation({ product, updateProductFnc }) {
           toggleDrawer={toggleProductDrawer}
           productId={product._id}
           variantId={selectedVariant}
+          updateVariantInfo={updateSelectedVariant}
         />
       ) : (
         <></>

@@ -65,7 +65,6 @@ export default function ImagesAndVideo({ product, updateProductFunction }) {
   const deleteImage = () => {
     let updatedImages = [...productImages];
 
-    // Remove 1 element at selectedImageIndex
     updatedImages.splice(selectedImageIndex, 1);
   
     setProductImages(updatedImages);

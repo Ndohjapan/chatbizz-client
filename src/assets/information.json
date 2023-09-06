@@ -75,7 +75,17 @@
         }
     },
 
+    "unsaved": {
+        "product": {
+            "header": "Unsaved Edit",
+            "message": "All unsaved edit will be discarded",
+            "buttonText": "Discard"
+        }
+    },
+
     "store-created": "Store created successfully",
-    "product-created": "Product created successfully"
+    "product-created": "Product created successfully",
+    "variant-updated": "Variant updated successfully",
+    "product-updated": "Product updated successfully"
 
 }
