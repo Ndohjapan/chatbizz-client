@@ -41,7 +41,6 @@ export default function ImageSelector({ updateDisplayImages, displayImages }) {
       try {
         const res = await getImagesMutation({ token: twk, store: storeId });
         if (res.error) throw Error(JSON.stringify(res.error));
-        console.log(res.data);
         setImages(res.data.resources);
         return res.data;
       } catch (error) {

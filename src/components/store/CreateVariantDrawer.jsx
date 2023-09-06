@@ -85,7 +85,7 @@ export default function CreateVariantDrawer({
     }
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     const name = document.getElementById("variantName").value;
     const description = document.getElementById("variantDescription").value;
     const features = document.getElementById("variantFeatures").value;
@@ -125,7 +125,7 @@ export default function CreateVariantDrawer({
       updateVariant(form);
       handleClose();
     } else {
-      createVariant(form);
+      await createVariant(form);
       handleClose();
     }
   };
