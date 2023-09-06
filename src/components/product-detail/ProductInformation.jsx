@@ -14,10 +14,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const currencies = {"NGN": "₦", "USD": "$", "GBP": "£", "EUR": "€", "CAD": "CAD"}
+const currencies = { NGN: "₦", USD: "$", GBP: "£", EUR: "€", CAD: "CAD" };
 
-
-export default function ProductInformation({product}) {
+export default function ProductInformation({ product, updateProductFnc }) {
   const [drawerProductOpen, setDrawerProductOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState("");
   const [drawerNewVariantOpen, setDrawerNewVariantOpen] = useState(false);
@@ -25,6 +24,7 @@ export default function ProductInformation({product}) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("name");
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState();
 
   const toggleProductDrawer = (toggle) => {
     setDrawerProductOpen(toggle);
@@ -40,12 +40,23 @@ export default function ProductInformation({product}) {
 
   const toggleUpdateModal = (toggle) => {
     setIsUpdateModalOpen(toggle);
-  }
+  };
 
   const createVariant = (newVariant) => {
     newVariant.id = uuidv4();
     setStateVariants([...stateVariants, newVariant]);
   };
+
+  const updateSelectedVariant = (update) => {
+    console.log(update);
+    let updatedVariants = [...stateVariants];
+    
+    updatedVariants[selectedVariantIndex] = update;
+    
+    setStateVariants(updatedVariants);
+    updateProductFnc({variants: updatedVariants});    
+    console.log(updatedVariants);
+  }
 
   const updateVariant = (updatedVariant) => {
     const update = stateVariants.map((variant) => {
@@ -59,6 +70,7 @@ export default function ProductInformation({product}) {
     });
 
     setStateVariants(update);
+    updateProductFnc({variants: update})
   };
 
   const deleteVariant = (idToDelete) => {
@@ -115,13 +127,14 @@ export default function ProductInformation({product}) {
                             Name
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">
-                              {product.name}
-                            </span>
+                            <span className="flex-grow">{product.name}</span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("name")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("name");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -140,7 +153,10 @@ export default function ProductInformation({product}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("description")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("description");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -153,11 +169,16 @@ export default function ProductInformation({product}) {
                             Price
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow">{currencies[product.currency] + product.price}</span>
+                            <span className="flex-grow">
+                              {currencies[product.currency] + product.price}
+                            </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -173,13 +194,16 @@ export default function ProductInformation({product}) {
                             <span className="flex-grow">
                               {product.stock + " "}
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                mid
+                                {product.stockUnit}
                               </span>{" "}
                             </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -200,7 +224,10 @@ export default function ProductInformation({product}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("features")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("features");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -224,7 +251,10 @@ export default function ProductInformation({product}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("color")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("color");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -240,7 +270,7 @@ export default function ProductInformation({product}) {
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <span className="flex-grow">
                               <ul>
-                              {product.sizes.map((size, index) => (
+                                {product.sizes.map((size, index) => (
                                   <li key={index}> {size}</li>
                                 ))}
                               </ul>
@@ -248,7 +278,10 @@ export default function ProductInformation({product}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("size")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("size");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -262,11 +295,19 @@ export default function ProductInformation({product}) {
                             Weight
                           </dt>
                           <dd className="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <span className="flex-grow"> {product.weight ? product.weight : 0 +" "+ product.weightUnit}</span>
+                            <span className="flex-grow">
+                              {" "}
+                              {product.weight
+                                ? product.weight + " " + product.weightUnit
+                                : 0 + " " + product.weightUnit}
+                            </span>
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -287,7 +328,10 @@ export default function ProductInformation({product}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true); setSelectedSection("more")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -304,8 +348,10 @@ export default function ProductInformation({product}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true);
-                                setSelectedSection("more")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -322,8 +368,10 @@ export default function ProductInformation({product}) {
                             <span className="ml-4 flex-shrink-0">
                               <button
                                 type="button"
-                                onClick={() => {setIsUpdateModalOpen(true);
-                                    setSelectedSection("more")}}
+                                onClick={() => {
+                                  setIsUpdateModalOpen(true);
+                                  setSelectedSection("more");
+                                }}
                                 className="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                               >
                                 Update
@@ -371,7 +419,9 @@ export default function ProductInformation({product}) {
                           <li key={index} className="relative">
                             <div
                               className="absolute -top-3 -right-2 w-4 h-4 cursor-pointer"
-                              onClick={() => setIsDeleteModalOpen(true)}
+                              onClick={() => {
+                                setIsDeleteModalOpen(true)
+                              }}
                             >
                               <TrashIcon className="text-red-400" />
                             </div>
@@ -380,15 +430,16 @@ export default function ProductInformation({product}) {
                                 src={
                                   variant.image
                                     ? variant.image.replace(
-                                      "/upload/",
-                                      "/upload/c_scale,w_500/f_auto/q_auto:eco/"
-                                    )
+                                        "/upload/",
+                                        "/upload/c_scale,w_500/f_auto/q_auto:eco/"
+                                      )
                                     : images.icons.box
                                 }
                                 alt=""
                                 onClick={() => {
                                   setDrawerProductOpen(true);
-                                  setSelectedVariant(variant._id)
+                                  setSelectedVariant(variant._id);
+                                  setSelectedVariantIndex(index);
                                 }}
                                 className="object-cover object-center group-hover:opacity-75 w-full h-full cursor-pointer"
                                 style={{
@@ -400,10 +451,14 @@ export default function ProductInformation({product}) {
                               />
                             </div>
                             <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                              {variant.colors ? variant.colors[0] : variant.name}
+                              {variant.colors
+                                ? variant.colors[0]
+                                : variant.name}
                             </p>
                             <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                              {variant.sizes ? variant.sizes[0] : variant.features}
+                              {variant.sizes
+                                ? variant.sizes[0]
+                                : variant.features}
                             </p>
                           </li>
                         ))}
@@ -427,13 +482,23 @@ export default function ProductInformation({product}) {
       </Disclosure>
 
       {isUpdatModalOpen ? (
-        <UpdateModal toggleModal={toggleUpdateModal} section={selectedSection} productInfo={info.products[0]} />
+        <UpdateModal
+          toggleModal={toggleUpdateModal}
+          section={selectedSection}
+          productInfo={product}
+          updateProductFnc={updateProductFnc}
+        />
       ) : (
         <></>
       )}
 
       {drawerProductOpen ? (
-        <VariantDrawer toggleDrawer={toggleProductDrawer} productId={product._id} variantId={selectedVariant} />
+        <VariantDrawer
+          toggleDrawer={toggleProductDrawer}
+          productId={product._id}
+          variantId={selectedVariant}
+          updateVariantInfo={updateSelectedVariant}
+        />
       ) : (
         <></>
       )}

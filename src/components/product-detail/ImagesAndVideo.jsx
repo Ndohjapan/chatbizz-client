@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Tab } from "@headlessui/react";
 import { Disclosure } from "@headlessui/react";
 import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
-import images from "../../assets/images.json";
 import StatusMoreIcon from "../../assets/StatusMoreIcon";
 import { TrashIcon } from "@heroicons/react/outline";
 import info from "../../assets/information.json";
@@ -15,17 +14,18 @@ import ImageUploadIcon from "../../assets/ImageUploadIcon";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-export default function ImagesAndVideo({ product }) {
+export default function ImagesAndVideo({ product, updateProductFunction }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productImages, setProductImages] = useState(product.images);
-  const [productVideos, setProductVideos] = useState(product.videos);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdatModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedSection, setSelectedSection] = useState("video");
   const [testimonialImages, setTestimonialImages] = useState(product.testimonials);
   const [buttonSelected, setButtonSelected] = useState([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState();
+
 
   const toggleModal = (toggle) => {
     setIsModalOpen(toggle);
@@ -52,10 +52,24 @@ export default function ImagesAndVideo({ product }) {
 
   const updateProductImages = (images) => {
     setProductImages(images);
+    updateProductFunction({images})
+    
+  };
+  
+  const updateTestimonialImages = (testimonials) => {
+    setTestimonialImages(testimonials);
+    updateProductFunction({testimonials})
   };
 
-  const updateTestimonialImages = (images) => {
-    setTestimonialImages(images);
+  
+  const deleteImage = () => {
+    let updatedImages = [...productImages];
+
+    updatedImages.splice(selectedImageIndex, 1);
+  
+    setProductImages(updatedImages);
+    
+    updateProductFunction({images: updatedImages})
   };
 
   function getYoutubeEmbedUrl(youtubeUrl) {
@@ -131,8 +145,8 @@ export default function ImagesAndVideo({ product }) {
             <>
               {productImages.length ? (
                 <>
-                  {productImages.map((image) => (
-                    <Tab.Panel key={image.asset_id}>
+                  {productImages.map((image, index) => (
+                    <Tab.Panel key={index}>
                       <img
                         src={image.secure_url.replace(
                           "/upload/",
@@ -143,7 +157,10 @@ export default function ImagesAndVideo({ product }) {
                       />
                       <div
                         className="absolute top-3 right-2 w-8  h-4 cursor-pointer"
-                        onClick={() => setIsDeleteModalOpen(true)}
+                        onClick={() => {
+                          setSelectedImageIndex(index)
+                          setIsDeleteModalOpen(true)
+                        }}
                       >
                         <TrashIcon className="text-red-400" />
                       </div>
@@ -249,12 +266,12 @@ export default function ImagesAndVideo({ product }) {
                         Edit videos
                       </a>
                     </div>
-                    {isLoading && productVideos.length && (
+                    {isLoading && product.videos.length && (
                       <div className="flex items-center justify-center">
                         <ImSpinner8 className="animate-spin text-center text-2xl text-indigo-600" />
                       </div>
                     )}
-                    {productVideos.map((video, index) => (
+                    {product.videos.map((video, index) => (
                       <div
                         key={index}
                         className="col-span-2 aspect-w-16 aspect-h-9 flex justify-center"
@@ -376,10 +393,8 @@ export default function ImagesAndVideo({ product }) {
                                       </button>
                                     </div>
                                     <p className="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none">
-                                      {image.asset_id}
                                     </p>
                                     <p className="block text-sm font-medium text-gray-500 pointer-events-none">
-                                      {image.asset_id}
                                     </p>
                                   </li>
                                 ))}
@@ -401,7 +416,8 @@ export default function ImagesAndVideo({ product }) {
         <UpdateModal
           toggleModal={toggleUpdateModal}
           section={selectedSection}
-          productInfo={info.products[0]}
+          productInfo={product}
+          updateProductFnc={updateProductFunction}
         />
       ) : (
         <></>
@@ -430,6 +446,7 @@ export default function ImagesAndVideo({ product }) {
           message={info.delete.image.message}
           buttonText={info.delete.image.buttonText}
           toggleModal={toggleDeleteModal}
+          deleteFunction={deleteImage}
         />
       ) : (
         <></>

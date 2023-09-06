@@ -3,19 +3,21 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ImSpinner8 } from "react-icons/im";
 import { XIcon } from "@heroicons/react/outline";
 import DrawerProduct from "./DrawerProduct";
-import { useGetVariantMutation } from "../../slices/userApiSlice";
+import { useGetVariantMutation, useUpdateVariantMutation } from "../../slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout, showToast } from "../../slices/authSlice";
 import errors from "../../assets/error.json";
+import info from "../../assets/information.json";
 import VariantLoadingState from "./VariantLoadingState";
 
 // eslint-disable-next-line react/prop-types
-export default function VariantDrawer({ toggleDrawer, variantId, productId }) {
+export default function VariantDrawer({ toggleDrawer, variantId, productId, updateVariantInfo }) {
   const [open, setOpen] = useState(true);
   const [apiCallDone, setApiCallDone] = useState(false);
   const [variant, setVariant] = useState(false);
   const [getVariantNutation, { isLoading }] = useGetVariantMutation();
+  const [updateVariantMutation, { isLoading: updateLoading }] = useUpdateVariantMutation();
   const twk = useSelector((state) => state.auth.twk);
 
   const navigate = useNavigate();
@@ -28,6 +30,20 @@ export default function VariantDrawer({ toggleDrawer, variantId, productId }) {
     }, 500);
   };
 
+  const updateVariantFunc = async (update) => {
+    try {
+      const updatedVariant = {
+        ...variant,
+        ...update,
+      };
+
+      setVariant(updatedVariant);
+
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
   const handleGetVariant = async () => {
     try {
       const res = await getVariantNutation({
@@ -37,6 +53,38 @@ export default function VariantDrawer({ toggleDrawer, variantId, productId }) {
       });
       if (res.error) throw Error(JSON.stringify(res.error));
       setVariant(res.data);
+    } catch (error) {
+      const message = JSON.parse(error.message);
+
+      console.log(message);
+
+      if (message.status === 401) {
+        dispatch(logout());
+        navigate("/login");
+      }
+
+      const errorMessage = message.data.message;
+      dispatch(
+        showToast({
+          title: errors["title-error"],
+          message: errorMessage,
+        })
+      );
+    }
+  };
+
+  const handleUpdateVariant = async () => {
+    try {
+      const res = await updateVariantMutation({
+        token: twk,
+        variantId,
+        updateData: variant
+      });
+      if (res.error) throw Error(JSON.stringify(res.error));
+      setVariant(res.data);
+      dispatch(showToast({ message: info["variant-updated"] }));
+      updateVariantInfo({_id: variant._id, image: variant.images[0].secure_url, name: variant.name});
+      handleClose();
     } catch (error) {
       const message = JSON.parse(error.message);
 
@@ -113,12 +161,38 @@ export default function VariantDrawer({ toggleDrawer, variantId, productId }) {
                         </>
                       ) : (
                         <>
-                          <DrawerProduct variant={variant} />
+                          <DrawerProduct variant={variant} updateVariantFnc={updateVariantFunc}/>
                         </>
                       )}
                       {/* /End replace */}
                     </div>
                   </div>
+                  <div className="flex flex-shrink-0 justify-end px-4 py-4">
+                      <button
+                        type="button"
+                        className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        onClick={handleClose}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                      onClick={() => {
+                        handleUpdateVariant();
+                      }}
+                        className="ml-4 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      >
+                        {updateLoading ? (
+                          <>
+                          <ImSpinner8 className="animate-spin"/>
+                          </>
+                        ) : (
+                          <>
+                          Update
+                          </>
+                        )}
+
+                      </button>
+                    </div>
                 </div>
               </div>
             </Transition.Child>

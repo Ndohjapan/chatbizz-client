@@ -93,6 +93,28 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
+
+    updateVariant: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/variants/${data.variantId}`,
+        method: "PUT",
+        headers: {
+          "x-access-token": data.token,
+        },
+        body: data.updateData,
+      }),
+    }),
+    
+    updateProduct: builder.mutation({
+      query: (data) => ({
+        url: `${BASE_URL}/products/${data.productId}`,
+        method: "PUT",
+        headers: {
+          "x-access-token": data.token,
+        },
+        body: data.updateData,
+      }),
+    }),
   }),
 });
 
@@ -105,5 +127,7 @@ export const {
   useCreateProductMutation,
   useGetProductsMutation,
   useGetProductMutation,
-  useGetVariantMutation
+  useGetVariantMutation,
+  useUpdateVariantMutation,
+  useUpdateProductMutation
 } = usersApiSlice;
