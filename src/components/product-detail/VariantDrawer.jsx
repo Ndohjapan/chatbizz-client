@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { ImSpinner8 } from "react-icons/im";
 import { XIcon } from "@heroicons/react/outline";
 import DrawerProduct from "./DrawerProduct";
 import { useGetVariantMutation, useUpdateVariantMutation } from "../../slices/userApiSlice";
