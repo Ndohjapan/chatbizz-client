@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import images from "../../../assets/images.json";
+import { useState } from "react";
 import CheckMark from "./CheckMark";
 import XMark from "./XMark";
 import { useGetQRMutation } from "../../../slices/userApiSlice";
